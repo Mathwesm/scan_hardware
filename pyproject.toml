@@ -33,7 +33,7 @@ respx = "^0.21"
 freezegun = "^1.5"
 pre-commit = "^4.0"
 detect-secrets = "^1.5"
-poethepoet = "^0.32"
+poethepoet = "^0.48"
 
 # Task shortcuts that behave identically on Windows, macOS and Linux. A Makefile
 # would not: Windows has no make. Run them with `poetry run poe <task>`.
