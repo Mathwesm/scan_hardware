@@ -7,7 +7,7 @@ Standalone Python service that reads printed motherboard, GPU, and CPU identifie
 1. The client takes a clear photo of the printed model or part number.
 2. `POST /scan` runs offline OCR and normalizes punctuation and letter case.
 3. Exact identifier matches are returned as `matched`. Similar values are returned as `suggestions`; they are **never** silently treated as exact matches.
-4. Each match includes the catalog item, its identifiers, the observed text, the score, and a reference image URL when available.
+4. Each match includes the catalog item, identifiers, source-backed specifications, observed text, score, and a reference image URL when available.
 
 The matching key is a **printed alphanumeric identifier**, not an image classification of the entire board. A catalog importer is included for the two Kaggle datasets described below.
 
@@ -34,7 +34,7 @@ poetry run python -m scan_hardware.catalog_import \
 
 On PowerShell, put the command on one line or use PowerShell's continuation syntax. The importer reads the CPU, GPU, and motherboard files from both complete archives, keeps every original column in SQLite, and records rejected rows with their reason. It joins products only when their normalized model or part code matches exactly; GPU names shared by different chipsets remain separate. An image URL is attached only when the source contains a plausible product photo URL and, for an ambiguous GPU name, the chipset also matches. Placeholder references are discarded. Import runs create separate databases under `data/processed/<run-id>/` and update `data/latest.json` only after count, rejection-rate, and image-reference checks pass. Both archives and all generated databases remain outside Git.
 
-For an identified item, call `GET /items/{id}/sources` to retrieve every original source row and its specifications. The ordinary `/scan` and `/lookup` responses stay small. Re-running an import creates a new version and preserves the previous one. A future source refresh should be audited before changing the pointer.
+Each `/scan`, `/lookup`, and `GET /items/{id}` response includes normalized specifications for its returned items. A field contains its value, unit, status, and source evidence. When sources disagree, `status` is `conflict` and `value` is `null`; the API does not silently choose a source. Call `GET /items/{id}/sources` for every original column. Missing source fields are omitted from the normalized map. Re-running an import creates a new version and preserves the previous one. A future source refresh should be audited before changing the pointer.
 
 The image URLs come from third-party hosts in the Kaggle data. They are not local image files or guaranteed to remain available; the dataset license does not establish reuse rights for those photographs. Items without a reliable image reference remain searchable with `image_url: null`. Manufacturer or separately licensed product images can be added through the existing image upload endpoint.
 
@@ -93,7 +93,8 @@ curl http://127.0.0.1:8000/items/demo-board/image --output board-reference.jpg
         "image_url": null,
         "id": "demo-board",
         "has_local_image": true,
-        "local_image_url": "/items/demo-board/image"
+        "local_image_url": "/items/demo-board/image",
+        "specifications": {}
       },
       "matched_identifier": "B550-F GAMING",
       "observed_text": "B550-F GAMING",
@@ -108,9 +109,9 @@ curl http://127.0.0.1:8000/items/demo-board/image --output board-reference.jpg
 
 ## Integration contract
 
-The mobile app can send an image to `/scan` or decoded text to `/lookup`. The service returns JSON only; the app renders the item details and downloads `local_image_url` when present. `PUT /items/{id}` is idempotent, so a future backend sync can safely repeat writes. Normalize stable IDs in the backend before sending them here; IDs may contain letters, digits, underscores, and hyphens.
+The mobile app can send an image to `/scan` or decoded text to `/lookup`. Frame the printed identifier or product sticker closely; a whole-card photo with a tiny label may fail OCR. Show `suggestions` for user confirmation, and never present them as an exact identification. The service returns JSON only; the app renders the item details and specifications and downloads `local_image_url` when present. If a specification has `status: "conflict"`, show its evidence rather than an unverified number. `PUT /items/{id}` is idempotent, so a future backend sync can safely repeat writes. Normalize stable IDs in the backend before sending them here; IDs may contain letters, digits, underscores, and hyphens.
 
-The imported Kaggle data has no explicit release-year field, so historical decade coverage has not been verified. OCR quality on etched text, glare, tiny labels, and model revisions must be measured against real labeled photos before production use. The lookup currently loads the local catalog and ranks candidates in memory; benchmark it again if the catalog grows substantially.
+The imported Kaggle data has no explicit release-year field, so historical decade coverage has not been verified. CPU socket and thread count are absent for many catalog items. OCR quality on etched text, glare, tiny labels, and model revisions needs a broader labeled-photo evaluation before production use. The lookup currently loads the local catalog and ranks candidates in memory; benchmark it again if the catalog grows substantially. See [field validation](docs/field_validation.md) for real-photo results and source conflicts.
 
 ## Quality checks
 

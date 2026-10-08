@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from scan_hardware.core.matching import normalize_identifier
+from scan_hardware.core.specifications import build_specifications
 from scan_hardware.models.item import Category, Item, ItemInput
 
 
@@ -122,6 +123,9 @@ class Catalog:
             identifiers=[alias["display"] for alias in aliases],
             has_local_image=row["image_digest"] is not None,
             local_image_url=f"/items/{item_id}/image" if row["image_digest"] else None,
+            specifications=build_specifications(
+                Category(row["category"]), self.get_source_records(item_id)
+            ),
         )
 
     def list_items(self) -> list[Item]:

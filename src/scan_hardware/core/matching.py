@@ -4,13 +4,20 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from difflib import SequenceMatcher
 
-from scan_hardware.models.item import Item, Match, ScanResult
+from rapidfuzz import fuzz, process
+
+from scan_hardware.models.item import Category, Item, Match, ScanResult
 
 _WORD_PATTERN = re.compile(r"[A-Z0-9]+")
-_MIN_FUZZY_SCORE = 0.82
+_MIN_FUZZY_SCORE = 0.80
 _MAX_MATCHES = 5
+_MIN_REVISION_PREFIX_LENGTH = 8
+_MIN_FUZZY_FRAGMENT_LENGTH = 5
+_MAX_FUZZY_FRAGMENT_LENGTH = 32
+_MIN_MODEL_DIGITS = 2
+_FUZZY_CANDIDATES_PER_FRAGMENT = 30
+_MAX_OBSERVATION_LINES = 4
 MIN_IDENTIFIER_LENGTH = 4
 
 
@@ -29,7 +36,8 @@ def normalize_identifier(value: str) -> str:
 
 def _candidate_fragments(value: str) -> set[str]:
     """Build contiguous OCR token spans to tolerate surrounding label text."""
-    words = _WORD_PATTERN.findall(value.upper())
+    joined_codes = re.sub(r"(?<=[A-Z0-9])-(?=[A-Z0-9])", "", value.upper())
+    words = _WORD_PATTERN.findall(joined_codes)
     fragments = {normalize_identifier(value)}
     for start in range(len(words)):
         for end in range(start + 1, min(start + 7, len(words)) + 1):
@@ -37,27 +45,27 @@ def _candidate_fragments(value: str) -> set[str]:
     return {fragment for fragment in fragments if len(fragment) >= MIN_IDENTIFIER_LENGTH}
 
 
-def _score_identifier(identifier: str, observed: str) -> tuple[float, bool]:
-    """Compare a catalog identifier with one OCR line."""
-    target = normalize_identifier(identifier)
-    fragments = _candidate_fragments(observed)
-    if target in fragments:
-        return 1.0, True
-
-    score = max(
-        (SequenceMatcher(None, target, fragment).ratio() for fragment in fragments),
-        default=0.0,
-    )
-    return score, False
+def _score_fragment(target: str, fragment: str, similarity: float) -> float:
+    """Prefer a complete printed code over a nearby different model."""
+    if (
+        len(fragment) >= _MIN_REVISION_PREFIX_LENGTH
+        and target.startswith(fragment)
+        and re.fullmatch(r"(?:R|REV)\d{1,3}", target[len(fragment) :])
+    ):
+        return 0.93
+    return similarity / 100
 
 
 def _observations(lines: list[str]) -> list[str]:
-    """Join nearby OCR fragments that may belong to one printed model name."""
-    return [
-        " ".join(lines[start : start + width])
-        for start in range(len(lines))
-        for width in range(1, min(3, len(lines) - start) + 1)
-    ]
+    """Join neighboring OCR lines in both readable orientations."""
+    observations: list[str] = []
+    for start in range(len(lines)):
+        for width in range(1, min(_MAX_OBSERVATION_LINES, len(lines) - start) + 1):
+            segment = lines[start : start + width]
+            observations.append(" ".join(segment))
+            if width > 1:
+                observations.append(" ".join(reversed(segment)))
+    return observations
 
 
 def _exact_matches(observations: list[str], items: list[Item]) -> list[Match]:
@@ -80,7 +88,68 @@ def _exact_matches(observations: list[str], items: list[Item]) -> list[Match]:
                         is_exact=True,
                     )
                     break
-    return sorted(exact_matches.values(), key=lambda match: match.item.id, reverse=True)
+    return sorted(
+        exact_matches.values(),
+        key=lambda match: (len(normalize_identifier(match.matched_identifier)), match.item.id),
+        reverse=True,
+    )
+
+
+def _model_fragments(observations: list[str]) -> dict[str, str]:
+    """Keep distinct code-like OCR spans and their shortest source observation."""
+    fragments: dict[str, str] = {}
+    for observed in observations:
+        for fragment in _candidate_fragments(observed):
+            if (
+                _MIN_FUZZY_FRAGMENT_LENGTH <= len(fragment) <= _MAX_FUZZY_FRAGMENT_LENGTH
+                and sum(character.isdigit() for character in fragment) >= _MIN_MODEL_DIGITS
+                and any(character.isalpha() for character in fragment)
+            ):
+                previous = fragments.get(fragment)
+                if previous is None or len(observed) < len(previous):
+                    fragments[fragment] = observed
+    return fragments
+
+
+def _fuzzy_matches(observations: list[str], items: list[Item]) -> list[Match]:
+    """Rank plausible identifiers using a bounded native-code similarity search."""
+    has_gpu_label = bool(
+        re.search(r"\b(?:GEFORCE|RADEON|GTX|RTX)\b", " ".join(observations).upper())
+    )
+    aliases: dict[str, list[tuple[Item, str]]] = {}
+    for item in items:
+        if has_gpu_label and item.category is not Category.GPU:
+            continue
+        for identifier in item.identifiers:
+            aliases.setdefault(normalize_identifier(identifier), []).append((item, identifier))
+    if not aliases:
+        return []
+    choices = list(aliases)
+    best_matches: dict[str, Match] = {}
+    for fragment, observed in _model_fragments(observations).items():
+        candidates = process.extract(
+            fragment,
+            choices,
+            scorer=fuzz.ratio,
+            score_cutoff=_MIN_FUZZY_SCORE * 100,
+            limit=_FUZZY_CANDIDATES_PER_FRAGMENT,
+        )
+        for target, similarity, _ in candidates:
+            score = _score_fragment(target, fragment, similarity)
+            for item, identifier in aliases[target]:
+                candidate = Match(
+                    item=item,
+                    matched_identifier=identifier,
+                    observed_text=observed,
+                    score=score,
+                    is_exact=False,
+                )
+                previous = best_matches.get(item.id)
+                if previous is None or candidate.score > previous.score:
+                    best_matches[item.id] = candidate
+    return sorted(
+        best_matches.values(), key=lambda match: (match.score, match.item.id), reverse=True
+    )[:_MAX_MATCHES]
 
 
 def match_items(observed_text: list[str], items: list[Item]) -> ScanResult:
@@ -100,33 +169,6 @@ def match_items(observed_text: list[str], items: list[Item]) -> ScanResult:
             status="matched", detected_text=observed_text, matches=exact_matches[:_MAX_MATCHES]
         )
 
-    best_matches: dict[str, Match] = {}
-    for item in items:
-        for identifier in item.identifiers:
-            for observed in observations:
-                score, is_exact = _score_identifier(identifier, observed)
-                if score < _MIN_FUZZY_SCORE:
-                    continue
-                candidate = Match(
-                    item=item,
-                    matched_identifier=identifier,
-                    observed_text=observed,
-                    score=score,
-                    is_exact=is_exact,
-                )
-                previous = best_matches.get(item.id)
-                if previous is None or (candidate.is_exact, candidate.score) > (
-                    previous.is_exact,
-                    previous.score,
-                ):
-                    best_matches[item.id] = candidate
-
-    matches = sorted(
-        best_matches.values(),
-        key=lambda match: (match.is_exact, match.score, match.item.id),
-        reverse=True,
-    )[:_MAX_MATCHES]
-    status = (
-        "matched" if matches and matches[0].is_exact else "suggestions" if matches else "not_found"
-    )
+    matches = _fuzzy_matches(observations, items)
+    status = "suggestions" if matches else "not_found"
     return ScanResult(status=status, detected_text=observed_text, matches=matches)

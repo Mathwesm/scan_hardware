@@ -21,6 +21,15 @@ class LookupRequest(BaseModel):
     text: str = Field(min_length=1, max_length=500)
 
 
+def _include_specifications(result: ScanResult, catalog: Catalog) -> ScanResult:
+    """Resolve source-backed specifications only for returned candidates."""
+    for match in result.matches:
+        stored = catalog.get_item(match.item.id)
+        if stored is not None:
+            match.item = stored
+    return result
+
+
 def register_scan_routes(
     app: FastAPI, catalog: Catalog, scanner: OcrScanner, config: Settings
 ) -> None:
@@ -29,7 +38,7 @@ def register_scan_routes(
     @app.post("/lookup", response_model=ScanResult)
     def lookup(request: LookupRequest) -> ScanResult:
         """Match decoded text against the local hardware catalog."""
-        return match_items([request.text], catalog.list_items())
+        return _include_specifications(match_items([request.text], catalog.list_items()), catalog)
 
     @app.post("/scan", response_model=ScanResult)
     async def scan(image: Annotated[UploadFile, File()]) -> ScanResult:
@@ -41,4 +50,4 @@ def register_scan_routes(
         except InvalidImageError as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
         lines = await run_in_threadpool(scanner.read_text, content)
-        return match_items(lines, catalog.list_items())
+        return _include_specifications(match_items(lines, catalog.list_items()), catalog)

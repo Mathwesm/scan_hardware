@@ -128,7 +128,16 @@ def test_duplicate_normalized_alias_does_not_reject_product(tmp_path: Path) -> N
     assert len(catalog.list_items()) == 1
 
 
-def test_placeholder_image_is_not_published_as_product_photo(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    "placeholder_url",
+    [
+        "https://static.example.com/img/no-image.png",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/256px-No_image_available.jpg",
+    ],
+)
+def test_placeholder_image_is_not_published_as_product_photo(
+    tmp_path: Path, placeholder_url: str
+) -> None:
     catalog = Catalog(tmp_path / "catalog.sqlite3")
     rohit = [
         (
@@ -139,7 +148,7 @@ def test_placeholder_image_is_not_published_as_product_photo(tmp_path: Path) -> 
                 1,
                 {
                     "name": "MSI GeForce GTX 1050 Video Card (GTX-1050-MSI)",
-                    "image": "https://static/forever/img/no-image.png",
+                    "image": placeholder_url,
                 },
             ),
         )
@@ -150,8 +159,52 @@ def test_placeholder_image_is_not_published_as_product_photo(tmp_path: Path) -> 
     assert counts.get("items_with_image_url", 0) == 0
     assert catalog.list_items()[0].image_url is None
     assert catalog.get_source_records(catalog.list_items()[0].id)[0]["data"]["image"] == (
-        "https://static/forever/img/no-image.png"
+        placeholder_url
     )
+
+
+def test_unique_cpu_model_code_is_searchable_from_ocr_line(tmp_path: Path) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    warcoder = [
+        (
+            Category.CPU,
+            SourceRow(
+                "warcoder/pc-parts", "dataset/cpu.json", 1, {"name": "Intel Core 2 Duo E8400"}
+            ),
+        )
+    ]
+
+    _import_groups(catalog, _build_groups(warcoder, []))
+    result = match_items(["INTEL©06 E8400", "INTEL COREM2 DUO"], catalog.list_items())
+
+    assert result.status == "matched"
+    assert result.matches[0].item.model == "Intel Core 2 Duo E8400"
+
+
+def test_ambiguous_cpu_model_code_is_not_assigned_to_either_item(tmp_path: Path) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    warcoder = [
+        (
+            Category.CPU,
+            SourceRow(
+                "warcoder/pc-parts", "dataset/cpu.json", 1, {"name": "Intel Core 2 Duo E8400"}
+            ),
+        ),
+        (
+            Category.CPU,
+            SourceRow(
+                "warcoder/pc-parts",
+                "dataset/cpu.json",
+                2,
+                {"name": "Intel Core 2 Duo E8400 Revision B"},
+            ),
+        ),
+    ]
+
+    _import_groups(catalog, _build_groups(warcoder, []))
+    result = match_items(["E8400"], catalog.list_items())
+
+    assert result.status != "matched"
 
 
 def test_failed_quality_gate_keeps_previous_published_catalog(tmp_path: Path) -> None:

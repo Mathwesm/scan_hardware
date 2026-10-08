@@ -80,6 +80,100 @@ def test_identifier_prefix_is_not_exact_model_match() -> None:
     assert result.status != "matched"
 
 
+def test_short_board_code_does_not_match_prefix_of_longer_printed_code() -> None:
+    generic = Item(
+        id="board-generic",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M",
+        identifiers=["A320M"],
+    )
+
+    result = match_items(["ASRock A320M-DVS"], [generic])
+
+    assert result.status != "matched"
+
+
+def test_printed_board_code_ranks_catalog_revision_before_similar_models() -> None:
+    correct = Item(
+        id="board-dvs",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M-DVS R4.0",
+        identifiers=["A320M-DVS R4.0"],
+    )
+    similar = Item(
+        id="board-dgs",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M-DGS",
+        identifiers=["A320M-DGS"],
+    )
+
+    result = match_items(["A320M-DVS"], [similar, correct])
+
+    assert result.status == "suggestions"
+    assert result.matches[0].item.id == "board-dvs"
+
+
+def test_gpu_label_does_not_suggest_cpu_from_unrelated_serial_number() -> None:
+    gpu = Item(
+        id="gpu-1050",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GTX 1050 2G OC",
+        identifiers=["GTX 1050 2G OC"],
+    )
+    cpu = Item(
+        id="cpu-e8400",
+        category=Category.CPU,
+        brand="Intel",
+        model="Intel Core 2 Duo E8400",
+        identifiers=["E8400"],
+    )
+
+    result = match_items(["GeForce", "GTX 1050", "E8408"], [gpu, cpu])
+
+    assert all(match.item.category is Category.GPU for match in result.matches)
+
+
+def test_longer_exact_board_code_outranks_generic_prefix() -> None:
+    generic = Item(
+        id="board-generic",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M",
+        identifiers=["A320M"],
+    )
+    specific = Item(
+        id="board-dvs",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M-DVS",
+        identifiers=["A320M-DVS"],
+    )
+
+    result = match_items(["ASRock A320M DVS"], [generic, specific])
+
+    assert result.status == "matched"
+    assert result.matches[0].item.id == "board-dvs"
+
+
+def test_upside_down_gpu_label_lines_can_form_exact_model_code() -> None:
+    gpu = Item(
+        id="gpu-1050ti",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GTX 1050 Ti 4GT OC",
+        identifiers=["GTX 1050 Ti 4GT OC"],
+    )
+
+    result = match_items(["OC", "Ti 4GT", "GTX 1050", "GeForce"], [gpu])
+
+    assert result.status == "matched"
+    assert result.matches[0].item.id == "gpu-1050ti"
+
+
 def test_unrelated_text_does_not_identify_hardware() -> None:
     item = Item(
         id="cpu-1",

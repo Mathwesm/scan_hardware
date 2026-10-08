@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, field_validator
 
@@ -47,12 +48,30 @@ class ItemInput(BaseModel):
         return [value.strip() for value in values]
 
 
+class SpecificationEvidence(BaseModel):
+    """A distinct value retained from one imported source field."""
+
+    dataset: str
+    field: str
+    value: str | int | float | bool
+
+
+class Specification(BaseModel):
+    """A normalized hardware property with transparent source disagreement."""
+
+    value: str | int | float | bool | None
+    unit: str | None = None
+    status: Literal["reported", "conflict"]
+    evidence: list[SpecificationEvidence]
+
+
 class Item(ItemInput):
     """Catalog item with a stable external identifier and image endpoint."""
 
     id: str
     has_local_image: bool = False
     local_image_url: str | None = None
+    specifications: dict[str, Specification] = Field(default_factory=dict)
 
 
 class Match(BaseModel):

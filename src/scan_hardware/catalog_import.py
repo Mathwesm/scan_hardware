@@ -36,6 +36,7 @@ WARCODER_FILES = {
 }
 PART_CODE = re.compile(r"\(([^()]*)\)\s*$")
 CPU_CLOCK = re.compile(r"\s+\d+(?:\.\d+)?\s*GHz\b", re.IGNORECASE)
+CPU_MODEL_CODE = re.compile(r"\b[A-Z]\d{4,5}[A-Z]?\b", re.IGNORECASE)
 MAX_REJECTED_RATE = 0.05
 
 
@@ -132,9 +133,21 @@ def _usable_image_url(value: Any) -> str | None:
     parsed = urlsplit(value)
     if parsed.scheme != "https" or not parsed.hostname or "." not in parsed.hostname:
         return None
-    if "no-image" in parsed.path.casefold():
+    if re.search(r"no[-_]image", parsed.path, flags=re.IGNORECASE):
         return None
     return value
+
+
+def _add_unique_cpu_codes(groups: dict[tuple[Category, str], ProductGroup]) -> None:
+    """Add short printed CPU codes only when one catalog item owns each code."""
+    cpu_codes = {
+        key: {match.group().upper() for match in CPU_MODEL_CODE.finditer(group.name)}
+        for key, group in groups.items()
+        if group.category is Category.CPU
+    }
+    code_frequency: Counter[str] = Counter(code for codes in cpu_codes.values() for code in codes)
+    for key, codes in cpu_codes.items():
+        groups[key].aliases.extend(code for code in sorted(codes) if code_frequency[code] == 1)
 
 
 def _build_groups(
@@ -188,6 +201,7 @@ def _build_groups(
             group.aliases.append(code.group(1))
         if key[1].startswith("rohit:") and name not in group.aliases:
             group.aliases.append(name)
+    _add_unique_cpu_codes(groups)
     return groups
 
 

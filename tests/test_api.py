@@ -22,6 +22,14 @@ class FakeScanner(OcrScanner):
         return ["B550-F GAMING"]
 
 
+class CpuScanner(OcrScanner):
+    """Return a printed CPU code for the HTTP scan contract test."""
+
+    def read_text(self, _content: bytes) -> list[str]:
+        """Read the model code from the deterministic fixture."""
+        return ["i3-7350K"]
+
+
 def _png() -> bytes:
     """Create a valid small image for upload validation."""
     image = Image.new("RGB", (128, 64), "white")
@@ -101,3 +109,43 @@ def test_item_sources_returns_all_original_fields(tmp_path: Path) -> None:
     assert response.status_code == 200
     assert response.json()[0]["data"]["memory_slots"] == 2
     assert response.json()[0]["data"]["socket"] == "LGA1151"
+
+
+def test_scan_exposes_cpu_specs_and_source_conflict(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=CpuScanner()))
+    client.put(
+        "/items/cpu-1",
+        json={
+            "category": "cpu",
+            "brand": "Intel",
+            "model": "Intel Core i3-7350K",
+            "identifiers": ["i3-7350K"],
+        },
+    )
+    catalog = Catalog(config.resolved_catalog_path)
+    catalog.put_source_record(
+        "rohitmit98/pc-parts-by-type",
+        "CPU.csv",
+        1,
+        {"socket": "LGA 1151", "speed": "4.2", "coreCount": "2", "threadCount": "4", "power": "50"},
+        "cpu-1",
+    )
+    catalog.put_source_record(
+        "warcoder/pc-parts",
+        "dataset/cpu.json",
+        1,
+        {"core_clock": 4.2, "core_count": 2, "tdp": 60},
+        "cpu-1",
+    )
+
+    response = client.post("/scan", files={"image": ("cpu.png", _png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "matched"
+    specs = response.json()["matches"][0]["item"]["specifications"]
+    assert specs["socket"]["value"] == "LGA1151"
+    assert specs["threads"]["value"] == 4
+    assert specs["tdp_w"]["status"] == "conflict"
+    assert specs["tdp_w"]["value"] is None
+    assert client.get("/items/cpu-1").json()["specifications"] == specs
