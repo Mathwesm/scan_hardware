@@ -25,7 +25,7 @@ packages = [{ include = "scan_hardware", from = "src" }]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8"
 mypy = "^1.13"
-pytest = "^8.3"
+pytest = "^9.1"
 pytest-cov = "^6.0"
 pytest-mock = "^3.14"
 hypothesis = "^6.115"
