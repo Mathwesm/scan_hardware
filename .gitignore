@@ -1,0 +1,32 @@
+# Environment
+.env
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Tooling caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+htmlcov/
+.coverage
+.coverage.*
+
+# Runtime artifacts
+logs/
+*.log
+data/
+
+# tests/fixtures/ is intentionally NOT ignored: the CI needs those samples to run.
+
+# Editors
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,16 @@
+services:
+  scan_hardware:
+    build: .
+    environment:
+      LOG_SERIALIZE: "true"
+      HOST: "0.0.0.0"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - scanner_logs:/app/logs
+      - scanner_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  scanner_logs:
+  scanner_data:

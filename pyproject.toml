@@ -1,0 +1,113 @@
+[project]
+name = "scan_hardware"
+version = "0.1.0"
+description = "Standalone hardware identifier scanner and catalog lookup API"
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "loguru (>=0.7.2,<0.8.0)",
+    "pydantic (>=2.9,<3.0)",
+    "pydantic-settings (>=2.5,<3.0)",
+    "httpx (>=0.27,<0.29)",
+    "tenacity (>=9.0,<10.0)",
+    "fastapi (>=0.142.3,<0.143.0)",
+    "uvicorn[standard] (>=0.54.0,<0.55.0)",
+    "python-multipart (>=0.0.32,<0.0.33)",
+    "pillow (>=12.3.0,<13.0.0)",
+    "rapidocr (>=3.9.2,<4.0.0)",
+    "onnxruntime (>=1.30.0,<2.0.0)",
+]
+
+[tool.poetry]
+packages = [{ include = "scan_hardware", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.8"
+mypy = "^1.13"
+pytest = "^8.3"
+pytest-cov = "^6.0"
+pytest-mock = "^3.14"
+hypothesis = "^6.115"
+respx = "^0.21"
+freezegun = "^1.5"
+pre-commit = "^4.0"
+detect-secrets = "^1.5"
+poethepoet = "^0.32"
+
+# Task shortcuts that behave identically on Windows, macOS and Linux. A Makefile
+# would not: Windows has no make. Run them with `poetry run poe <task>`.
+httpx2 = "^2.13.1"
+[tool.poe.tasks]
+fmt = "ruff format ."
+lint = "ruff check --fix ."
+types = "mypy src/"
+test = "pytest"
+start = "python -m scan_hardware"
+
+[tool.poe.tasks.gate]
+help = "Run the full quality gate, in the same order as the CI"
+sequence = ["fmt", "lint", "types", "test"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# --------------------------------------------------------------------------------------
+# Ruff: the linter enforces the project rules so nobody has to remember them.
+# T20 bans print (loguru instead) | DTZ bans naive datetime | PTH bans os.path
+# D enforces Google docstrings | S is bandit | ERA finds commented-out code
+# --------------------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "N", "D", "UP", "B", "A", "C4",
+    "DTZ", "T20", "SIM", "ARG", "PTH", "ERA", "PL", "RUF", "S", "C90",
+]
+ignore = [
+    "D107",    # __init__ docstring lives on the class
+    "D203",    # conflicts with D211
+    "D213",    # conflicts with D212
+    "PLR0913", # argument count is judged in review, not by a counter
+]
+
+[tool.ruff.lint.per-file-ignores]
+# S101 is assert, which is how pytest works. S105/S106 flag the fake credentials
+# that security tests need by definition.
+"tests/**" = ["S101", "S105", "S106", "D100", "D103", "D104", "PLR2004", "ARG001"]
+"scripts/**" = ["T20"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+show_error_codes = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=src --cov-report=term-missing"
+filterwarnings = ["error"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
