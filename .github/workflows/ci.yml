@@ -68,3 +68,7 @@ jobs:
 
       - name: Secret scan
         run: poetry run detect-secrets-hook $(git ls-files)
+
+      - name: Build scanner container
+        if: runner.os == 'Linux'
+        run: docker build --tag scan-hardware-ci .
