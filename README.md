@@ -1,122 +1,129 @@
-# Hardware Scanner
+# Scanner de hardware
 
-Standalone Python service that reads printed motherboard, GPU, and CPU identifiers from a photo, then looks up the matching catalog record and its reference image. No external backend or database is required: the service stores catalog records in SQLite and optional reference images on local disk.
+Microserviço independente em Python para reconhecer o **modelo ou part number impresso**
+em placas-mães, placas de vídeo e processadores. Recebe uma foto, executa OCR local e
+procura o identificador em um catálogo SQLite. Retorna o item, especificações com fontes
+e uma imagem de referência quando existe uma referência adequada. Também aceita busca
+direta por texto. Não classifica a aparência de uma peça sem código legível.
 
-## How it works
+Este repositório contém **somente o microserviço**: API, OCR, importação e auditoria do
+catálogo, página de teste, testes e documentação. O aplicativo móvel e o backend de um
+produto maior são consumidores externos. O [guia de integração](docs/integracao.md)
+descreve o contrato para eles; o exemplo de proxy ali não faz parte da implantação
+deste serviço.
 
-1. The client takes a clear photo of the printed model or part number.
-2. `POST /scan` runs offline OCR and normalizes punctuation and letter case.
-3. Exact identifier matches are returned as `matched`. Similar values are returned as `suggestions`; they are **never** silently treated as exact matches.
-4. Each match includes the catalog item, identifiers, source-backed specifications, observed text, score, and a reference image URL when available.
+## Executar localmente
 
-The matching key is a **printed alphanumeric identifier**, not an image classification of the entire board. A catalog importer is included for the two Kaggle datasets described below.
-
-## Run locally
-
-Requires Python 3.12 and Poetry 2.x. The OCR models ship with the Python package and run locally with ONNX Runtime.
+Requisitos: Python 3.12 e Poetry 2.x. Os modelos de OCR são usados localmente pelo
+RapidOCR com ONNX Runtime.
 
 ```bash
 poetry install
 poetry run python -m scan_hardware
 ```
 
-Open `http://127.0.0.1:8000/demo` to test a camera photo or a printed code in the browser. The interactive API is at `/docs`. Without an import, the default database is `data/catalog.sqlite3`. After a successful import, the service follows `data/latest.json` to the latest validated, versioned database. An explicit `CATALOG_PATH` overrides this pointer. Set other values in `.env` using `.env.example` as a template. `/ready` returns HTTP 503 when the catalog is empty.
+Abra [http://127.0.0.1:8000/demo](http://127.0.0.1:8000/demo) para enviar uma foto
+ou digitar um código. A documentação interativa da API fica em `/docs`.
+`GET /health` verifica o processo; `GET /ready` responde HTTP 200 com a contagem de
+itens quando o catálogo pode ser pesquisado e HTTP 503 quando está vazio.
 
-## Import the Kaggle catalog
+Sem importação, o banco padrão é `data/catalog.sqlite3`. Depois de uma importação
+validada, o serviço lê `data/latest.json` e usa o banco versionado indicado ali.
+`CATALOG_PATH` pode substituir esse caminho. Consulte `.env.example` para as demais
+opções. O diretório `data/` não vai para o GitHub.
 
-Download the full public archives [PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) and [PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts), then run:
+## Importar o catálogo
+
+Baixe os arquivos completos do Kaggle: [PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type)
+e [PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts). Salve-os como:
+
+- `data/raw/kaggle/pc-parts-by-type.zip`
+- `data/raw/kaggle/warcoder-pc-parts.zip`
+
+Execute:
 
 ```bash
 poetry run python -m scan_hardware.catalog_import \
-  --rohit "data/raw/kaggle/pc-parts-by-type.zip" \
-  --warcoder "data/raw/kaggle/warcoder-pc-parts.zip"
+  --rohit data/raw/kaggle/pc-parts-by-type.zip \
+  --warcoder data/raw/kaggle/warcoder-pc-parts.zip
 ```
 
-On PowerShell, put the command on one line or use PowerShell's continuation syntax. The importer reads the CPU, GPU, and motherboard files from both complete archives, keeps every original column in SQLite, and records rejected rows with their reason. It joins products only when their normalized model or part code matches exactly; GPU names shared by different chipsets remain separate. An image URL is attached only when the source contains a plausible product photo URL and, for an ambiguous GPU name, the chipset also matches. Placeholder references are discarded. Import runs create separate databases under `data/processed/<run-id>/` and update `data/latest.json` only after count, rejection-rate, and image-reference checks pass. Both archives and all generated databases remain outside Git.
+No PowerShell, use uma linha só ou a continuação de linha própria dele. O importador
+mantém todas as colunas originais em SQLite e registra rejeições com o motivo. Une
+registros apenas quando o nome ou código normalizado permite associação segura;
+placas de vídeo com o mesmo nome e chipsets diferentes permanecem separadas.
+Descarta URLs de imagem que são placeholders. Dois modelos ECS ausentes dos arquivos
+Kaggle são acrescentados por `src/scan_hardware/curation/supplemental_items.json`,
+com fonte registrada:
+`A785GM-M3` e `G41T-MR23`.
 
-Each `/scan`, `/lookup`, and `GET /items/{id}` response includes normalized specifications for its returned items. A field contains its value, unit, status, and source evidence. When sources disagree, `status` is `conflict` and `value` is `null`; the API does not silently choose a source. Four exact-item fields have been checked against manufacturer pages and are marked `verified` with a source URL. They are kept in the packaged `verified_specs.json`; original Kaggle values remain in the evidence and at `GET /items/{id}/sources`. Missing source fields are omitted from the normalized map. Re-running an import creates a new version and preserves the previous one. A future source refresh should be audited before changing the pointer.
+Cada importação cria um banco em `data/processed/<run-id>/`. O ponteiro `data/latest.json`
+só muda após os controles de quantidade, rejeição e referências de imagem passarem.
+O banco anterior permanece disponível. Na importação validada em 11/10/2026, o
+catálogo ficou com **12.874 itens**: 899 CPUs, 7.549 GPUs e 4.426 placas-mães.
+Os números podem mudar após novas importações.
 
-Most image URLs come from third-party hosts in the Kaggle data. They are not local image files or guaranteed to remain available; the dataset license does not establish reuse rights for those photographs. Five exact items have reviewed Wikimedia Commons photographs, with creator, source page and license exposed as `image_attribution`. These links are still externally hosted. Items without a reliable image reference remain searchable with `image_url: null`. More licensed product images can be added through the existing image upload endpoint; verify their rights before public display.
+### Especificações e imagens
 
-Docker imports the two archives on first start, then reuses a named volume. Put the ZIP files at `data/raw/kaggle/pc-parts-by-type.zip` and `data/raw/kaggle/warcoder-pc-parts.zip`, then run:
+`/scan`, `/lookup` e `/items/{id}` incluem `specifications`. Cada campo tem valor,
+unidade, estado e evidências. `reported` vem de uma fonte importada; `verified` foi
+conferido em documentação identificada; `conflict` indica valores divergentes e
+retorna `value: null`. Um campo ausente significa dado indisponível. As linhas e
+colunas originais podem ser consultadas em `GET /items/{id}/sources`.
+
+Cinco itens têm fotos do Wikimedia Commons com autoria e licença revisadas em
+`image_attribution`. Outras URLs de imagem vêm de terceiros e **não** têm licença de
+reutilização verificada. Os dois modelos ECS suplementares ficam sem foto de
+referência porque não foi localizada uma imagem exata com licença clara. A foto
+enviada ao scanner não é usada como imagem do catálogo. Uma imagem licenciada pode
+ser associada a um item pelo endpoint de upload.
+
+## Testar a API
+
+Busque um código já conhecido:
+
+```bash
+curl -X POST http://127.0.0.1:8000/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"text":"A785GM-M3"}'
+```
+
+Envie uma foto do identificador impresso:
+
+```bash
+curl -X POST http://127.0.0.1:8000/scan -F "image=@placa.jpg"
+```
+
+O resultado contém `status`, `detected_text` e `matches`. `matched` significa código
+exato; `suggestions` são candidatos parecidos para confirmação humana; `not_found`
+significa que não houve candidato suficiente. Uma sugestão **não** é identificação
+confirmada. Cada correspondência informa `item`, `matched_identifier`,
+`observed_text`, `score` e `is_exact`. Fotos JPEG, PNG e WebP são aceitas até
+8.000.000 bytes por padrão e 20 megapixels. O contrato completo e exemplos de
+resposta estão no [guia de integração](docs/integracao.md).
+
+Para obter ou atualizar um item, use `GET /items/{id}` e `PUT /items/{id}`. Para
+associar uma imagem local, use `PUT /items/{id}/image` com o campo multipart `image`;
+para baixá-la, use `GET /items/{id}/image`. IDs aceitam letras, dígitos, `_` e `-`.
+As gravações são destinadas à administração do catálogo.
+
+## Docker e proteção da API
+
+O Compose importa os dois ZIPs na primeira inicialização e mantém o catálogo num
+volume. Coloque os arquivos nos caminhos acima e execute:
 
 ```bash
 docker compose up --build
 ```
 
-The Docker port is bound to `127.0.0.1:8000`. Startup fails if either archive is missing or the catalog is empty. The Docker volume keeps the imported catalog across restarts. The demo is intended for this local setup. For a network deployment, set `REQUIRE_API_KEY=true` and a random `API_KEY` of at least 32 characters; clients send it in `X-API-Key`. Keep the key on a server, never in a distributed mobile app. Use HTTPS and a backend proxy when the phone will access the service outside this machine.
+A porta é publicada em `127.0.0.1:8000`, apenas na máquina local. Se faltar arquivo
+ou o catálogo estiver vazio, o início falha. Para uma implantação acessível a outro
+serviço, configure `REQUIRE_API_KEY=true` e `API_KEY` aleatória de pelo menos
+32 caracteres. Clientes autorizados enviam `X-API-Key`. Mantenha a chave no servidor,
+nunca no aplicativo distribuído. Use HTTPS e um proxy apropriado quando o celular
+precisar acessar o scanner fora desta máquina.
 
-## Try the complete flow
-
-Register a demonstration motherboard (the values below are test data):
-
-```bash
-curl -X PUT http://127.0.0.1:8000/items/demo-board \
-  -H "Content-Type: application/json" \
-  -d '{"category":"motherboard","brand":"Demo","model":"B550-F Gaming","identifiers":["B550-F GAMING"]}'
-```
-
-Search text that a mobile camera has already decoded:
-
-```bash
-curl -X POST http://127.0.0.1:8000/lookup \
-  -H "Content-Type: application/json" \
-  -d '{"text":"B550 F GAMING"}'
-```
-
-Upload a photo of the printed identifier:
-
-```bash
-curl -X POST http://127.0.0.1:8000/scan -F "image=@label.jpg"
-```
-
-Attach a reference image and retrieve it:
-
-```bash
-curl -X PUT http://127.0.0.1:8000/items/demo-board/image -F "image=@board.jpg"
-curl http://127.0.0.1:8000/items/demo-board/image --output board-reference.jpg
-```
-
-`POST /scan` returns a response like:
-
-```json
-{
-  "status": "matched",
-  "detected_text": ["B550-F", "GAMING"],
-  "matches": [
-    {
-      "item": {
-        "category": "motherboard",
-        "brand": "Demo",
-        "model": "B550-F Gaming",
-        "identifiers": ["B550-F GAMING"],
-        "image_url": null,
-        "id": "demo-board",
-        "has_local_image": true,
-        "local_image_url": "/items/demo-board/image",
-        "specifications": {}
-      },
-      "matched_identifier": "B550-F GAMING",
-      "observed_text": "B550-F GAMING",
-      "score": 1.0,
-      "is_exact": true
-    }
-  ]
-}
-```
-
-`status` is `matched`, `suggestions`, or `not_found`. An empty catalog always returns `not_found`. The service accepts JPEG, PNG, and WebP uploads up to 8 MB and 20 megapixels.
-
-## Integration contract
-
-See the [integration guide](docs/integracao.md) for the full HTTP contract, a Python
-backend proxy example, mobile upload example, response handling, and deployment setup.
-
-The browser demo provides a camera-capable file input for local tests. A phone cannot reach the default loopback-only server; expose it through a suitable HTTPS backend proxy for phone tests. A future mobile app can send an image to `/scan` or decoded text to `/lookup` through that proxy. Frame the printed identifier or product sticker closely; a whole-card photo with a tiny label may fail OCR. Show `suggestions` for user confirmation, and never present them as an exact identification. The service returns JSON only; the client renders the item details and specifications and downloads `local_image_url` when present. If a specification has `status: "conflict"`, show its evidence rather than an unverified number. Show `image_attribution` when present. `PUT /items/{id}` is idempotent, so a future backend sync can safely repeat writes. Normalize stable IDs in the backend before sending them here; IDs may contain letters, digits, underscores, and hyphens.
-
-The imported Kaggle data has no explicit release-year field, so historical decade coverage has not been verified. CPU socket and thread count are absent for many catalog items. Eight labeled photos have been checked; more models and phone camera conditions are needed before production use. The lookup currently loads the local catalog and ranks candidates in memory; benchmark it again if the catalog grows substantially. See [field validation](docs/field_validation.md) for real-photo results and source conflicts. To repeat the photo suite, copy [the example manifest](docs/photo_manifest.example.json) into a directory under `data/validation/`, save the credited source photos under its `photos/` subdirectory, and run `poetry run python -m scan_hardware.photo_validation --manifest path/to/manifest.json`. The immutable report is saved under `data/validation/<run-id>/`. Run `poetry run python -m scan_hardware.catalog_audit` for catalog coverage and conflict counts.
-
-## Quality checks
+## Validar e acompanhar qualidade
 
 ```bash
 poetry run ruff format --check .
@@ -124,4 +131,18 @@ poetry run ruff check .
 poetry run mypy src/
 poetry run pytest -q
 poetry run detect-secrets scan
+poetry run python -m scan_hardware.catalog_audit
 ```
+
+Os testes automatizados não fazem chamadas à internet. A suíte de fotos reais usa
+um manifesto e imagens guardados localmente fora do Git. Veja a
+[validação de campo](docs/field_validation.md), o
+[manifesto de exemplo](docs/photo_manifest.example.json) e a
+[avaliação das fontes](docs/catalog_sources.md). Para repetir a suíte, salve as fotos
+referenciadas pelo manifesto sob `data/validation/` e execute
+`poetry run python -m scan_hardware.photo_validation --manifest caminho/manifest.json`.
+O relatório vai para uma pasta versionada em `data/validation/`.
+
+Ainda são necessários mais testes com fotos de celular, modelos antigos e revisões
+parecidas antes de afirmar uma taxa geral de acerto. A disponibilidade e o direito
+de uso das imagens externas também exigem revisão item por item.

@@ -286,10 +286,10 @@ o mesmo. Adapte o caminho `/hardware/scan` ao backend que você criar.
 ## Limites já observados
 
 Na foto de teste com três placas, o OCR leu `A785GM-M3`, `G41T-MR23` e
-`A890GXM-A`. A base atual confirmou exatamente apenas `A890GXM-A`. Os outros
-códigos precisam ser incluídos e validados no catálogo; `A785GM-M` apareceu só
-como sugestão para `A785GM-M3` e **não** é a mesma identificação. Veja os demais
-ensaios em [validação de campo](field_validation.md).
+`A890GXM-A`. Após incluir os dois modelos ausentes no catálogo, os três recortes
+e a montagem inteira retornaram correspondências exatas. `A785GM-M` continua
+sendo um modelo diferente de `A785GM-M3`: não trate prefixos parecidos como o
+mesmo produto. Veja os ensaios em [validação de campo](field_validation.md).
 
 Antes de publicar o aplicativo, valide fotos reais de cada categoria, com iluminação,
 foco e modelos variados. O catálogo tem lacunas de especificações e imagens; a

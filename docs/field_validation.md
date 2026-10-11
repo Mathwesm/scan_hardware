@@ -1,148 +1,98 @@
-# Field validation with public hardware photos
+# Validação de campo do scanner
 
-Validation date: 2026-10-08 UTC. The images and raw responses are retained locally under
-`data/validation/20261008T012749796270Z/` and are excluded from Git.
+Resultados locais em 08 e 11/10/2026. As fotos, manifestos e respostas completas
+ficam sob `data/validation/`, fora do Git. Os testes enviaram bytes reais de JPEG
+ou PNG para `POST /scan`; não simularam a saída do OCR. Recortes da mesma imagem
+são testes de enquadramento, não peças adicionais.
 
-## Photo results
+## Foto enviada pelo usuário: três placas ECS
 
-All photos were downloaded from their Wikimedia Commons file pages for local testing.
-The `/scan` endpoint received the actual JPEG bytes. A crop is a framing experiment,
-not a different component.
+A imagem `placa.jpg` contém três placas empilhadas. A primeira avaliação, antes da
+complementação do catálogo, leu os três códigos mas só confirmou `A890GXM-A`.
+Depois da inclusão de dois produtos suplementares, os três recortes passaram:
 
-| Component | Source photo | Input | Result |
-| --- | --- | --- | --- |
-| Intel Core 2 Duo E8400 | [Eric Gaba, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Intel_CPU_Core_2_Duo_E8400_Wolfdale_top.jpg) | Full photo | Exact match after adding the unique `E8400` alias; 3.51 s for the complete HTTP scan. |
-| ASRock A320M-DVS R4.0 | [Jacek Halicki, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg) | Full photo | OCR reads `A320M-DVS`; the revision is not legible, so the expected item ranks first as a suggestion; 4.94 s. |
-| MSI GTX 1050 Ti 4GT OC | [ITEagle Europe / Sebastiaan Broekhoven, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg) | Full photo | Exact match after joining neighboring OCR lines in reverse order; 3.14 s. |
-| MSI GTX 1050 Ti 4GT OC | Same source | Rotated, tight label crop | Exact match; OCR reads `GeForce GTX 1050 Ti 4GT OC`; 1.99 s. |
-| MSI GTX 1050 Ti 4GT LP | [Robbie Klinkenberg, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg) | Front photo | No match; the model is not printed on the visible side; 1.84 s. |
+| Código lido | Resultado do recorte | ID encontrado |
+| --- | --- | --- |
+| `A785GM-M3` | `matched`, exato | `motherboard-ecs-a785gm-m3-v1` |
+| `G41T-MR23` | `matched`, exato | `motherboard-ecs-g41t-mr23-v1` |
+| `A890GXM-A` | `matched`, exato | `motherboard-b1c7711431a2234604c444f0` |
 
-Earlier E8400 photos from [Michael Wolf](https://commons.wikimedia.org/wiki/File:Intel_Core2Duo_E8400_IMG_8141.jpg)
-and a [CC0 photo](https://commons.wikimedia.org/wiki/File:Processor_INTEL_CORE_2_DUO.jpg)
-were also tested. OCR read `E8408` and `E8409`, respectively. An incorrect digit must
-not produce an exact identification.
+O envio da montagem inteira também retornou os três itens com `is_exact: true`.
+Isso demonstra o comportamento nessa imagem específica; para uso normal, fotografe
+uma peça por vez. O relatório dos recortes está em
+`data/validation/20261011T225249516277Z/report.json` na máquina de teste.
 
-## CPU fields already retained
+Os modelos suplementares foram conferidos nos manuais da ECS para
+[A785GM-M3](https://www.scribd.com/document/442253904/A785GM-M3-manual) e
+[G41T-MR23](https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html).
+O primeiro usa socket AM2+/AM2, formato Micro ATX e dois slots DDR2, com máximo
+nominal de 16 GB. O manual ressalva que testou 4 GB nas memórias disponíveis à
+época. O segundo usa LGA775, formato Micro ATX e até 8 GB em DDR2 **ou** DDR3;
+os dois tipos não podem ser usados juntos. Os fatos inseridos no catálogo têm
+links para as páginas de evidência. Não foi encontrada uma foto de referência
+exata com licença clara para esses modelos; `image_url` permanece `null`.
 
-The endpoint `GET /items/{id}/sources` returns every original source row and column.
-It was checked against the imported Intel Core i3-7350K and E8400 records.
+## Suíte anterior: CPU, GPU e placa-mãe
 
-| Dataset | CPU rows | Available fields | Missing fields of interest |
-| --- | ---: | --- | --- |
-| `pc-parts-by-type` | 458 | `brand`, `socket`, `speed`, `coreCount`, `threadCount`, `power`, `name`, `image`, `url` | Cache, process node, supported memory, PCIe version. |
-| `warcoder/pc-parts` | 1,341 | `core_count`, `core_clock`, `boost_clock`, `tdp`, `graphics`, `smt`, `price`, `name` | Socket, explicit thread count, cache, process node, supported memory, PCIe version. |
+As oito fotos do manifesto local foram repetidas com o catálogo novo em
+11/10/2026. **Oito de oito** mantiveram o resultado esperado. O relatório está
+em `data/validation/20261011T225332475553Z/report.json` na máquina de teste.
 
-All 458 first-dataset rows contain socket, base speed, core count, thread count,
-and power. All 1,341 second-dataset rows contain core count, base clock, TDP, and
-SMT. Boost clock is non-null on 659 rows; graphics on 575. For example, the
-E8400 source row contains 2 cores, 3 GHz and 65 W, but no socket. An [Intel
-support table](https://www.intel.com/content/www/us/en/support/articles/000007669/server-products.html)
-lists its socket as LGA775; that value is not imported into the catalog.
+| Peça e foto | Resultado esperado e observado |
+| --- | --- |
+| [Intel Core 2 Duo E8400, topo](https://commons.wikimedia.org/wiki/File:Intel_CPU_Core_2_Duo_E8400_Wolfdale_top.jpg) | Código exato e item correto. |
+| [E8400, segunda foto](https://commons.wikimedia.org/wiki/File:Intel_Core2Duo_E8400_IMG_8141.jpg) | OCR leu `E8408`; item correto apareceu como sugestão, sem falso exato. |
+| [E8400, terceira foto](https://commons.wikimedia.org/wiki/File:Processor_INTEL_CORE_2_DUO.jpg) | OCR leu `E8409`; item correto apareceu como sugestão, sem falso exato. |
+| [MSI GTX 1050 Ti 4GT OC, verso](https://commons.wikimedia.org/wiki/File:MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg) | Código exato e item correto. |
+| [Intel Core i5-2500K](https://commons.wikimedia.org/wiki/File:Intel_Core_i5-2500K_20110418.jpg) | Item correto como sugestão. |
+| [ASUS Dual GTX 1060 3GB, verso](https://commons.wikimedia.org/wiki/File:ASUS_Dual_GeForce_GTX_1060_3GB_OC_Edition_-_rear_view.jpg) | Item correto como sugestão. |
+| [ASRock A320M-DVS](https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg) | Revisão ilegível: item correto como sugestão. |
+| [MSI GTX 1050 Ti, frente sem código](https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg) | `not_found`; a identificação não aparece na face fotografada. |
 
-At the distinct-item level, the current catalog has 899 CPUs: 318 have a source
-socket and explicit thread count; all 899 have normalized core count, base clock,
-and TDP; 456 have a boost clock.
+Licenças e autores das fotos externas estão no
+[manifesto de exemplo](photo_manifest.example.json). Esses onze ensaios cobrem
+poucos produtos e não representam uma taxa geral de acerto do OCR.
 
-There is a real source conflict for the i3-7350K: `pc-parts-by-type` says
-`power=50`, while `warcoder/pc-parts` says `tdp=60`. Intel's
-[official comparison](https://www.intel.com/content/www/us/en/products/compare.html?productIds=97527)
-lists 60 W. A unified specification response must keep provenance, detect such
-conflicts, and incorporate verified manufacturer values before resolving them.
+## Cobertura e conflitos dos dados
 
-The API now adds a `specifications` map to each returned item. Every property
-contains a normalized value, unit, status (`reported` or `conflict`), and distinct
-source evidence. A conflict has `value: null` until authoritative evidence is
-imported. The complete source rows remain available at `/items/{id}/sources`.
-The other categories are also mapped: GPUs include chipset, VRAM, clocks, power,
-length, resolution class and color; motherboards include socket, form factor,
-memory capacity, slot count and color when the source has them.
+Auditoria do catálogo publicado em 11/10/2026. `coverage` conta itens com valor
+de fonte ou fato conferido; um conflito conta como coberto, mas retorna
+`value: null` até ser resolvido. O relatório completo está em
+`data/audit/20261011T225411477300Z/report.json` na máquina de teste.
 
-The photographed MSI GPU exposes a `vram_gb` conflict (2 versus 4 GB). The
-[manufacturer specification](https://www.msi.com/Graphics-Card/GeForce-GTX-1050-Ti-4GT-OC/Specification)
-lists 4 GB. The ASRock board exposes a form-factor conflict (`ATX` versus
-`Micro ATX`); the [manufacturer specification](https://asrock.com/mb/amd/A320M-DVS%20R4.0/)
-lists Micro ATX. These manufacturer facts were checked for validation and are
-not yet loaded as a catalog-wide enrichment source.
-
-## Specification coverage and conflicts
-
-The audit counted distinct catalog items with a source value for each field. A
-conflicting value counts as covered, but its normalized `value` remains `null`.
-These are source-data counts, not independently verified hardware facts.
-
-| Category | Field | Covered items | Conflicts |
+| Categoria e total | Campo | Cobertura | Conflitos restantes |
 | --- | --- | ---: | ---: |
-| CPU (899) | Cores | 899 | 48 |
-| CPU (899) | Base clock | 899 | 0 |
-| CPU (899) | TDP | 899 | 228 |
-| CPU (899) | Socket | 318 | 0 |
+| CPU (899) | Núcleos | 899 | 48 |
+| CPU (899) | Clock base | 899 | 0 |
+| CPU (899) | TDP | 899 | 227 |
+| CPU (899) | Socket | 319 | 0 |
 | CPU (899) | Threads | 318 | 0 |
-| CPU (899) | Boost clock | 456 | 0 |
-| GPU (7,549) | VRAM | 7,291 | 104 |
-| GPU (7,549) | Chipset | 5,248 | 0 |
-| GPU (7,549) | Board power | 2,514 | 0 |
-| Motherboard (4,424) | Socket | 4,424 | 161 |
-| Motherboard (4,424) | Form factor | 4,424 | 1,233 |
-| Motherboard (4,424) | Max memory | 4,227 | 1 |
-| Motherboard (4,424) | Memory slots | 4,227 | 1 |
+| CPU (899) | Clock boost | 456 | 0 |
+| GPU (7.549) | VRAM | 7.291 | 103 |
+| GPU (7.549) | Chipset | 5.248 | 0 |
+| GPU (7.549) | Potência da placa | 2.514 | 0 |
+| Placa-mãe (4.426) | Socket | 4.426 | 161 |
+| Placa-mãe (4.426) | Formato | 4.426 | 1.232 |
+| Placa-mãe (4.426) | Memória máxima | 4.229 | 1 |
+| Placa-mãe (4.426) | Slots de memória | 4.228 | 1 |
 
-The high motherboard form-factor conflict count and CPU TDP conflict count make
-source verification a prerequisite for displaying those values as definitive.
-The API exposes the disagreements so a client can ask for confirmation or omit
-the disputed value. The full audit is retained locally in
-`data/validation/20261008T012749796270Z/specification_audit.json`.
+Onze valores de itens específicos foram conferidos em documentos identificados:
+socket do E8400; TDP do i3-7350K; VRAM da MSI GTX 1050 Ti 4GT OC; formato da
+ASRock A320M-DVS R4.0; quatro campos da A785GM-M3; e três da G41T-MR23.
+As evidências originais dos arquivos Kaggle continuam acessíveis em
+`GET /items/{id}/sources`.
 
-Four item-specific fields were then checked against their manufacturers: the E8400
-socket, i3-7350K TDP, MSI GTX 1050 Ti 4GT OC VRAM, and ASRock A320M-DVS R4.0
-form factor. These return `status: verified`, with the manufacturer URL and the
-original Kaggle evidence. This resolves one conflict in each of CPU TDP, GPU
-VRAM, and motherboard form factor, and fills the E8400 socket. The audit table
-above remains the unchanged raw-source baseline; thousands of other records
-still need verification.
+## Imagens e limites
 
-## Image-link audit
+O importador removeu placeholders conhecidos. A auditoria atual conta cinco fotos
+com autoria e licença revisadas, 4.652 itens com URLs externas sem direitos
+revisados e 8.217 itens sem imagem. As fotos revisadas continuam hospedadas fora
+do serviço. URLs de outros hosts podem deixar de funcionar, e a licença do
+dataset não concede automaticamente direito de republicar a foto.
 
-The imported catalog initially contained 4,684 item image URLs. A sampled HEAD
-request succeeded for 12/12 Amazon-hosted URLs. Three Wikimedia entries all
-pointed to the same nonfunctional `No_image_available` placeholder. The importer
-now removes that placeholder; the republished catalog contains 4,655 items with
-image URLs. The 3,327 PCPartPicker CDN URLs were not probed because its
-[robots.txt](https://pcpartpicker.com/robots.txt) limits automated access.
-
-The image URLs remain third-party references, not licensed local product images.
-Wikimedia images are governed by the license on each file page and need attribution
-where applicable. No reference photo is bundled in the repository.
-
-Five exact products now have reviewed Wikimedia Commons photo URLs. Their item
-responses include `image_attribution` with creator, source page, and license.
-Four use CC BY-SA 4.0; the i5-2500K photo uses CC BY 2.0. All five image URLs
-returned HTTP 200 on 2026-10-08. All other
-third-party image links still have unverified reuse rights and availability.
-The current catalog audit counts 4,652 items with unreviewed external image
-URLs and 8,215 items without any image. Run
-`poetry run python -m scan_hardware.catalog_audit` to regenerate a versioned
-coverage, conflict, and image-rights report.
-
-## Repeatable photo suite
-
-The new `photo_validation` command runs real JPEGs through `/scan`, checks the
-expected status and first item, and writes a versioned JSON report. The local
-eight-photo manifest covers three E8400 photos, an i5-2500K, two distinct GPU
-rear labels, one full motherboard, and one GPU front without a visible model.
-All eight met their expected outcomes. The two extra E8400 photos read `E8408`
-and `E8409`; both remain suggestions even when the correct model ranks first.
-The i5-2500K and ASUS GTX 1060 also ranked first as suggestions. The source
-pages and licenses are in the example manifest. These eight images cover only
-six product targets and do not establish a general accuracy rate.
-
-## Remaining limits
-
-- A phone should frame the printed model or sticker clearly. A side of the
-  component with no visible model code cannot be identified by this OCR service.
-- A model revision that is not legible should remain a suggestion. The app should
-  ask the user to confirm rather than assert a specific revision.
-- The saved motherboard OCR text now searches the full catalog in 1.24 s
-  locally; the complete OCR and HTTP scan took 4.94 s. Timing varies with the
-  host and photo, and mobile network latency was not measured.
-- The mobile client and external backend were not available, so only the
-  standalone HTTP service was exercised.
+O serviço e a configuração Compose foram testados localmente. A construção e a
+execução do contêiner **não puderam ser realizadas nesta máquina**, pois o daemon
+Docker não estava ativo; o CI agora inclui a construção da imagem no runner Linux.
+Também não foi medida a latência da rede celular nem foi testada uma câmera em
+aparelho físico. Fotos sem código visível, reflexos e revisões muito parecidas
+continuam exigindo mais ensaios antes de uso em produção.
