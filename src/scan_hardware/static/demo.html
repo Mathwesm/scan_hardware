@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hardware Scanner · Teste</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #17212c; background: #f2f5f8; }
+    body { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    h1 { margin-bottom: 8px; }
+    p { line-height: 1.5; }
+    form, article { background: #fff; padding: 20px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 12px #17212c12; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input[type=file], input[type=text] { width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 12px; }
+    button { border: 0; border-radius: 8px; background: #135c8c; color: #fff; padding: 12px 18px; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: wait; }
+    .muted { color: #526170; }
+    .warning { color: #8a4b00; }
+    .error { color: #a42323; }
+    img { max-width: 100%; max-height: 260px; object-fit: contain; }
+    dl { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 8px; }
+    dt { font-weight: 600; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Teste do scanner</h1>
+  <p>Fotografe de perto o código impresso na peça ou escolha uma imagem. O resultado só identifica o modelo quando o texto é legível.</p>
+  <form id="photo-form">
+    <label for="photo">Foto do processador, placa de vídeo ou placa-mãe</label>
+    <input id="photo" name="image" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" required>
+    <button type="submit">Escanear foto</button>
+  </form>
+  <form id="text-form">
+    <label for="code">Ou teste um código já lido</label>
+    <input id="code" type="text" maxlength="500" placeholder="Ex.: E8400 ou A320M-DVS" required>
+    <button type="submit">Pesquisar código</button>
+  </form>
+  <section id="results" aria-live="polite"></section>
+  <script>
+    const results = document.getElementById('results');
+    const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
+    function line(parent, tag, value, className) {
+      const node = document.createElement(tag);
+      node.textContent = value;
+      if (className) node.className = className;
+      parent.appendChild(node);
+      return node;
+    }
+    function render(data) {
+      results.replaceChildren();
+      const title = data.status === 'matched' ? 'Modelo identificado' : data.status === 'suggestions' ? 'Possíveis modelos — confirme a revisão' : 'Nenhum modelo encontrado';
+      line(results, 'h2', title);
+      if (data.detected_text?.length) line(results, 'p', `Texto lido: ${data.detected_text.join(' · ')}`, 'muted');
+      for (const match of data.matches || []) {
+        const card = document.createElement('article');
+        results.appendChild(card);
+        line(card, 'h3', `${match.item.brand} ${match.item.model}`);
+        line(card, 'p', `Código: ${match.matched_identifier} · ${match.is_exact ? 'correspondência exata' : 'sugestão'}`, match.is_exact ? '' : 'warning');
+        const imageUrl = match.item.local_image_url || match.item.image_url;
+        if (imageUrl) {
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.alt = `Imagem de referência para ${match.item.model}`;
+          img.loading = 'lazy';
+          card.appendChild(img);
+          if (match.item.image_attribution) {
+            const credit = match.item.image_attribution;
+            const paragraph = line(card, 'p', `Foto: ${credit.creator} · ${credit.license_name}. `, 'muted');
+            const source = document.createElement('a');
+            source.href = credit.source_url;
+            source.textContent = 'Origem';
+            source.rel = 'noopener noreferrer';
+            source.target = '_blank';
+            paragraph.appendChild(source);
+            const license = document.createElement('a');
+            license.href = credit.license_url;
+            license.textContent = ' · Licença';
+            license.rel = 'noopener noreferrer';
+            license.target = '_blank';
+            paragraph.appendChild(license);
+          } else if (!match.item.local_image_url) {
+            line(card, 'p', 'Imagem externa de referência; origem e direitos ainda precisam ser verificados.', 'muted');
+          }
+        }
+        const specs = document.createElement('dl');
+        card.appendChild(specs);
+        for (const [key, spec] of Object.entries(match.item.specifications || {})) {
+          line(specs, 'dt', labels[key] || key);
+          const formatted = typeof spec.value === 'boolean' ? (spec.value ? 'Sim' : 'Não') : String(spec.value);
+          const value = spec.status === 'conflict' ? 'Dados conflitantes' : `${formatted}${spec.unit ? ` ${spec.unit}` : ''}${spec.status === 'verified' ? ' · verificado' : ''}`;
+          const cell = line(specs, 'dd', value, spec.status === 'conflict' ? 'warning' : '');
+          if (spec.evidence?.length) {
+            const details = document.createElement('details');
+            cell.appendChild(details);
+            line(details, 'summary', 'Ver fontes');
+            const list = document.createElement('ul');
+            details.appendChild(list);
+            for (const evidence of spec.evidence) {
+              const entry = line(list, 'li', `${evidence.dataset} · ${evidence.field}: ${evidence.value} `);
+              if (evidence.source_url) {
+                const link = document.createElement('a');
+                link.href = evidence.source_url;
+                link.textContent = 'Fonte';
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                entry.appendChild(link);
+              }
+            }
+          }
+        }
+      }
+    }
+    async function submit(form, url, body) {
+      const button = form.querySelector('button');
+      button.disabled = true;
+      results.replaceChildren();
+      line(results, 'p', 'Processando…');
+      try {
+        const response = await fetch(url, body);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+        render(data);
+      } catch (error) {
+        results.replaceChildren();
+        line(results, 'p', `Falha: ${error.message}`, 'error');
+      } finally {
+        button.disabled = false;
+      }
+    }
+    document.getElementById('photo-form').addEventListener('submit', event => {
+      event.preventDefault();
+      submit(event.currentTarget, '/scan', { method: 'POST', body: new FormData(event.currentTarget) });
+    });
+    document.getElementById('text-form').addEventListener('submit', event => {
+      event.preventDefault();
+      submit(event.currentTarget, '/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: document.getElementById('code').value }) });
+    });
+  </script>
+</body>
+</html>

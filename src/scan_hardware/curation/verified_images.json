@@ -1,0 +1,36 @@
+{
+  "images": [
+    {
+      "item_id": "cpu-d654c224708ab17877afd973",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Intel_CPU_Core_2_Duo_E8400_Wolfdale_top.jpg",
+      "creator": "Eric Gaba for Wikimedia Commons",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Intel_CPU_Core_2_Duo_E8400_Wolfdale_top.jpg"
+    },
+    {
+      "item_id": "gpu-bd1343be29aefce878e7e33c",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg",
+      "creator": "ITEagle Europe - Sebastiaan Broekhoven",
+      "source_url": "https://commons.wikimedia.org/wiki/File:MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg"
+    },
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg",
+      "creator": "Jacek Halicki",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg"
+    },
+    {
+      "item_id": "cpu-36d29448d2e57841f67f39f3",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Intel_Core_i5-2500K_20110418.jpg",
+      "creator": "MiNe",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Intel_Core_i5-2500K_20110418.jpg",
+      "license_name": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0/"
+    },
+    {
+      "item_id": "gpu-92d3d79f7a62af81a0c31836",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/ASUS_Dual_GeForce_GTX_1060_3GB_OC_Edition_-_rear_view.jpg",
+      "creator": "ITEagle Europe - Sebastiaan Broekhoven",
+      "source_url": "https://commons.wikimedia.org/wiki/File:ASUS_Dual_GeForce_GTX_1060_3GB_OC_Edition_-_rear_view.jpg"
+    }
+  ]
+}

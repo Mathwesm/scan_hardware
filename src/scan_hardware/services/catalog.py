@@ -9,6 +9,7 @@ from typing import Any
 
 from scan_hardware.core.matching import normalize_identifier
 from scan_hardware.core.specifications import build_specifications
+from scan_hardware.curation import verified_images
 from scan_hardware.models.item import Category, Item, ItemInput
 
 
@@ -65,6 +66,12 @@ class Catalog:
         connection.row_factory = sqlite3.Row
         return connection
 
+    def count_items(self) -> int:
+        """Count published items for deployment readiness checks."""
+        with self._connect() as connection:
+            row = connection.execute("SELECT COUNT(*) AS total FROM items").fetchone()
+        return int(row["total"])
+
     def put_item(self, item_id: str, item: ItemInput) -> Item:
         """Create or replace one item atomically.
 
@@ -114,17 +121,23 @@ class Catalog:
             aliases = connection.execute(
                 "SELECT display FROM identifiers WHERE item_id = ? ORDER BY display", (item_id,)
             ).fetchall()
+        curated_image = verified_images().get(item_id)
         return Item(
             id=row["id"],
             category=Category(row["category"]),
             brand=row["brand"],
             model=row["model"],
-            image_url=row["image_url"],
+            image_url=str(curated_image.image_url) if curated_image else row["image_url"],
             identifiers=[alias["display"] for alias in aliases],
             has_local_image=row["image_digest"] is not None,
             local_image_url=f"/items/{item_id}/image" if row["image_digest"] else None,
+            image_attribution=(
+                curated_image.attribution()
+                if curated_image and row["image_digest"] is None
+                else None
+            ),
             specifications=build_specifications(
-                Category(row["category"]), self.get_source_records(item_id)
+                Category(row["category"]), self.get_source_records(item_id), item_id
             ),
         )
 
@@ -144,10 +157,19 @@ class Catalog:
                 category=Category(row["category"]),
                 brand=row["brand"],
                 model=row["model"],
-                image_url=row["image_url"],
+                image_url=(
+                    str(verified_images()[row["id"]].image_url)
+                    if row["id"] in verified_images()
+                    else row["image_url"]
+                ),
                 identifiers=aliases.get(row["id"], []),
                 has_local_image=row["image_digest"] is not None,
                 local_image_url=f"/items/{row['id']}/image" if row["image_digest"] else None,
+                image_attribution=(
+                    verified_images()[row["id"]].attribution()
+                    if row["id"] in verified_images() and row["image_digest"] is None
+                    else None
+                ),
             )
             for row in rows
         ]

@@ -1,0 +1,75 @@
+{
+  "cases": [
+    {
+      "name": "Intel Core 2 Duo E8400 top",
+      "image": "photos/cpu_wolfdale.jpg",
+      "category": "cpu",
+      "expected_status": "matched",
+      "expected_item_id": "cpu-d654c224708ab17877afd973",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Intel_CPU_Core_2_Duo_E8400_Wolfdale_top.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "Intel Core 2 Duo E8400 with OCR E8408",
+      "image": "photos/cpu.jpg",
+      "category": "cpu",
+      "expected_status": "suggestions",
+      "expected_item_id": "cpu-d654c224708ab17877afd973",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Intel_Core2Duo_E8400_IMG_8141.jpg",
+      "license": "CC BY-SA 3.0"
+    },
+    {
+      "name": "Intel Core 2 Duo E8400 with OCR E8409",
+      "image": "photos/cpu_cc0.jpg",
+      "category": "cpu",
+      "expected_status": "suggestions",
+      "expected_item_id": "cpu-d654c224708ab17877afd973",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Processor_INTEL_CORE_2_DUO.jpg",
+      "license": "CC0"
+    },
+    {
+      "name": "MSI GTX 1050 Ti rear",
+      "image": "photos/gpu_rear.jpg",
+      "category": "gpu",
+      "expected_status": "matched",
+      "expected_item_id": "gpu-bd1343be29aefce878e7e33c",
+      "source_url": "https://commons.wikimedia.org/wiki/File:MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "Intel Core i5-2500K full photo",
+      "image": "photos/cpu_i5_2500k.jpg",
+      "category": "cpu",
+      "expected_status": "suggestions",
+      "expected_item_id": "cpu-36d29448d2e57841f67f39f3",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Intel_Core_i5-2500K_20110418.jpg",
+      "license": "CC BY 2.0"
+    },
+    {
+      "name": "ASUS Dual GTX 1060 3GB rear",
+      "image": "photos/gpu_asus_1060_rear.jpg",
+      "category": "gpu",
+      "expected_status": "suggestions",
+      "expected_item_id": "gpu-92d3d79f7a62af81a0c31836",
+      "source_url": "https://commons.wikimedia.org/wiki/File:ASUS_Dual_GeForce_GTX_1060_3GB_OC_Edition_-_rear_view.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "ASRock A320M-DVS board",
+      "image": "photos/motherboard.jpg",
+      "category": "motherboard",
+      "expected_status": "suggestions",
+      "expected_item_id": "motherboard-6086912b15902278a564b9fc",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "MSI GTX 1050 Ti front without model",
+      "image": "photos/gpu.jpg",
+      "category": "gpu",
+      "expected_status": "not_found",
+      "source_url": "https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg",
+      "license": "CC BY-SA 4.0"
+    }
+  ]
+}

@@ -20,7 +20,7 @@ poetry install
 poetry run python -m scan_hardware
 ```
 
-Open `http://127.0.0.1:8000/docs` for the interactive API. Without an import, the default database is `data/catalog.sqlite3`. After a successful import, the service follows `data/latest.json` to the latest validated, versioned database. An explicit `CATALOG_PATH` overrides this pointer. Set other values in `.env` using `.env.example` as a template.
+Open `http://127.0.0.1:8000/demo` to test a camera photo or a printed code in the browser. The interactive API is at `/docs`. Without an import, the default database is `data/catalog.sqlite3`. After a successful import, the service follows `data/latest.json` to the latest validated, versioned database. An explicit `CATALOG_PATH` overrides this pointer. Set other values in `.env` using `.env.example` as a template. `/ready` returns HTTP 503 when the catalog is empty.
 
 ## Import the Kaggle catalog
 
@@ -34,17 +34,17 @@ poetry run python -m scan_hardware.catalog_import \
 
 On PowerShell, put the command on one line or use PowerShell's continuation syntax. The importer reads the CPU, GPU, and motherboard files from both complete archives, keeps every original column in SQLite, and records rejected rows with their reason. It joins products only when their normalized model or part code matches exactly; GPU names shared by different chipsets remain separate. An image URL is attached only when the source contains a plausible product photo URL and, for an ambiguous GPU name, the chipset also matches. Placeholder references are discarded. Import runs create separate databases under `data/processed/<run-id>/` and update `data/latest.json` only after count, rejection-rate, and image-reference checks pass. Both archives and all generated databases remain outside Git.
 
-Each `/scan`, `/lookup`, and `GET /items/{id}` response includes normalized specifications for its returned items. A field contains its value, unit, status, and source evidence. When sources disagree, `status` is `conflict` and `value` is `null`; the API does not silently choose a source. Call `GET /items/{id}/sources` for every original column. Missing source fields are omitted from the normalized map. Re-running an import creates a new version and preserves the previous one. A future source refresh should be audited before changing the pointer.
+Each `/scan`, `/lookup`, and `GET /items/{id}` response includes normalized specifications for its returned items. A field contains its value, unit, status, and source evidence. When sources disagree, `status` is `conflict` and `value` is `null`; the API does not silently choose a source. Four exact-item fields have been checked against manufacturer pages and are marked `verified` with a source URL. They are kept in the packaged `verified_specs.json`; original Kaggle values remain in the evidence and at `GET /items/{id}/sources`. Missing source fields are omitted from the normalized map. Re-running an import creates a new version and preserves the previous one. A future source refresh should be audited before changing the pointer.
 
-The image URLs come from third-party hosts in the Kaggle data. They are not local image files or guaranteed to remain available; the dataset license does not establish reuse rights for those photographs. Items without a reliable image reference remain searchable with `image_url: null`. Manufacturer or separately licensed product images can be added through the existing image upload endpoint.
+Most image URLs come from third-party hosts in the Kaggle data. They are not local image files or guaranteed to remain available; the dataset license does not establish reuse rights for those photographs. Five exact items have reviewed Wikimedia Commons photographs, with creator, source page and license exposed as `image_attribution`. These links are still externally hosted. Items without a reliable image reference remain searchable with `image_url: null`. More licensed product images can be added through the existing image upload endpoint; verify their rights before public display.
 
-Docker is also supported:
+Docker imports the two archives on first start, then reuses a named volume. Put the ZIP files at `data/raw/kaggle/pc-parts-by-type.zip` and `data/raw/kaggle/warcoder-pc-parts.zip`, then run:
 
 ```bash
 docker compose up --build
 ```
 
-The Docker port is bound to `127.0.0.1:8000`. Keep that binding or add authentication at the reverse proxy before exposing catalog write endpoints publicly.
+The Docker port is bound to `127.0.0.1:8000`. Startup fails if either archive is missing or the catalog is empty. The Docker volume keeps the imported catalog across restarts. The demo is intended for this local setup. For a network deployment, set `REQUIRE_API_KEY=true` and a random `API_KEY` of at least 32 characters; clients send it in `X-API-Key`. Keep the key on a server, never in a distributed mobile app. Use HTTPS and a backend proxy when the phone will access the service outside this machine.
 
 ## Try the complete flow
 
@@ -109,9 +109,12 @@ curl http://127.0.0.1:8000/items/demo-board/image --output board-reference.jpg
 
 ## Integration contract
 
-The mobile app can send an image to `/scan` or decoded text to `/lookup`. Frame the printed identifier or product sticker closely; a whole-card photo with a tiny label may fail OCR. Show `suggestions` for user confirmation, and never present them as an exact identification. The service returns JSON only; the app renders the item details and specifications and downloads `local_image_url` when present. If a specification has `status: "conflict"`, show its evidence rather than an unverified number. `PUT /items/{id}` is idempotent, so a future backend sync can safely repeat writes. Normalize stable IDs in the backend before sending them here; IDs may contain letters, digits, underscores, and hyphens.
+See the [integration guide](docs/integracao.md) for the full HTTP contract, a Python
+backend proxy example, mobile upload example, response handling, and deployment setup.
 
-The imported Kaggle data has no explicit release-year field, so historical decade coverage has not been verified. CPU socket and thread count are absent for many catalog items. OCR quality on etched text, glare, tiny labels, and model revisions needs a broader labeled-photo evaluation before production use. The lookup currently loads the local catalog and ranks candidates in memory; benchmark it again if the catalog grows substantially. See [field validation](docs/field_validation.md) for real-photo results and source conflicts.
+The browser demo provides a camera-capable file input for local tests. A phone cannot reach the default loopback-only server; expose it through a suitable HTTPS backend proxy for phone tests. A future mobile app can send an image to `/scan` or decoded text to `/lookup` through that proxy. Frame the printed identifier or product sticker closely; a whole-card photo with a tiny label may fail OCR. Show `suggestions` for user confirmation, and never present them as an exact identification. The service returns JSON only; the client renders the item details and specifications and downloads `local_image_url` when present. If a specification has `status: "conflict"`, show its evidence rather than an unverified number. Show `image_attribution` when present. `PUT /items/{id}` is idempotent, so a future backend sync can safely repeat writes. Normalize stable IDs in the backend before sending them here; IDs may contain letters, digits, underscores, and hyphens.
+
+The imported Kaggle data has no explicit release-year field, so historical decade coverage has not been verified. CPU socket and thread count are absent for many catalog items. Eight labeled photos have been checked; more models and phone camera conditions are needed before production use. The lookup currently loads the local catalog and ranks candidates in memory; benchmark it again if the catalog grows substantially. See [field validation](docs/field_validation.md) for real-photo results and source conflicts. To repeat the photo suite, copy [the example manifest](docs/photo_manifest.example.json) into a directory under `data/validation/`, save the credited source photos under its `photos/` subdirectory, and run `poetry run python -m scan_hardware.photo_validation --manifest path/to/manifest.json`. The immutable report is saved under `data/validation/<run-id>/`. Run `poetry run python -m scan_hardware.catalog_audit` for catalog coverage and conflict counts.
 
 ## Quality checks
 

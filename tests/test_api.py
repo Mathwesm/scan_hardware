@@ -5,8 +5,10 @@ from __future__ import annotations
 from io import BytesIO
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
+from pydantic import SecretStr
 
 from scan_hardware.api import create_app
 from scan_hardware.config import Settings
@@ -81,6 +83,7 @@ def test_lookup_without_catalog_returns_not_found(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "not_found"
+    assert client.get("/ready").status_code == 503
 
 
 def test_item_sources_returns_all_original_fields(tmp_path: Path) -> None:
@@ -149,3 +152,33 @@ def test_scan_exposes_cpu_specs_and_source_conflict(tmp_path: Path) -> None:
     assert specs["tdp_w"]["status"] == "conflict"
     assert specs["tdp_w"]["value"] is None
     assert client.get("/items/cpu-1").json()["specifications"] == specs
+
+
+def test_demo_is_available_for_local_camera_testing(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3")
+    response = TestClient(create_app(config=config, scanner=FakeScanner())).get("/demo")
+
+    assert response.status_code == 200
+    assert 'capture="environment"' in response.text
+
+
+def test_api_key_protects_scans_and_catalog_writes(tmp_path: Path) -> None:
+    key = "test-secret-" + "x" * 32
+    config = Settings(
+        catalog_path=tmp_path / "catalog.sqlite3",
+        require_api_key=True,
+        api_key=SecretStr(key),
+    )
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+
+    assert client.get("/health").status_code == 200
+    assert client.post("/lookup", json={"text": "E8400"}).status_code == 401
+    assert client.put("/items/cpu-1", json={}).status_code == 401
+    assert client.get("/demo").status_code == 401
+    response = client.post("/lookup", json={"text": "E8400"}, headers={"x-api-key": key})
+    assert response.status_code == 200
+
+
+def test_auth_enabled_rejects_missing_or_short_key(tmp_path: Path) -> None:
+    with pytest.raises(RuntimeError, match="at least 32 characters"):
+        create_app(config=Settings(catalog_path=tmp_path / "catalog.sqlite3", require_api_key=True))

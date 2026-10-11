@@ -4,11 +4,24 @@ services:
     environment:
       LOG_SERIALIZE: "true"
       HOST: "0.0.0.0"
+      REQUIRE_CATALOG: "true"
+      IMPORT_ROHIT_PATH: /app/import/pc-parts-by-type.zip
+      IMPORT_WARCODER_PATH: /app/import/warcoder-pc-parts.zip
+      REQUIRE_API_KEY: ${REQUIRE_API_KEY:-false}
+      API_KEY: ${API_KEY:-}
+    command: ["python", "-m", "scan_hardware.bootstrap"]
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
+      - ./data/raw/kaggle:/app/import:ro
       - scanner_logs:/app/logs
       - scanner_data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     restart: unless-stopped
 
 volumes:

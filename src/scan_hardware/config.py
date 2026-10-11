@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     image_dir: Path = Path("data/images")
     max_upload_bytes: int = 8_000_000
     ocr_min_confidence: float = 0.4
+    require_catalog: bool = False
+    import_rohit_path: Path | None = None
+    import_warcoder_path: Path | None = None
+    api_key: SecretStr | None = None
+    require_api_key: bool = False
     host: str = "127.0.0.1"
     port: int = 8000
 

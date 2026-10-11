@@ -92,6 +92,14 @@ The API exposes the disagreements so a client can ask for confirmation or omit
 the disputed value. The full audit is retained locally in
 `data/validation/20261008T012749796270Z/specification_audit.json`.
 
+Four item-specific fields were then checked against their manufacturers: the E8400
+socket, i3-7350K TDP, MSI GTX 1050 Ti 4GT OC VRAM, and ASRock A320M-DVS R4.0
+form factor. These return `status: verified`, with the manufacturer URL and the
+original Kaggle evidence. This resolves one conflict in each of CPU TDP, GPU
+VRAM, and motherboard form factor, and fills the E8400 socket. The audit table
+above remains the unchanged raw-source baseline; thousands of other records
+still need verification.
+
 ## Image-link audit
 
 The imported catalog initially contained 4,684 item image URLs. A sampled HEAD
@@ -104,6 +112,28 @@ image URLs. The 3,327 PCPartPicker CDN URLs were not probed because its
 The image URLs remain third-party references, not licensed local product images.
 Wikimedia images are governed by the license on each file page and need attribution
 where applicable. No reference photo is bundled in the repository.
+
+Five exact products now have reviewed Wikimedia Commons photo URLs. Their item
+responses include `image_attribution` with creator, source page, and license.
+Four use CC BY-SA 4.0; the i5-2500K photo uses CC BY 2.0. All five image URLs
+returned HTTP 200 on 2026-10-08. All other
+third-party image links still have unverified reuse rights and availability.
+The current catalog audit counts 4,652 items with unreviewed external image
+URLs and 8,215 items without any image. Run
+`poetry run python -m scan_hardware.catalog_audit` to regenerate a versioned
+coverage, conflict, and image-rights report.
+
+## Repeatable photo suite
+
+The new `photo_validation` command runs real JPEGs through `/scan`, checks the
+expected status and first item, and writes a versioned JSON report. The local
+eight-photo manifest covers three E8400 photos, an i5-2500K, two distinct GPU
+rear labels, one full motherboard, and one GPU front without a visible model.
+All eight met their expected outcomes. The two extra E8400 photos read `E8408`
+and `E8409`; both remain suggestions even when the correct model ranks first.
+The i5-2500K and ASUS GTX 1060 also ranked first as suggestions. The source
+pages and licenses are in the example manifest. These eight images cover only
+six product targets and do not establish a general accuracy rate.
 
 ## Remaining limits
 

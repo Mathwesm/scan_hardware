@@ -54,6 +54,7 @@ class SpecificationEvidence(BaseModel):
     dataset: str
     field: str
     value: str | int | float | bool
+    source_url: str | None = None
 
 
 class Specification(BaseModel):
@@ -61,8 +62,17 @@ class Specification(BaseModel):
 
     value: str | int | float | bool | None
     unit: str | None = None
-    status: Literal["reported", "conflict"]
+    status: Literal["reported", "conflict", "verified"]
     evidence: list[SpecificationEvidence]
+
+
+class ImageAttribution(BaseModel):
+    """Credit and license for a manually reviewed reference photograph."""
+
+    creator: str
+    source_url: str
+    license_name: str
+    license_url: str
 
 
 class Item(ItemInput):
@@ -71,6 +81,7 @@ class Item(ItemInput):
     id: str
     has_local_image: bool = False
     local_image_url: str | None = None
+    image_attribution: ImageAttribution | None = None
     specifications: dict[str, Specification] = Field(default_factory=dict)
 
 

@@ -1,0 +1,34 @@
+{
+  "facts": [
+    {
+      "item_id": "cpu-d654c224708ab17877afd973",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA775",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000007669/server-products.html"
+    },
+    {
+      "item_id": "cpu-b6e95b3a045aca25d332d9e0",
+      "category": "cpu",
+      "field": "tdp_w",
+      "value": 60,
+      "unit": "W",
+      "source_url": "https://www.intel.com/content/www/us/en/products/compare.html?productIds=97527"
+    },
+    {
+      "item_id": "gpu-bd1343be29aefce878e7e33c",
+      "category": "gpu",
+      "field": "vram_gb",
+      "value": 4,
+      "unit": "GB",
+      "source_url": "https://www.msi.com/Graphics-Card/GeForce-GTX-1050-Ti-4GT-OC/Specification"
+    },
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "category": "motherboard",
+      "field": "form_factor",
+      "value": "Micro ATX",
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/"
+    }
+  ]
+}

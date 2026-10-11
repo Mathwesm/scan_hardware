@@ -9,6 +9,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from scan_hardware.curation import verified_facts
 from scan_hardware.models.item import Category, Specification, SpecificationEvidence
 
 ValueKind = Literal["text", "integer", "decimal", "boolean"]
@@ -96,13 +97,14 @@ def _parse_value(raw: Any, definition: SpecDefinition, key: str) -> SpecValue | 
 
 
 def build_specifications(
-    category: Category, source_rows: list[dict[str, Any]]
+    category: Category, source_rows: list[dict[str, Any]], item_id: str | None = None
 ) -> dict[str, Specification]:
     """Build one specification map from source rows with conflict evidence.
 
     Args:
         category: Hardware category whose field mappings apply.
         source_rows: Original rows returned by the local catalog.
+        item_id: Stable catalog ID for reviewed manufacturer facts.
 
     Returns:
         Normalized fields; conflicting values have a null value and all evidence.
@@ -118,9 +120,18 @@ def build_specifications(
                     evidence_map[(source.dataset, field, value)] = SpecificationEvidence(
                         dataset=source.dataset, field=field, value=value
                     )
-        if not evidence_map:
+        fact = verified_facts().get((item_id, key)) if item_id is not None else None
+        if not evidence_map and fact is None:
             continue
         evidence = [evidence_map[index] for index in sorted(evidence_map, key=str)]
+        if fact is not None and fact.category is category:
+            specifications[key] = Specification(
+                value=fact.value,
+                unit=definition.unit,
+                status="verified",
+                evidence=[*evidence, fact.as_evidence()],
+            )
+            continue
         values = {entry.value for entry in evidence}
         is_conflict = len(values) > 1
         specifications[key] = Specification(
