@@ -29,6 +29,57 @@
       "field": "form_factor",
       "value": "Micro ATX",
       "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/"
+    },
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "category": "motherboard",
+      "field": "socket",
+      "value": "AM2+/AM2",
+      "source_url": "https://www.scribd.com/document/442253904/A785GM-M3-manual"
+    },
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "category": "motherboard",
+      "field": "form_factor",
+      "value": "Micro ATX",
+      "source_url": "https://www.scribd.com/document/442253904/A785GM-M3-manual"
+    },
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "category": "motherboard",
+      "field": "max_memory_gb",
+      "value": 16,
+      "unit": "GB",
+      "source_url": "https://www.scribd.com/document/442253904/A785GM-M3-manual"
+    },
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "category": "motherboard",
+      "field": "memory_slots",
+      "value": 2,
+      "source_url": "https://www.scribd.com/document/442253904/A785GM-M3-manual"
+    },
+    {
+      "item_id": "motherboard-ecs-g41t-mr23-v1",
+      "category": "motherboard",
+      "field": "socket",
+      "value": "LGA775",
+      "source_url": "https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html"
+    },
+    {
+      "item_id": "motherboard-ecs-g41t-mr23-v1",
+      "category": "motherboard",
+      "field": "form_factor",
+      "value": "Micro ATX",
+      "source_url": "https://www.notice-facile.com/en/manual/1056484/ecs%2Bg41t-mr23"
+    },
+    {
+      "item_id": "motherboard-ecs-g41t-mr23-v1",
+      "category": "motherboard",
+      "field": "max_memory_gb",
+      "value": 8,
+      "unit": "GB",
+      "source_url": "https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html"
     }
   ]
 }

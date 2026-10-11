@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from scan_hardware.catalog_audit import audit_catalog
+from scan_hardware.catalog_import import _import_supplemental_items
+from scan_hardware.core.matching import match_items
 from scan_hardware.models.item import Category, ItemInput
 from scan_hardware.services.catalog import Catalog
 
@@ -60,3 +62,31 @@ def test_catalog_audit_counts_verified_and_unreviewed_images(tmp_path: Path) -> 
     assert report["items"] == {"cpu": 2}
     assert report["verified"]["cpu"]["socket"] == 1
     assert report["images"] == {"reviewed": 1, "unreviewed_url": 1}
+
+
+def test_supplemental_boards_match_printed_codes_without_nearby_model_confusion(
+    tmp_path: Path,
+) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    counts = _import_supplemental_items(catalog)
+    assert counts == {"motherboard": 2, "imported_rows": 2}
+
+    items = catalog.list_items()
+    for code, expected_id, expected_socket in (
+        ("A785GM-M3", "motherboard-ecs-a785gm-m3-v1", "AM2+/AM2"),
+        ("G41T-MR23", "motherboard-ecs-g41t-mr23-v1", "LGA775"),
+    ):
+        result = match_items([code, "V:1.0"], items)
+        assert result.status == "matched"
+        assert [match.item.id for match in result.matches] == [expected_id]
+        item = catalog.get_item(expected_id)
+        assert item is not None
+        assert item.image_url is None
+        assert item.specifications["socket"].status == "verified"
+        assert item.specifications["socket"].value == expected_socket
+        assert catalog.get_source_records(expected_id)[0]["data"]["source_url"].startswith(
+            "https://"
+        )
+
+    result = match_items(["A785GM-M"], items)
+    assert result.status != "matched"

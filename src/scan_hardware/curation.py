@@ -7,7 +7,7 @@ from importlib.resources import files
 
 from pydantic import BaseModel, Field, HttpUrl, model_validator
 
-from scan_hardware.models.item import Category, ImageAttribution, SpecificationEvidence
+from scan_hardware.models.item import Category, ImageAttribution, ItemInput, SpecificationEvidence
 
 
 class VerifiedFact(BaseModel):
@@ -82,6 +82,20 @@ class ImageManifest(BaseModel):
     images: list[VerifiedImage]
 
 
+class SupplementalItem(BaseModel):
+    """A source-backed product missing from both imported Kaggle archives."""
+
+    id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    item: ItemInput
+    source_url: HttpUrl
+
+
+class SupplementalManifest(BaseModel):
+    """Validated products to add after the Kaggle import."""
+
+    items: list[SupplementalItem]
+
+
 @lru_cache(maxsize=1)
 def verified_facts() -> dict[tuple[str, str], VerifiedFact]:
     """Load immutable reviewed facts from the packaged UTF-8 manifest."""
@@ -107,3 +121,14 @@ def verified_images() -> dict[str, VerifiedImage]:
             raise ValueError(f"Duplicate verified image: {image.item_id}")
         images[image.item_id] = image
     return images
+
+
+@lru_cache(maxsize=1)
+def supplemental_items() -> tuple[SupplementalItem, ...]:
+    """Load reviewed missing products from the packaged UTF-8 manifest."""
+    path = files("scan_hardware").joinpath("curation", "supplemental_items.json")
+    manifest = SupplementalManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    ids = [item.id for item in manifest.items]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Duplicate supplemental item ID")
+    return tuple(manifest.items)

@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "id": "motherboard-ecs-a785gm-m3-v1",
+      "item": {
+        "category": "motherboard",
+        "brand": "ECS",
+        "model": "ECS A785GM-M3 (V1.0)",
+        "identifiers": ["A785GM-M3", "ECS A785GM-M3"]
+      },
+      "source_url": "https://www.scribd.com/document/442253904/A785GM-M3-manual"
+    },
+    {
+      "id": "motherboard-ecs-g41t-mr23-v1",
+      "item": {
+        "category": "motherboard",
+        "brand": "ECS",
+        "model": "ECS G41T-MR23 (V1.0)",
+        "identifiers": ["G41T-MR23", "ECS G41T-MR23"]
+      },
+      "source_url": "https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html"
+    }
+  ]
+}

@@ -20,6 +20,7 @@ from loguru import logger
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from scan_hardware.core.matching import MIN_IDENTIFIER_LENGTH, normalize_identifier
+from scan_hardware.curation import supplemental_items
 from scan_hardware.models.item import Category, ItemInput
 from scan_hardware.services.catalog import Catalog, IdentifierConflictError
 from scan_hardware.utils.logger import setup_logging
@@ -261,6 +262,27 @@ def _import_groups(
     return dict(counts)
 
 
+def _import_supplemental_items(catalog: Catalog) -> dict[str, int]:
+    """Add reviewed catalog gaps without modifying the original source rows."""
+    counts: Counter[str] = Counter()
+    for row_number, reviewed in enumerate(supplemental_items(), start=1):
+        catalog.put_item(reviewed.id, reviewed.item)
+        catalog.put_source_record(
+            "manufacturer-manual",
+            "supplemental_items.json",
+            row_number,
+            {
+                "name": reviewed.item.model,
+                "identifiers": reviewed.item.identifiers,
+                "source_url": str(reviewed.source_url),
+            },
+            reviewed.id,
+        )
+        counts[reviewed.item.category.value] += 1
+        counts["imported_rows"] += 1
+    return dict(counts)
+
+
 def _publish(catalog_path: Path, pointer: Path, counts: dict[str, int]) -> None:
     """Publish only a catalog that passes minimum count and image checks."""
     minimums = {"cpu": 500, "gpu": 2000, "motherboard": 2000, "items_with_image_url": 4000}
@@ -310,6 +332,8 @@ def import_archives(
     catalog_path = output_root / run_id / "catalog.sqlite3"
     catalog = Catalog(catalog_path)
     counts = _import_groups(catalog, groups)
+    for key, value in _import_supplemental_items(catalog).items():
+        counts[key] = counts.get(key, 0) + value
     for row in (*bad_warcoder, *bad_rohit):
         catalog.put_source_record(
             row.dataset, row.file_name, row.row_number, row.payload, None, "Missing valid name"
