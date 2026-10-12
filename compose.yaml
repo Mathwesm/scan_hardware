@@ -2,13 +2,13 @@ services:
   scan_hardware:
     build: .
     environment:
-      LOG_SERIALIZE: "true"
-      HOST: "0.0.0.0"
-      REQUIRE_CATALOG: "true"
-      IMPORT_ROHIT_PATH: /app/import/pc-parts-by-type.zip
-      IMPORT_WARCODER_PATH: /app/import/warcoder-pc-parts.zip
-      REQUIRE_API_KEY: ${REQUIRE_API_KEY:-false}
-      API_KEY: ${API_KEY:-}
+      - LOG_SERIALIZE=true
+      - HOST=0.0.0.0
+      - REQUIRE_CATALOG=true
+      - IMPORT_ROHIT_PATH=/app/import/pc-parts-by-type.zip
+      - IMPORT_WARCODER_PATH=/app/import/warcoder-pc-parts.zip
+      - REQUIRE_API_KEY
+      - API_KEY
     command: ["python", "-m", "scan_hardware.bootstrap"]
     ports:
       - "127.0.0.1:8000:8000"
