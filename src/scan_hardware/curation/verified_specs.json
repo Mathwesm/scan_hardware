@@ -100,6 +100,35 @@
       "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/"
     },
     {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "category": "motherboard",
+      "field": "memory_type",
+      "value": "DDR4",
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp"
+    },
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "category": "motherboard",
+      "field": "memory_slot_type",
+      "value": "DIMM",
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp"
+    },
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "category": "motherboard",
+      "field": "memory_channels",
+      "value": 2,
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp"
+    },
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "category": "motherboard",
+      "field": "max_memory_standard_mhz",
+      "value": 3200,
+      "unit": "MHz",
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp"
+    },
+    {
       "item_id": "motherboard-2716c8c323f0e5902e139112",
       "category": "motherboard",
       "field": "memory_type",

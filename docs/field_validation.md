@@ -40,8 +40,27 @@ O primeiro usa socket AM2+/AM2, formato Micro ATX e dois slots DDR2, com máximo
 nominal de 16 GB. O manual ressalva que testou 4 GB nas memórias disponíveis à
 época. O segundo usa LGA775, formato Micro ATX e até 8 GB em DDR2 **ou** DDR3;
 os dois tipos não podem ser usados juntos. Os fatos inseridos no catálogo têm
-links para as páginas de evidência. Não foi encontrada uma foto de referência
-exata com licença clara para esses modelos; `image_url` permanece `null`.
+links para as páginas de evidência. Em 12/10, foram associadas URLs externas
+rotuladas com os modelos exatos: [A785GM-M3](https://www.manual.nz/ecs/a785gm-m3/manual)
+e [G41T-MR23 V1.0](https://mobilespecs.net/motherboard/ECS/ECS_G41T-MR23_V1-0.html).
+As imagens foram inspecionadas visualmente, mas a resolução não permite ler o
+código impresso; a licença de redistribuição também não foi identificada.
+
+## Nova validação: revisão ASRock e imagens ECS
+
+Em 12/10/2026, a foto da ASRock foi reprocessada com um recorte em torno do código.
+O OCR leu `A320M-DVS` e `REV. 4.02`; a [página oficial da ASRock](https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp)
+lista essa revisão na família R4.0. O serviço retornou `matched` para
+`motherboard-6086912b15902278a564b9fc`. Código sem revisão ou revisão não
+listada continuam como sugestão. As oito fotos do manifesto passaram, com
+relatório em `data/validation/20261012T183810887818Z/report.json`.
+
+A ficha da ASRock recebeu DDR4, slot DIMM, dois canais e até 3200 MHz sem OC
+**com CPU Matisse**. A página do fabricante apresenta frequências diferentes
+conforme o processador; 3200 MHz não é promessa para toda CPU compatível.
+Também foram associadas as duas URLs externas das ECS. A auditoria atual conta
+10.667 itens com imagem e 2.207 sem imagem; o relatório está em
+`data/audit/20261012T183834280584Z/report.json`.
 
 ## Suíte anterior: CPU, GPU e placa-mãe
 
@@ -57,7 +76,7 @@ em `data/validation/20261011T225332475553Z/report.json` na máquina de teste.
 | [MSI GTX 1050 Ti 4GT OC, verso](https://commons.wikimedia.org/wiki/File:MSI_GeForce_GTX_1050_Ti_4GT_OC_-_rear_view.jpg) | Código exato e item correto. |
 | [Intel Core i5-2500K](https://commons.wikimedia.org/wiki/File:Intel_Core_i5-2500K_20110418.jpg) | Item correto como sugestão. |
 | [ASUS Dual GTX 1060 3GB, verso](https://commons.wikimedia.org/wiki/File:ASUS_Dual_GeForce_GTX_1060_3GB_OC_Edition_-_rear_view.jpg) | Item correto como sugestão. |
-| [ASRock A320M-DVS](https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg) | Revisão ilegível: item correto como sugestão. |
+| [ASRock A320M-DVS](https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg) | Na execução anterior, revisão ilegível e item correto como sugestão; o novo recorte confirmou `REV. 4.02`, conforme a seção acima. |
 | [MSI GTX 1050 Ti, frente sem código](https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg) | `not_found`; a identificação não aparece na face fotografada. |
 
 Licenças e autores das fotos externas estão no

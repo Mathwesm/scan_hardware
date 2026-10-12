@@ -7,6 +7,7 @@ import unicodedata
 
 from rapidfuzz import fuzz, process
 
+from scan_hardware.curation import verified_board_revisions
 from scan_hardware.models.item import Category, Item, Match, ScanResult
 
 _WORD_PATTERN = re.compile(r"[A-Z0-9]+")
@@ -105,6 +106,41 @@ def _exact_matches(observations: list[str], items: list[Item]) -> list[Match]:
     )
 
 
+def _verified_revision_matches(observations: list[str], items: list[Item]) -> list[Match]:
+    """Confirm a model family only when its manufacturer-listed PCB revision is read."""
+    revisions = verified_board_revisions()
+    matches: list[Match] = []
+    for item in items:
+        board = revisions.get(item.id)
+        if board is None or normalize_identifier(item.model) != normalize_identifier(
+            board.catalog_model
+        ):
+            continue
+        model_code = normalize_identifier(board.model_code)
+        for revision in board.pcb_revisions:
+            exact_suffix = f"{model_code}REV{normalize_identifier(revision)}"
+            observed = next(
+                (
+                    line
+                    for line in observations
+                    if normalize_identifier(line).endswith(exact_suffix)
+                ),
+                None,
+            )
+            if observed is not None:
+                matches.append(
+                    Match(
+                        item=item,
+                        matched_identifier=f"{board.model_code} REV {revision}",
+                        observed_text=observed,
+                        score=1.0,
+                        is_exact=True,
+                    )
+                )
+                break
+    return matches
+
+
 def _model_fragments(observations: list[str]) -> dict[str, str]:
     """Keep distinct code-like OCR spans and their shortest source observation."""
     fragments: dict[str, str] = {}
@@ -174,6 +210,10 @@ def match_items(observed_text: list[str], items: list[Item]) -> ScanResult:
         Scan result with status and ordered candidate evidence.
     """
     observations = _observations(observed_text)
+    revision_matches = _verified_revision_matches(observations, items)
+    if revision_matches:
+        return ScanResult(status="matched", detected_text=observed_text, matches=revision_matches)
+
     exact_matches = _exact_matches(observations, items)
     if exact_matches:
         return ScanResult(

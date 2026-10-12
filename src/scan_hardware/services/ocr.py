@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 from io import BytesIO
+from itertools import pairwise
 from threading import Lock
 
 from PIL import Image, ImageOps, UnidentifiedImageError
 from rapidocr import RapidOCR
 from rapidocr.utils.output import RapidOCROutput
+
+from scan_hardware.core.matching import normalize_identifier
+from scan_hardware.curation import VerifiedBoardRevision, verified_board_revisions
 
 MAX_IMAGE_PIXELS = 20_000_000
 MIN_MODEL_CODE_LENGTH = 5
@@ -57,6 +62,58 @@ def _inverted_bands(content: bytes) -> Iterator[bytes]:
         output = BytesIO()
         band.save(output, format="PNG")
         yield output.getvalue()
+
+
+def _revision_crops(
+    content: bytes, result: RapidOCROutput, confidence: float
+) -> Iterator[tuple[VerifiedBoardRevision, bytes]]:
+    """Crop near a known board code so tiny adjacent revision text can be read."""
+    if result.txts is None or result.scores is None or result.boxes is None:
+        return
+    boards = {
+        normalize_identifier(board.model_code): board
+        for board in verified_board_revisions().values()
+    }
+    with Image.open(BytesIO(content)) as source:
+        for line, score, box in zip(result.txts, result.scores, result.boxes, strict=True):
+            board = boards.get(normalize_identifier(line))
+            if board is None or score < confidence:
+                continue
+            horizontal = [float(point[0]) for point in box]
+            vertical = [float(point[1]) for point in box]
+            margin = max(
+                160,
+                int(max(max(horizontal) - min(horizontal), max(vertical) - min(vertical)) * 0.85),
+            )
+            bounds = (
+                max(0, int(min(horizontal) - margin)),
+                max(0, int(min(vertical) - margin)),
+                min(source.width, int(max(horizontal) + margin)),
+                min(source.height, int(max(vertical) + margin)),
+            )
+            cropped = ImageOps.autocontrast(ImageOps.grayscale(source.crop(bounds)))
+            output = BytesIO()
+            cropped.save(output, format="PNG")
+            yield board, output.getvalue()
+
+
+def _confirmed_revision(lines: list[str], board: VerifiedBoardRevision) -> str | None:
+    """Accept only a manufacturer-listed revision next to the model in one crop."""
+    if not any(
+        normalize_identifier(line) == normalize_identifier(board.model_code) for line in lines
+    ):
+        return None
+    spans = [*lines, *(f"{first} {second}" for first, second in pairwise(lines))]
+    for revision in board.pcb_revisions:
+        pattern = rf"\bREV(?:ISION)?\.?\s*{re.escape(revision)}\b"
+        if any(re.search(pattern, span, flags=re.IGNORECASE) for span in spans):
+            return revision
+        # OCR reading order can split vertical PCB text into distant list entries.
+        if any(
+            re.fullmatch(r"REV(?:ISION)?\.?", line, flags=re.IGNORECASE) for line in lines
+        ) and any(line.strip() == revision for line in lines):
+            return revision
+    return None
 
 
 def validate_image(content: bytes, max_bytes: int) -> None:
@@ -109,5 +166,12 @@ class OcrScanner:
                 for band in _inverted_bands(content):
                     lines.extend(_recognized_lines(self._engine(band), self.min_confidence))
                     if _has_model_code(lines):
+                        break
+            elif isinstance(result, RapidOCROutput):
+                for board, crop in _revision_crops(content, result, self.min_confidence):
+                    revision_lines = _recognized_lines(self._engine(crop), self.min_confidence)
+                    revision = _confirmed_revision(revision_lines, board)
+                    if revision is not None:
+                        lines.append(f"{board.model_code} REV {revision}")
                         break
         return list(dict.fromkeys(lines))

@@ -139,6 +139,34 @@ def test_printed_board_code_ranks_catalog_revision_before_similar_models() -> No
     assert result.matches[0].item.id == "board-dvs"
 
 
+@pytest.mark.parametrize(
+    ("observed", "expected_status"),
+    [
+        (["A320M-DVS", "REV. 4.02"], "matched"),
+        (["A320M-DVS", "REV. 4.03"], "matched"),
+        (["A320M-DVS"], "suggestions"),
+        (["A320M-DVS", "REV. 4.04"], "suggestions"),
+        (["A320M-DGS", "REV. 4.02"], "suggestions"),
+    ],
+)
+def test_verified_asrock_pcb_revision_confirms_only_the_same_model(
+    observed: list[str], expected_status: str
+) -> None:
+    item = Item(
+        id="motherboard-6086912b15902278a564b9fc",
+        category=Category.MOTHERBOARD,
+        brand="ASRock",
+        model="ASRock A320M-DVS R4.0",
+        identifiers=["A320M-DVS R4.0"],
+    )
+
+    result = match_items(observed, [item])
+
+    assert result.status == expected_status
+    if expected_status == "matched":
+        assert result.matches[0].item.id == item.id
+
+
 def test_gpu_label_does_not_suggest_cpu_from_unrelated_serial_number() -> None:
     gpu = Item(
         id="gpu-1050",

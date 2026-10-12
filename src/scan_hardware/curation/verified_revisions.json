@@ -1,0 +1,11 @@
+{
+  "boards": [
+    {
+      "item_id": "motherboard-6086912b15902278a564b9fc",
+      "catalog_model": "ASRock A320M-DVS R4.0",
+      "model_code": "A320M-DVS",
+      "pcb_revisions": ["4.02", "4.03"],
+      "source_url": "https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp"
+    }
+  ]
+}
