@@ -72,3 +72,19 @@ jobs:
       - name: Build scanner container
         if: runner.os == 'Linux'
         run: docker build --tag scan-hardware-ci .
+
+      - name: Start scanner container
+        if: runner.os == 'Linux'
+        run: |
+          docker compose config --quiet
+          docker run --detach --rm --name scan-hardware-ci \
+            -e HOST=0.0.0.0 -p 127.0.0.1:18080:8000 scan-hardware-ci
+          trap 'docker stop scan-hardware-ci' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:18080/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs scan-hardware-ci
+          exit 1
