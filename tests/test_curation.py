@@ -81,16 +81,16 @@ def test_supplemental_boards_match_printed_codes_without_nearby_model_confusion(
     assert counts == {"motherboard": 2, "imported_rows": 2}
 
     items = catalog.list_items()
-    for code, expected_id, expected_socket in (
-        ("A785GM-M3", "motherboard-ecs-a785gm-m3-v1", "AM2+/AM2"),
-        ("G41T-MR23", "motherboard-ecs-g41t-mr23-v1", "LGA775"),
+    for code, expected_id, expected_socket, image_host in (
+        ("A785GM-M3", "motherboard-ecs-a785gm-m3-v1", "AM2+/AM2", "manual.nz"),
+        ("G41T-MR23", "motherboard-ecs-g41t-mr23-v1", "LGA775", "mobilespecs.net"),
     ):
         result = match_items([code, "V:1.0"], items)
         assert result.status == "matched"
         assert [match.item.id for match in result.matches] == [expected_id]
         item = catalog.get_item(expected_id)
         assert item is not None
-        assert item.image_url is None
+        assert item.image_url is not None and image_host in str(item.image_url)
         assert item.specifications["socket"].status == "verified"
         assert item.specifications["socket"].value == expected_socket
         assert catalog.get_source_records(expected_id)[0]["data"]["source_url"].startswith(
@@ -99,3 +99,25 @@ def test_supplemental_boards_match_printed_codes_without_nearby_model_confusion(
 
     result = match_items(["A785GM-M"], items)
     assert result.status != "matched"
+
+
+def test_asrock_memory_facts_include_cpu_dependent_standard_limit(tmp_path: Path) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    item_id = "motherboard-6086912b15902278a564b9fc"
+    catalog.put_item(
+        item_id,
+        ItemInput(
+            category=Category.MOTHERBOARD,
+            brand="ASRock",
+            model="ASRock A320M-DVS R4.0",
+            identifiers=["A320M-DVS R4.0"],
+        ),
+    )
+
+    item = catalog.get_item(item_id)
+
+    assert item is not None
+    assert item.specifications["memory_type"].value == "DDR4"
+    assert item.specifications["memory_channels"].value == 2
+    assert item.specifications["max_memory_standard_mhz"].value == 3200
+    assert item.specifications["max_memory_standard_mhz"].status == "verified"

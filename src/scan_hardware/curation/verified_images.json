@@ -39,6 +39,22 @@
       "source_url": "https://www.gigabyte.com/Motherboard/GA-Z77X-UD5H-rev-10",
       "license_name": null,
       "license_url": null
+    },
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "image_url": "https://www.manual.nz/thumbs/products/l/1516602-ecs-a785gm-m3.webp",
+      "creator": "Unknown photographer; hosted by Manual.nz",
+      "source_url": "https://www.manual.nz/ecs/a785gm-m3/manual",
+      "license_name": null,
+      "license_url": null
+    },
+    {
+      "item_id": "motherboard-ecs-g41t-mr23-v1",
+      "image_url": "https://mobilespecs.net/image/motherboard/ECS_G41T-MR23_V1-0.jpg",
+      "creator": "Unknown photographer; hosted by MobileSpecs.net",
+      "source_url": "https://mobilespecs.net/motherboard/ECS/ECS_G41T-MR23_V1-0.html",
+      "license_name": null,
+      "license_url": null
     }
   ]
 }

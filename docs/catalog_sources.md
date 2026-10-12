@@ -11,9 +11,11 @@ part number impresso.
 | [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | 458 CPUs, 2.515 GPUs e 2.422 placas-mães; alguns códigos de produto, especificações e URLs de imagem. | Arquivo completo importado. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
 | [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo e 4.249 de placas-mães, com outras especificações. | Arquivo completo importado. Licença listada como desconhecida. Não traz fotos nessas três categorias. |
 | Manuais da ECS para [A785GM-M3](https://www.scribd.com/document/442253904/A785GM-M3-manual) e [G41T-MR23](https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html) | Identificadores e características de duas placas ausentes no Kaggle. | Dois itens suplementares, com sete especificações conferidas. São manuais do fabricante publicados em acervos externos; nenhum arquivo ou foto desses sites é redistribuído. |
-| Páginas dos fabricantes | Valores específicos usados para resolver conflitos ou preencher lacunas, como socket, TDP, VRAM, tipo e velocidade de memória. | Vinte e cinco valores conferidos, incluindo as placas ECS, a GA-Z77X-UD5H, o Ryzen 5 5600X e a MSI GTX 1050 Ti 4GT OC. As evidências ficam na curadoria interna; as linhas importadas podem ser consultadas em `GET /items/{id}/sources`. |
+| Páginas dos fabricantes | Valores específicos usados para resolver conflitos ou preencher lacunas, como socket, TDP, VRAM, tipo e velocidade de memória. | Vinte e nove valores conferidos, incluindo as placas ECS, a GA-Z77X-UD5H, a ASRock A320M-DVS R4.0, o Ryzen 5 5600X e a MSI GTX 1050 Ti 4GT OC. As evidências ficam na curadoria interna; as linhas importadas podem ser consultadas em `GET /items/{id}/sources`. |
 | Wikimedia Commons | Fotos de cinco produtos exatos com autoria e licença identificadas. | Referências externas com `image_attribution`. A licença deve ser exibida pelo consumidor. |
 | GIGABYTE | Foto oficial da GA-Z77X-UD5H e especificações de memória DDR3. | Imagem vinculada ao modelo exato por URL externa; licença de reutilização não declarada. Memória sem OC até 1600 MHz e com OC até 2800 MHz. |
+| [ASRock A320M-DVS R4.0](https://www.asrock.com/mb/AMD/A320M-DVS%20R4.0/A320M-DVS%20R4.0%20Rev%204.02.asp) | Revisões 4.02 e 4.03, tipo de memória, canais e taxas conforme CPU. | Uma revisão lida na placa confirma o modelo; 3200 MHz sem OC depende de CPU Matisse. |
+| [Manual.nz](https://www.manual.nz/ecs/a785gm-m3/manual) e [MobileSpecs.net](https://mobilespecs.net/motherboard/ECS/ECS_G41T-MR23_V1-0.html) | Fotos rotuladas como ECS A785GM-M3 e ECS G41T-MR23 V1.0. | URLs externas associadas aos dois itens suplementares; licença de reutilização não identificada e código impresso ilegível nas imagens pequenas. |
 | [Dataset público PCPartPicker Parts](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset) | Nomes, marcas, chipsets de GPU e links de imagem. | Revisão fixa do JSONL cruzada por chaves exatas com os itens sem foto: 6.007 URLs novas. Registros ambíguos e placeholders são rejeitados. O dataset é não oficial e os links continuam externos. |
 
 Os dois arquivos Kaggle completos estão em `data/raw/kaggle/` e são ignorados pelo
@@ -34,8 +36,8 @@ Isso **não** confirma que ela funciona hoje ou que pode ser republicada.
 Foram importadas 16.654 linhas relevantes dos dois arquivos Kaggle, sem rejeições
 na execução auditada, mais dois itens suplementares. O importador Kaggle preservou
 4.655 URLs externas de imagem. Depois do cruzamento com o export público,
-**10.665 itens têm `image_url` e 2.209 permanecem sem foto**. Cinco fotos têm
-autoria e licença revisadas; 4.653 URLs anteriores e 6.007 novas associações
+**10.667 itens têm `image_url` e 2.207 permanecem sem foto**. Cinco fotos têm
+autoria e licença revisadas; 4.655 URLs anteriores e 6.007 novas associações
 externas não tiveram os direitos de cada foto conferidos. A foto oficial da
 Gigabyte completa a contagem. A auditoria e o método estão descritos em
 [coleta de imagens](image_enrichment.md).

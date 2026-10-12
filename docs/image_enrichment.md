@@ -54,6 +54,11 @@ continua prevalecendo no campo `image_url` de `/scan` e `/lookup`.
 | Placa-mãe | 4.426 | 2.124 | 1.672 | 3.796 (85,8%) | 630 |
 | **Total** | **12.874** | **4.658** | **6.007** | **10.665 (82,8%)** | **2.209** |
 
+Esta tabela registra o resultado do cruzamento automático daquele lote. Após a
+curadoria manual das imagens ECS A785GM-M3 e G41T-MR23 V1.0, a auditoria atual
+conta **10.667 itens com imagem e 2.207 sem imagem**. As fontes e as limitações
+dessas duas URLs estão em [validação de campo](field_validation.md).
+
 O importador rejeitou 2.411 placeholders; 368 itens não receberam uma URL porque
 mais de uma imagem atendia à mesma chave. Os demais sem foto não tiveram
 correspondência exata. O relatório completo local está em

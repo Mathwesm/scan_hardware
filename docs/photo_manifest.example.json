@@ -58,7 +58,7 @@
       "name": "ASRock A320M-DVS board",
       "image": "photos/motherboard.jpg",
       "category": "motherboard",
-      "expected_status": "suggestions",
+      "expected_status": "matched",
       "expected_item_id": "motherboard-6086912b15902278a564b9fc",
       "source_url": "https://commons.wikimedia.org/wiki/File:2023_P%C5%82yta_g%C5%82%C3%B3wna_ASRock_A320M-DVS.jpg",
       "license": "CC BY-SA 4.0"

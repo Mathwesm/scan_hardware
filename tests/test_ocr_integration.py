@@ -58,3 +58,27 @@ def test_dark_label_uses_inverted_fallback(mocker: MockerFixture) -> None:
     mocker.patch("scan_hardware.services.ocr.RapidOCR", return_value=recognize)
 
     assert OcrScanner().read_text(output.getvalue()) == ["GIGABYTE", "GA-Z77X-UD5H"]
+
+
+def test_board_revision_near_model_is_read_from_focused_crop(mocker: MockerFixture) -> None:
+    image = Image.new("RGB", (1000, 1000), "white")
+    output = BytesIO()
+    image.save(output, format="PNG")
+
+    def recognize(content: bytes) -> RapidOCROutput:
+        with Image.open(BytesIO(content)) as received:
+            is_crop = received.size != (1000, 1000)
+        if is_crop:
+            return RapidOCROutput(txts=("4.02", "A320M-DVS", "REV."), scores=(0.99, 0.99, 0.99))
+        return RapidOCROutput(
+            boxes=[[[450, 300], [550, 300], [550, 700], [450, 700]]],
+            txts=("A320M-DVS",),
+            scores=(0.99,),
+        )
+
+    mocker.patch("scan_hardware.services.ocr.RapidOCR", return_value=recognize)
+
+    assert OcrScanner().read_text(output.getvalue()) == [
+        "A320M-DVS",
+        "A320M-DVS REV 4.02",
+    ]

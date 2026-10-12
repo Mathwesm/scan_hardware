@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from functools import lru_cache
 from importlib.resources import files
 
@@ -91,6 +92,31 @@ class ImageManifest(BaseModel):
     images: list[VerifiedImage]
 
 
+class VerifiedBoardRevision(BaseModel):
+    """Manufacturer-confirmed PCB revisions within one catalog model family."""
+
+    item_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    catalog_model: str = Field(min_length=4)
+    model_code: str = Field(min_length=4)
+    pcb_revisions: tuple[str, ...] = Field(min_length=1)
+    source_url: HttpUrl
+
+    @model_validator(mode="after")
+    def validate_revisions(self) -> VerifiedBoardRevision:
+        """Require distinct, fully specified printed revision numbers."""
+        if len(set(self.pcb_revisions)) != len(self.pcb_revisions) or any(
+            re.fullmatch(r"\d+\.\d{2}", revision) is None for revision in self.pcb_revisions
+        ):
+            raise ValueError("PCB revisions must be distinct major.minor codes")
+        return self
+
+
+class BoardRevisionManifest(BaseModel):
+    """Reviewed PCB revision families shipped with the package."""
+
+    boards: list[VerifiedBoardRevision]
+
+
 class SupplementalItem(BaseModel):
     """A source-backed product missing from both imported Kaggle archives."""
 
@@ -130,6 +156,19 @@ def verified_images() -> dict[str, VerifiedImage]:
             raise ValueError(f"Duplicate verified image: {image.item_id}")
         images[image.item_id] = image
     return images
+
+
+@lru_cache(maxsize=1)
+def verified_board_revisions() -> dict[str, VerifiedBoardRevision]:
+    """Load manufacturer-backed PCB revisions for exact model confirmation."""
+    path = files("scan_hardware").joinpath("curation", "verified_revisions.json")
+    manifest = BoardRevisionManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    boards: dict[str, VerifiedBoardRevision] = {}
+    for board in manifest.boards:
+        if board.item_id in boards:
+            raise ValueError(f"Duplicate board revision: {board.item_id}")
+        boards[board.item_id] = board
+    return boards
 
 
 @lru_cache(maxsize=1)
