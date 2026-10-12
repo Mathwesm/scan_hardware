@@ -1,6 +1,6 @@
 # Fontes e limites do catálogo de hardware
 
-Avaliação iniciada em 07/10/2026; importação e auditoria atualizadas em 11/10/2026.
+Avaliação iniciada em 07/10/2026; imagens e auditoria atualizadas em 12/10/2026.
 Escopo: placas-mães, placas de vídeo e processadores identificados pelo modelo ou
 part number impresso.
 
@@ -11,8 +11,10 @@ part number impresso.
 | [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | 458 CPUs, 2.515 GPUs e 2.422 placas-mães; alguns códigos de produto, especificações e URLs de imagem. | Arquivo completo importado. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
 | [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo e 4.249 de placas-mães, com outras especificações. | Arquivo completo importado. Licença listada como desconhecida. Não traz fotos nessas três categorias. |
 | Manuais da ECS para [A785GM-M3](https://www.scribd.com/document/442253904/A785GM-M3-manual) e [G41T-MR23](https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html) | Identificadores e características de duas placas ausentes no Kaggle. | Dois itens suplementares, com sete especificações conferidas. São manuais do fabricante publicados em acervos externos; nenhum arquivo ou foto desses sites é redistribuído. |
-| Páginas dos fabricantes | Valores específicos usados para resolver conflitos, como socket, TDP, VRAM e formato. | Onze valores conferidos no total, incluindo os sete valores das placas ECS. Cada evidência aparece na resposta da API. |
+| Páginas dos fabricantes | Valores específicos usados para resolver conflitos ou preencher lacunas, como socket, TDP, VRAM, tipo e velocidade de memória. | Vinte e cinco valores conferidos, incluindo as placas ECS, a GA-Z77X-UD5H, o Ryzen 5 5600X e a MSI GTX 1050 Ti 4GT OC. As evidências ficam na curadoria interna; as linhas importadas podem ser consultadas em `GET /items/{id}/sources`. |
 | Wikimedia Commons | Fotos de cinco produtos exatos com autoria e licença identificadas. | Referências externas com `image_attribution`. A licença deve ser exibida pelo consumidor. |
+| GIGABYTE | Foto oficial da GA-Z77X-UD5H e especificações de memória DDR3. | Imagem vinculada ao modelo exato por URL externa; licença de reutilização não declarada. Memória sem OC até 1600 MHz e com OC até 2800 MHz. |
+| [Dataset público PCPartPicker Parts](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset) | Nomes, marcas, chipsets de GPU e links de imagem. | Revisão fixa do JSONL cruzada por chaves exatas com os itens sem foto: 6.007 URLs novas. Registros ambíguos e placeholders são rejeitados. O dataset é não oficial e os links continuam externos. |
 
 Os dois arquivos Kaggle completos estão em `data/raw/kaggle/` e são ignorados pelo
 Git. O importador preserva todas as colunas originais em `source_records`, associa
@@ -30,18 +32,19 @@ Isso **não** confirma que ela funciona hoje ou que pode ser republicada.
 | **Total** | **12.874** |
 
 Foram importadas 16.654 linhas relevantes dos dois arquivos Kaggle, sem rejeições
-na execução auditada, mais dois itens suplementares. O importador preservou 4.655
-URLs externas de imagem; cinco fotos de referência têm autoria e licença revisadas,
-4.652 itens seguem sem revisão
-de direitos e 8.217 produtos não têm imagem. A contagem de imagens revisadas pode
-se sobrepor à contagem de URLs importadas, pois uma foto revisada substitui a URL
-exibida de um item existente.
+na execução auditada, mais dois itens suplementares. O importador Kaggle preservou
+4.655 URLs externas de imagem. Depois do cruzamento com o export público,
+**10.665 itens têm `image_url` e 2.209 permanecem sem foto**. Cinco fotos têm
+autoria e licença revisadas; 4.653 URLs anteriores e 6.007 novas associações
+externas não tiveram os direitos de cada foto conferidos. A foto oficial da
+Gigabyte completa a contagem. A auditoria e o método estão descritos em
+[coleta de imagens](image_enrichment.md).
 
 Os arquivos Kaggle não fornecem um ano de lançamento explícito para essas três
 categorias. Há produtos antigos, mas a cobertura por década **não foi medida**.
 Muitos identificadores entre parênteses precisam de conferência adicional para
 serem considerados part numbers oficiais. `GET /items/{id}/sources` expõe as linhas
-originais; `specifications` mostra valores normalizados, evidências e conflitos.
+originais; `specs` mostra valores normalizados e indica conflitos.
 
 ## Outras fontes avaliadas, ainda não importadas
 
@@ -51,7 +54,6 @@ originais; `specifications` mostra valores normalizados, evidências e conflitos
 | [Open Icecat](https://icecat.com/content-subscription/) | Códigos de produto, GTIN, especificações, datas e referências de imagem. | Exigiria conta, auditoria de cobertura por categoria e cumprimento da [licença](https://iceclog.com/open-content-license/) e da [política de uso](https://iceclog.com/open-icecat-fair-use-policy/). Nenhum dado foi importado. |
 | [Wikidata](https://www.wikidata.org/wiki/Wikidata:Data_access) | Dados estruturados CC0 e identificadores. | Pode ajudar a conferir lacunas; cobertura de SKUs e licenças de mídia devem ser avaliadas separadamente. |
 | TechPowerUp | Referência histórica de GPU/CPU. | O [robots.txt](https://www.techpowerup.com/robots.txt) restringe mineração e coleta automatizada sem permissão escrita. Sem coleta. |
-| [Dataset não oficial de PCPartPicker](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset) | Peças, especificações e links de imagem. | A licença declarada pelo uploader não estabelece direitos sobre dados e fotos da fonte original. Sem importação. |
 
 ## Critérios para uma futura ampliação
 

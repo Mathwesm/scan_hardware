@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 from scan_hardware.config import Settings
 from scan_hardware.core.matching import match_items
-from scan_hardware.models.item import ScanResult
+from scan_hardware.models.item import ScanResponse, ScanResult
 from scan_hardware.services.catalog import Catalog
 from scan_hardware.services.ocr import InvalidImageError, OcrScanner, validate_image
 
@@ -35,13 +35,24 @@ def register_scan_routes(
 ) -> None:
     """Attach text and image scan endpoints to the service application."""
 
-    @app.post("/lookup", response_model=ScanResult)
-    def lookup(request: LookupRequest) -> ScanResult:
+    @app.post(
+        "/lookup",
+        response_model=ScanResponse,
+        response_model_exclude_none=True,
+        response_model_exclude_defaults=True,
+    )
+    def lookup(request: LookupRequest) -> ScanResponse:
         """Match decoded text against the local hardware catalog."""
-        return _include_specifications(match_items([request.text], catalog.list_items()), catalog)
+        result = _include_specifications(match_items([request.text], catalog.list_items()), catalog)
+        return ScanResponse.from_result(result)
 
-    @app.post("/scan", response_model=ScanResult)
-    async def scan(image: Annotated[UploadFile, File()]) -> ScanResult:
+    @app.post(
+        "/scan",
+        response_model=ScanResponse,
+        response_model_exclude_none=True,
+        response_model_exclude_defaults=True,
+    )
+    async def scan(image: Annotated[UploadFile, File()]) -> ScanResponse:
         """Extract printed text from an image and search the catalog."""
         content = await image.read(config.max_upload_bytes + 1)
         await image.close()
@@ -50,4 +61,5 @@ def register_scan_routes(
         except InvalidImageError as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
         lines = await run_in_threadpool(scanner.read_text, content)
-        return _include_specifications(match_items(lines, catalog.list_items()), catalog)
+        result = _include_specifications(match_items(lines, catalog.list_items()), catalog)
+        return ScanResponse.from_result(result)

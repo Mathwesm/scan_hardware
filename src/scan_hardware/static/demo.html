@@ -39,7 +39,8 @@
   <section id="results" aria-live="polite"></section>
   <script>
     const results = document.getElementById('results');
-    const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
+    const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', memory_type: 'Tipo de memória', memory_slot_type: 'Tipo de slot', memory_channels: 'Canais de memória', memory_speed_mt_s: 'Memória suportada até', memory_speed_mhz: 'Velocidade da VRAM', memory_bus_bits: 'Barramento da VRAM', shader_units: 'Unidades de processamento', l2_cache_mb: 'Cache L2', l3_cache_mb: 'Cache L3', max_memory_standard_mhz: 'RAM até (sem OC)', max_memory_oc_mhz: 'RAM até (com OC)', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
+    const units = { max_memory_gb: 'GB', vram_gb: 'GB', base_clock_ghz: 'GHz', boost_clock_ghz: 'GHz', tdp_w: 'W', core_clock_mhz: 'MHz', boost_clock_mhz: 'MHz', board_power_w: 'W', length_mm: 'mm', max_memory_standard_mhz: 'MHz', max_memory_oc_mhz: 'MHz', memory_speed_mt_s: 'MT/s', memory_speed_mhz: 'MHz', memory_bus_bits: 'bits', l2_cache_mb: 'MB', l3_cache_mb: 'MB' };
     function line(parent, tag, value, className) {
       const node = document.createElement(tag);
       node.textContent = value;
@@ -51,63 +52,30 @@
       results.replaceChildren();
       const title = data.status === 'matched' ? 'Modelo identificado' : data.status === 'suggestions' ? 'Possíveis modelos — confirme a revisão' : 'Nenhum modelo encontrado';
       line(results, 'h2', title);
-      if (data.detected_text?.length) line(results, 'p', `Texto lido: ${data.detected_text.join(' · ')}`, 'muted');
       for (const match of data.matches || []) {
         const card = document.createElement('article');
         results.appendChild(card);
-        line(card, 'h3', `${match.item.brand} ${match.item.model}`);
-        line(card, 'p', `Código: ${match.matched_identifier} · ${match.is_exact ? 'correspondência exata' : 'sugestão'}`, match.is_exact ? '' : 'warning');
-        const imageUrl = match.item.local_image_url || match.item.image_url;
+        const modelName = match.model.toLowerCase().startsWith(`${match.brand.toLowerCase()} `) ? match.model : `${match.brand} ${match.model}`;
+        line(card, 'h3', modelName);
+        if (data.status === 'suggestions') line(card, 'p', 'Confirme o modelo antes de usar.', 'warning');
+        const imageUrl = match.image_url;
         if (imageUrl) {
           const img = document.createElement('img');
           img.src = imageUrl;
-          img.alt = `Imagem de referência para ${match.item.model}`;
+          img.alt = `Imagem de referência para ${match.model}`;
           img.loading = 'lazy';
+          img.onerror = () => { img.remove(); line(card, 'p', 'Imagem de referência indisponível.', 'muted'); };
           card.appendChild(img);
-          if (match.item.image_attribution) {
-            const credit = match.item.image_attribution;
-            const paragraph = line(card, 'p', `Foto: ${credit.creator} · ${credit.license_name}. `, 'muted');
-            const source = document.createElement('a');
-            source.href = credit.source_url;
-            source.textContent = 'Origem';
-            source.rel = 'noopener noreferrer';
-            source.target = '_blank';
-            paragraph.appendChild(source);
-            const license = document.createElement('a');
-            license.href = credit.license_url;
-            license.textContent = ' · Licença';
-            license.rel = 'noopener noreferrer';
-            license.target = '_blank';
-            paragraph.appendChild(license);
-          } else if (!match.item.local_image_url) {
-            line(card, 'p', 'Imagem externa de referência; origem e direitos ainda precisam ser verificados.', 'muted');
-          }
+        } else {
+          line(card, 'p', 'Imagem de referência ainda não cadastrada.', 'muted');
         }
         const specs = document.createElement('dl');
         card.appendChild(specs);
-        for (const [key, spec] of Object.entries(match.item.specifications || {})) {
+        for (const [key, value] of Object.entries(match)) {
+          if (!(key in labels)) continue;
           line(specs, 'dt', labels[key] || key);
-          const formatted = typeof spec.value === 'boolean' ? (spec.value ? 'Sim' : 'Não') : String(spec.value);
-          const value = spec.status === 'conflict' ? 'Dados conflitantes' : `${formatted}${spec.unit ? ` ${spec.unit}` : ''}${spec.status === 'verified' ? ' · verificado' : ''}`;
-          const cell = line(specs, 'dd', value, spec.status === 'conflict' ? 'warning' : '');
-          if (spec.evidence?.length) {
-            const details = document.createElement('details');
-            cell.appendChild(details);
-            line(details, 'summary', 'Ver fontes');
-            const list = document.createElement('ul');
-            details.appendChild(list);
-            for (const evidence of spec.evidence) {
-              const entry = line(list, 'li', `${evidence.dataset} · ${evidence.field}: ${evidence.value} `);
-              if (evidence.source_url) {
-                const link = document.createElement('a');
-                link.href = evidence.source_url;
-                link.textContent = 'Fonte';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                entry.appendChild(link);
-              }
-            }
-          }
+          const formatted = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : `${value}${units[key] ? ` ${units[key]}` : ''}`;
+          line(specs, 'dd', formatted);
         }
       }
     }

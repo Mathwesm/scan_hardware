@@ -58,9 +58,9 @@ def register_catalog_routes(app: FastAPI, catalog: Catalog, config: Settings) ->
         except IdentifierConflictError as error:
             raise HTTPException(status_code=409, detail=str(error)) from error
 
-    @app.get("/items/{item_id}", response_model=Item)
-    def get_item(item_id: ItemId) -> Item:
-        """Fetch one registered hardware item."""
+    @app.get("/specs/{item_id}", response_model=Item)
+    def get_specs(item_id: ItemId) -> Item:
+        """Fetch one registered hardware item with detailed specifications."""
         item = catalog.get_item(item_id)
         if item is None:
             raise HTTPException(status_code=404, detail="Item not found")

@@ -65,18 +65,35 @@ Os números podem mudar após novas importações.
 
 ### Especificações e imagens
 
-`/scan`, `/lookup` e `/items/{id}` incluem `specifications`. Cada campo tem valor,
-unidade, estado e evidências. `reported` vem de uma fonte importada; `verified` foi
+`/scan` e `/lookup` devolvem valores simples diretamente em cada elemento de
+`matches`. `GET /specs/{id}` inclui `specs` com valor, unidade e estado.
+`reported` vem de uma fonte importada; `verified` foi
 conferido em documentação identificada; `conflict` indica valores divergentes e
 retorna `value: null`. Um campo ausente significa dado indisponível. As linhas e
 colunas originais podem ser consultadas em `GET /items/{id}/sources`.
 
+O pacote inclui **6.007 associações novas de imagem** obtidas por cruzamento exato
+entre o catálogo e um [dataset público de peças](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset).
+O cruzamento exige nome original, marca e, para GPU, chipset idênticos; imagens
+genéricas e casos ambíguos são descartados. Com as URLs anteriores, 10.665 dos
+12.874 itens (82,8%) têm uma imagem de referência. O arquivo bruto não vai para o
+Git; o manifesto resultante vai em `src/scan_hardware/curation/external_images.json`.
+Para refazer a coleta com a versão fixa da fonte:
+
+```bash
+poetry run python -m scan_hardware.image_enrichment --publish-package
+```
+
+O comando baixa o JSONL uma vez para `data/raw/huggingface/`, verifica o SHA-256,
+grava manifesto e relatório versionados em `data/processed/images/` e só então
+atualiza o arquivo empacotado se passar no portão de cobertura. Veja os
+[critérios e limites da coleta](docs/image_enrichment.md).
+
 Cinco itens têm fotos do Wikimedia Commons com autoria e licença revisadas em
-`image_attribution`. Outras URLs de imagem vêm de terceiros e **não** têm licença de
-reutilização verificada. Os dois modelos ECS suplementares ficam sem foto de
-referência porque não foi localizada uma imagem exata com licença clara. A foto
-enviada ao scanner não é usada como imagem do catálogo. Uma imagem licenciada pode
-ser associada a um item pelo endpoint de upload.
+`image_attribution`. A GA-Z77X-UD5H usa uma imagem oficial do fabricante. As outras
+URLs são referências externas; uma URL pode deixar de funcionar ou mostrar a
+embalagem do produto. Os dois modelos ECS suplementares ainda não têm uma foto
+exata associada. A foto enviada ao scanner não é usada como imagem do catálogo.
 
 ## Testar a API
 
@@ -94,15 +111,17 @@ Envie uma foto do identificador impresso:
 curl -X POST http://127.0.0.1:8000/scan -F "image=@placa.jpg"
 ```
 
-O resultado contém `status`, `detected_text` e `matches`. `matched` significa código
+O resultado contém `status` e `matches`. `matched` significa código
 exato; `suggestions` são candidatos parecidos para confirmação humana; `not_found`
 significa que não houve candidato suficiente. Uma sugestão **não** é identificação
-confirmada. Cada correspondência informa `item`, `matched_identifier`,
-`observed_text`, `score` e `is_exact`. Fotos JPEG, PNG e WebP são aceitas até
+confirmada. Cada objeto em `matches` traz diretamente `id`, `brand`, `model` e
+especificações disponíveis como `socket`, `memory_slots` ou `cores`. O JSON compacto
+omite as evidências detalhadas; consulte as linhas originais
+em `GET /items/{id}/sources`. Fotos JPEG, PNG e WebP são aceitas até
 8.000.000 bytes por padrão e 20 megapixels. O contrato completo e exemplos de
 resposta estão no [guia de integração](docs/integracao.md).
 
-Para obter ou atualizar um item, use `GET /items/{id}` e `PUT /items/{id}`. Para
+Para obter os detalhes ou atualizar um item, use `GET /specs/{id}` e `PUT /items/{id}`. Para
 associar uma imagem local, use `PUT /items/{id}/image` com o campo multipart `image`;
 para baixá-la, use `GET /items/{id}/image`. IDs aceitam letras, dígitos, `_` e `-`.
 As gravações são destinadas à administração do catálogo.

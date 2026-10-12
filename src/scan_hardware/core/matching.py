@@ -34,6 +34,16 @@ def normalize_identifier(value: str) -> str:
     return "".join(_WORD_PATTERN.findall(ascii_text.upper()))
 
 
+def _identifier_aliases(item: Item, identifier: str) -> set[str]:
+    """Include a printed model code without a catalog-added brand prefix."""
+    normalized = normalize_identifier(identifier)
+    aliases = {normalized}
+    brand = normalize_identifier(item.brand)
+    if normalized.startswith(brand) and len(normalized) - len(brand) >= MIN_IDENTIFIER_LENGTH:
+        aliases.add(normalized[len(brand) :])
+    return aliases
+
+
 def _candidate_fragments(value: str) -> set[str]:
     """Build contiguous OCR token spans to tolerate surrounding label text."""
     joined_codes = re.sub(r"(?<=[A-Z0-9])-(?=[A-Z0-9])", "", value.upper())
@@ -75,11 +85,11 @@ def _exact_matches(observations: list[str], items: list[Item]) -> list[Match]:
     exact_matches: dict[str, Match] = {}
     for item in items:
         for identifier in item.identifiers:
-            target = normalize_identifier(identifier)
-            if target not in all_fragments:
+            aliases = _identifier_aliases(item, identifier)
+            if all_fragments.isdisjoint(aliases):
                 continue
             for observed, values in fragments:
-                if target in values:
+                if not values.isdisjoint(aliases):
                     exact_matches[item.id] = Match(
                         item=item,
                         matched_identifier=identifier,
@@ -121,7 +131,8 @@ def _fuzzy_matches(observations: list[str], items: list[Item]) -> list[Match]:
         if has_gpu_label and item.category is not Category.GPU:
             continue
         for identifier in item.identifiers:
-            aliases.setdefault(normalize_identifier(identifier), []).append((item, identifier))
+            for alias in _identifier_aliases(item, identifier):
+                aliases.setdefault(alias, []).append((item, identifier))
     if not aliases:
         return []
     choices = list(aliases)

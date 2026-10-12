@@ -10,6 +10,7 @@ from typing import Any
 from scan_hardware.core.matching import normalize_identifier
 from scan_hardware.core.specifications import build_specifications
 from scan_hardware.curation import verified_images
+from scan_hardware.image_enrichment import image_for_item
 from scan_hardware.models.item import Category, Item, ItemInput
 
 
@@ -122,12 +123,17 @@ class Catalog:
                 "SELECT display FROM identifiers WHERE item_id = ? ORDER BY display", (item_id,)
             ).fetchall()
         curated_image = verified_images().get(item_id)
+        external_image = image_for_item(item_id, Category(row["category"]), row["model"])
         return Item(
             id=row["id"],
             category=Category(row["category"]),
             brand=row["brand"],
             model=row["model"],
-            image_url=str(curated_image.image_url) if curated_image else row["image_url"],
+            image_url=(
+                str(curated_image.image_url)
+                if curated_image
+                else row["image_url"] or (str(external_image.image_url) if external_image else None)
+            ),
             identifiers=[alias["display"] for alias in aliases],
             has_local_image=row["image_digest"] is not None,
             local_image_url=f"/items/{item_id}/image" if row["image_digest"] else None,
@@ -151,6 +157,7 @@ class Catalog:
         aliases: dict[str, list[str]] = {}
         for alias in alias_rows:
             aliases.setdefault(alias["item_id"], []).append(alias["display"])
+        curated_images = verified_images()
         return [
             Item(
                 id=row["id"],
@@ -158,16 +165,25 @@ class Catalog:
                 brand=row["brand"],
                 model=row["model"],
                 image_url=(
-                    str(verified_images()[row["id"]].image_url)
-                    if row["id"] in verified_images()
+                    str(curated_images[row["id"]].image_url)
+                    if row["id"] in curated_images
                     else row["image_url"]
+                    or (
+                        str(external_image.image_url)
+                        if (
+                            external_image := image_for_item(
+                                row["id"], Category(row["category"]), row["model"]
+                            )
+                        )
+                        else None
+                    )
                 ),
                 identifiers=aliases.get(row["id"], []),
                 has_local_image=row["image_digest"] is not None,
                 local_image_url=f"/items/{row['id']}/image" if row["image_digest"] else None,
                 image_attribution=(
-                    verified_images()[row["id"]].attribution()
-                    if row["id"] in verified_images() and row["image_digest"] is None
+                    curated_images[row["id"]].attribution()
+                    if row["id"] in curated_images and row["image_digest"] is None
                     else None
                 ),
             )
