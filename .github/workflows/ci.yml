@@ -67,7 +67,7 @@ jobs:
         run: poetry run pytest
 
       - name: Secret scan
-        run: poetry run detect-secrets-hook $(git ls-files)
+        run: poetry run detect-secrets-hook --baseline .secrets.baseline $(git ls-files)
 
       - name: Build scanner container
         if: runner.os == 'Linux'

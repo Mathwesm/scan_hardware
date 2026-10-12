@@ -1,9 +1,20 @@
 # Validação de campo do scanner
 
-Resultados locais em 08 e 11/10/2026. As fotos, manifestos e respostas completas
+Resultados locais em 08, 11 e 12/10/2026. As fotos, manifestos e respostas completas
 ficam sob `data/validation/`, fora do Git. Os testes enviaram bytes reais de JPEG
 ou PNG para `POST /scan`; não simularam a saída do OCR. Recortes da mesma imagem
 são testes de enquadramento, não peças adicionais.
+
+## Foto enviada pelo usuário: Gigabyte GA-Z77X-UD5H
+
+Na foto completa, o OCR inicial leu `GIGABYTE`, mas perdeu o código impresso
+`GA-Z77X-UD5H`. Uma segunda leitura com contraste invertido em faixas reconheceu
+o código. O catálogo já continha a placa, porém seu identificador tinha o prefixo
+`Gigabyte`; o matcher agora também considera o código sem esse prefixo. O envio
+da foto completa retornou `matched` exato para `Gigabyte GA-Z77X-UD5H`, ID
+`motherboard-2716c8c323f0e5902e139112`. O manifesto local fica em
+`data/validation/gigabyte-user-photo-20261012/manifest.json`; o relatório está
+em `data/validation/20261012T170433331754Z/report.json` na máquina de teste.
 
 ## Foto enviada pelo usuário: três placas ECS
 
@@ -17,7 +28,7 @@ Depois da inclusão de dois produtos suplementares, os três recortes passaram:
 | `G41T-MR23` | `matched`, exato | `motherboard-ecs-g41t-mr23-v1` |
 | `A890GXM-A` | `matched`, exato | `motherboard-b1c7711431a2234604c444f0` |
 
-O envio da montagem inteira também retornou os três itens com `is_exact: true`.
+O envio da montagem inteira também retornou os três itens com `status: matched`.
 Isso demonstra o comportamento nessa imagem específica; para uso normal, fotografe
 uma peça por vez. O relatório dos recortes está em
 `data/validation/20261011T225249516277Z/report.json` na máquina de teste.
@@ -50,7 +61,7 @@ em `data/validation/20261011T225332475553Z/report.json` na máquina de teste.
 | [MSI GTX 1050 Ti, frente sem código](https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg) | `not_found`; a identificação não aparece na face fotografada. |
 
 Licenças e autores das fotos externas estão no
-[manifesto de exemplo](photo_manifest.example.json). Esses onze ensaios cobrem
+[manifesto de exemplo](photo_manifest.example.json). Esses doze ensaios cobrem
 poucos produtos e não representam uma taxa geral de acerto do OCR.
 
 ## Cobertura e conflitos dos dados
@@ -76,19 +87,38 @@ de fonte ou fato conferido; um conflito conta como coberto, mas retorna
 | Placa-mãe (4.426) | Memória máxima | 4.229 | 1 |
 | Placa-mãe (4.426) | Slots de memória | 4.228 | 1 |
 
-Onze valores de itens específicos foram conferidos em documentos identificados:
+Vinte e cinco valores de itens específicos foram conferidos em documentos identificados:
 socket do E8400; TDP do i3-7350K; VRAM da MSI GTX 1050 Ti 4GT OC; formato da
-ASRock A320M-DVS R4.0; quatro campos da A785GM-M3; e três da G41T-MR23.
+ASRock A320M-DVS R4.0; quatro campos da A785GM-M3; três da G41T-MR23; e três
+campos de memória da GA-Z77X-UD5H, mais tipo de slot e canais dessa placa;
+tipo e taxa de RAM, caches L2/L3 e TDP do Ryzen 5 5600X; e tipo, velocidade,
+barramento e unidades de processamento da MSI GTX 1050 Ti 4GT OC.
 As evidências originais dos arquivos Kaggle continuam acessíveis em
 `GET /items/{id}/sources`.
 
 ## Imagens e limites
 
-O importador removeu placeholders conhecidos. A auditoria atual conta cinco fotos
-com autoria e licença revisadas, 4.652 itens com URLs externas sem direitos
-revisados e 8.217 itens sem imagem. As fotos revisadas continuam hospedadas fora
-do serviço. URLs de outros hosts podem deixar de funcionar, e a licença do
-dataset não concede automaticamente direito de republicar a foto.
+A foto enviada da GA-Z77X-UD5H passou a resolver uma imagem externa do
+[fabricante](https://www.gigabyte.com/Motherboard/GA-Z77X-UD5H-rev-10), sem
+redistribuir o arquivo. A página de [especificações da GIGABYTE](https://www.gigabyte.com/Motherboard/GA-Z77X-UD5H-rev-10/sp)
+informa DDR3, 32 GB em quatro slots, até 1600 MHz sem OC e 2800 MHz com OC.
+O demo agora mostra a unidade de memória e distingue o limite com overclock.
+As fichas do [Ryzen 5 5600X](https://www.amd.com/en/products/processors/desktops/ryzen/5000-series/amd-ryzen-5-5600x.html)
+e da [MSI GTX 1050 Ti 4GT OC](https://www.msi.com/Graphics-Card/GeForce-GTX-1050-Ti-4GT-OC/Specification)
+fornecem os novos detalhes de CPU e GPU. O fluxo com fotos foi repetido em
+12/10/2026: oito casos anteriores passaram, incluindo CPU, GPU e placa-mãe;
+a foto enviada da GA-Z77X-UD5H também retornou o item exato. Relatórios locais:
+`data/validation/20261012T173651826111Z/report.json` e
+`data/validation/20261012T173704630640Z/report.json`.
+
+O importador removeu placeholders conhecidos. Depois da
+[coleta por correspondência exata](image_enrichment.md), a auditoria conta cinco
+fotos com autoria e licença revisadas, 4.653 URLs anteriores sem direitos
+revisados, 6.007 novas URLs externas e 2.209 itens sem imagem. As fotos continuam
+hospedadas fora do serviço. Uma amostra de nove URLs novas respondeu HTTP 200
+com JPEG válido; a inspeção visual de CPU, GPU e placa-mãe mostrou que uma imagem
+de CPU era da embalagem do processador. Isso não comprova a qualidade de todo o
+catálogo nem dá licença para republicar os arquivos.
 
 O serviço e a configuração Compose foram testados localmente. A construção e a
 execução do contêiner **não puderam ser realizadas nesta máquina**, pois o daemon

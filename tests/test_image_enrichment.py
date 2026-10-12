@@ -1,0 +1,139 @@
+"""Exact product-image enrichment from a cached public export."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+from scan_hardware.image_enrichment import ImageSourceError, build_manifest, catalog_images
+from scan_hardware.models.item import Category, ItemInput
+from scan_hardware.services.catalog import Catalog
+
+
+def _feed_row(
+    category: str,
+    name: str,
+    brand: str,
+    image_url: str,
+    source_id: str,
+    chipset: str | None = None,
+) -> dict[str, object]:
+    """Build a source row with the same fields as the public JSONL export."""
+    return {
+        "category": category,
+        "name": name,
+        "brand": brand,
+        "image_url": image_url,
+        "url": f"https://example.org/product/{source_id}",
+        "source_id": source_id,
+        "specs": {"Chipset": chipset} if chipset else {},
+    }
+
+
+def test_image_feed_requires_exact_gpu_chipset_and_rejects_ambiguous_urls(
+    tmp_path: Path,
+) -> None:
+    """A similar name or two possible photos must never select the wrong SKU."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    products = [
+        ("gpu-4070", Category.GPU, "Acme Model X", "GeForce RTX 4070"),
+        ("gpu-4080", Category.GPU, "Acme Model X", "GeForce RTX 4080"),
+        ("gpu-unknown", Category.GPU, "Acme Missing Chipset", None),
+        ("cpu-clear", Category.CPU, "Gamma Q1234", None),
+        ("cpu-ambiguous", Category.CPU, "Gamma Q5678", None),
+        ("board-placeholder", Category.MOTHERBOARD, "Beta X570 Alpha", None),
+    ]
+    for row_number, (item_id, category, name, chipset) in enumerate(products, start=1):
+        catalog.put_item(
+            item_id,
+            ItemInput(
+                category=category,
+                brand=name.split()[0],
+                model=name,
+                identifiers=[f"PART-{row_number:04d}"],
+            ),
+        )
+        raw = {"name": name}
+        if chipset:
+            raw["chipset"] = chipset
+        catalog.put_source_record("fixture", "parts.json", row_number, raw, item_id)
+    source = tmp_path / "source.jsonl"
+    rows = [
+        _feed_row(
+            "video-card",
+            "Acme Model X",
+            "Acme",
+            "https://img.test/4070.jpg",
+            "1",
+            "GeForce RTX 4070",
+        ),
+        _feed_row(
+            "video-card",
+            "Acme Model X",
+            "Acme",
+            "https://img.test/4080.jpg",
+            "2",
+            "GeForce RTX 4080",
+        ),
+        _feed_row(
+            "video-card", "Acme Missing Chipset", "Acme", "https://img.test/unknown.jpg", "7"
+        ),
+        _feed_row("cpu", "Gamma Q1234", "Gamma", "https://img.test/cpu.jpg", "3"),
+        _feed_row("cpu", "Gamma Q5678", "Gamma", "https://img.test/a.jpg", "4"),
+        _feed_row("cpu", "Gamma Q5678", "Gamma", "https://img.test/b.jpg", "5"),
+        _feed_row("motherboard", "Beta X570 Alpha", "Beta", "https://img.test/no-image.png", "6"),
+    ]
+    source.write_text("\n".join(json.dumps(row) for row in rows), encoding="utf-8")
+
+    manifest, report = build_manifest(source, catalog.path, minimums={})
+
+    selected = {image.item_id: str(image.image_url) for image in manifest.images}
+    assert selected == {
+        "gpu-4070": "https://img.test/4070.jpg",
+        "gpu-4080": "https://img.test/4080.jpg",
+        "cpu-clear": "https://img.test/cpu.jpg",
+    }
+    assert report["catalog"]["ambiguous_cpu"] == 1
+    assert report["catalog"]["no_exact_match_motherboard"] == 1
+    assert report["catalog"]["no_exact_match_gpu"] == 1
+    assert report["feed_rejected"]["placeholder"] == 1
+    assert report["feed_rejected"]["missing_chipset"] == 1
+
+
+def test_image_feed_coverage_gate_rejects_incomplete_catalog(tmp_path: Path) -> None:
+    """A truncated export cannot silently replace the packaged image set."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    source = tmp_path / "empty.jsonl"
+    source.write_text("", encoding="utf-8")
+
+    with pytest.raises(ImageSourceError, match="Image coverage gate failed"):
+        build_manifest(source, catalog.path)
+
+
+def test_packaged_image_disappears_if_catalog_model_is_replaced(tmp_path: Path) -> None:
+    """A reused item ID must not retain a photograph of a different model."""
+    image = next(iter(catalog_images().values()))
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        image.item_id,
+        ItemInput(
+            category=image.category,
+            brand=image.model.split()[0],
+            model=image.model,
+            identifiers=["ORIGINAL-MODEL"],
+        ),
+    )
+    assert str(catalog.get_item(image.item_id).image_url) == str(image.image_url)
+
+    catalog.put_item(
+        image.item_id,
+        ItemInput(
+            category=image.category,
+            brand="Different",
+            model="Different hardware revision",
+            identifiers=["REPLACED-MODEL"],
+        ),
+    )
+    assert catalog.get_item(image.item_id).image_url is None

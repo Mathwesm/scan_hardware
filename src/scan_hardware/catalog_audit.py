@@ -15,6 +15,7 @@ from loguru import logger
 from scan_hardware.config import settings
 from scan_hardware.core.specifications import build_specifications
 from scan_hardware.curation import verified_images
+from scan_hardware.image_enrichment import image_for_item
 from scan_hardware.models.item import Category
 
 
@@ -34,7 +35,7 @@ def audit_catalog(catalog_path: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Catalog is missing: {catalog_path}")
     connection = sqlite3.connect(catalog_path)
     try:
-        items = connection.execute("SELECT id, category, image_url FROM items").fetchall()
+        items = connection.execute("SELECT id, category, model, image_url FROM items").fetchall()
         source_rows = connection.execute(
             "SELECT item_id, dataset, payload_json FROM source_records WHERE item_id IS NOT NULL"
         ).fetchall()
@@ -49,13 +50,16 @@ def audit_catalog(catalog_path: Path) -> dict[str, Any]:
     verified: dict[str, Counter[str]] = defaultdict(Counter)
     image_counts: Counter[str] = Counter()
     curated_images = verified_images()
-    for item_id, category_name, image_url in items:
+    for item_id, category_name, model, image_url in items:
         items_by_category[category_name] += 1
+        curated = curated_images.get(item_id)
         image_counts[
             "reviewed"
-            if item_id in curated_images
+            if curated is not None and curated.license_name is not None
             else "unreviewed_url"
-            if image_url
+            if image_url or curated is not None
+            else "matched_feed"
+            if image_for_item(item_id, Category(category_name), model) is not None
             else "missing"
         ] += 1
         for field, spec in build_specifications(

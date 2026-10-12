@@ -36,6 +36,29 @@ def test_exact_identifier_inside_longer_ocr_line() -> None:
     assert result.matches[0].is_exact is True
 
 
+def test_printed_board_code_matches_catalog_identifier_with_brand_prefix() -> None:
+    correct = Item(
+        id="board-z77x",
+        category=Category.MOTHERBOARD,
+        brand="Gigabyte",
+        model="Gigabyte GA-Z77X-UD5H",
+        identifiers=["Gigabyte GA-Z77X-UD5H"],
+    )
+    similar = Item(
+        id="board-z170x",
+        category=Category.MOTHERBOARD,
+        brand="Gigabyte",
+        model="Gigabyte GA-Z170X-UD5 TH",
+        identifiers=["Gigabyte GA-Z170X-UD5 TH"],
+    )
+
+    result = match_items(["GA-Z77X-UD5H"], [similar, correct])
+
+    assert result.status == "matched"
+    assert [match.item.id for match in result.matches] == ["board-z77x"]
+    assert result.matches[0].is_exact is True
+
+
 def test_identifier_split_across_adjacent_ocr_lines() -> None:
     item = Item(
         id="board-1",

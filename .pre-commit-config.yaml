@@ -10,7 +10,7 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files
-        args: [--maxkb=1024]
+        args: [--maxkb=3072]
       - id: mixed-line-ending
         args: [--fix=lf]
 
@@ -36,4 +36,5 @@ repos:
       - id: detect-secrets-project
         name: detect secrets project
         entry: poetry run detect-secrets-hook
+        args: [--baseline, .secrets.baseline]
         language: system

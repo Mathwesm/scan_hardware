@@ -56,12 +56,21 @@ def test_catalog_audit_counts_verified_and_unreviewed_images(tmp_path: Path) -> 
             image_url="https://example.com/other.jpg",
         ),
     )
+    catalog.put_item(
+        "motherboard-2716c8c323f0e5902e139112",
+        ItemInput(
+            category=Category.MOTHERBOARD,
+            brand="Gigabyte",
+            model="GA-Z77X-UD5H",
+            identifiers=["GA-Z77X-UD5H"],
+        ),
+    )
 
     report = audit_catalog(catalog_path)
 
-    assert report["items"] == {"cpu": 2}
+    assert report["items"] == {"cpu": 2, "motherboard": 1}
     assert report["verified"]["cpu"]["socket"] == 1
-    assert report["images"] == {"reviewed": 1, "unreviewed_url": 1}
+    assert report["images"] == {"reviewed": 1, "unreviewed_url": 2}
 
 
 def test_supplemental_boards_match_printed_codes_without_nearby_model_confusion(

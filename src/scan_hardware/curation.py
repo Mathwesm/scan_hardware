@@ -57,17 +57,26 @@ class VerifiedManifest(BaseModel):
 
 
 class VerifiedImage(BaseModel):
-    """A reviewed Commons photograph linked to one exact hardware model."""
+    """An exact-model image with explicit licensing state."""
 
     item_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
     image_url: HttpUrl
     creator: str = Field(min_length=1)
     source_url: HttpUrl
-    license_name: str = "CC BY-SA 4.0"
-    license_url: HttpUrl = HttpUrl("https://creativecommons.org/licenses/by-sa/4.0/")
+    license_name: str | None = "CC BY-SA 4.0"
+    license_url: HttpUrl | None = HttpUrl("https://creativecommons.org/licenses/by-sa/4.0/")
 
-    def attribution(self) -> ImageAttribution:
-        """Expose credit fields in the item response."""
+    @model_validator(mode="after")
+    def validate_license(self) -> VerifiedImage:
+        """Require a license name and URL together when rights are known."""
+        if (self.license_name is None) != (self.license_url is None):
+            raise ValueError("Image license name and URL must both be present or absent")
+        return self
+
+    def attribution(self) -> ImageAttribution | None:
+        """Expose credit only when reuse rights have been identified."""
+        if self.license_name is None or self.license_url is None:
+            return None
         return ImageAttribution(
             creator=self.creator,
             source_url=str(self.source_url),
@@ -112,7 +121,7 @@ def verified_facts() -> dict[tuple[str, str], VerifiedFact]:
 
 @lru_cache(maxsize=1)
 def verified_images() -> dict[str, VerifiedImage]:
-    """Load curated image references with creator and license details."""
+    """Load exact-model image references and their licensing state."""
     path = files("scan_hardware").joinpath("curation", "verified_images.json")
     manifest = ImageManifest.model_validate_json(path.read_text(encoding="utf-8"))
     images: dict[str, VerifiedImage] = {}

@@ -69,7 +69,7 @@ segredos da implantação.
 | --- | --- | --- |
 | `POST /scan` | `multipart/form-data`, campo `image` | OCR da foto e busca no catálogo. |
 | `POST /lookup` | JSON `{"text":"A890GXM-A"}` | Busca de código já digitado ou lido pelo app. |
-| `GET /items/{id}` | ID recebido na resposta | Detalhes atuais do produto. |
+| `GET /specs/{id}` | ID recebido na resposta | Detalhes e especificações do produto. |
 | `GET /items/{id}/sources` | ID recebido na resposta | Linhas originais das fontes, com todas as colunas importadas. |
 | `GET /items/{id}/image` | ID com imagem local | Arquivo da imagem de referência. |
 | `PUT /items/{id}` | JSON do produto | Cria ou substitui um item do catálogo. |
@@ -98,74 +98,106 @@ PowerShell. Com a autenticação ligada, acrescente `-H "X-API-Key: <sua-chave>"
 ```json
 {
   "status": "matched",
-  "detected_text": ["A890GXM-A V:1.0"],
   "matches": [
     {
-      "item": {
-        "category": "motherboard",
-        "brand": "ECS",
-        "model": "ECS A890GXM-A",
-        "identifiers": ["A890GXM-A", "ECS A890GXM-A"],
-        "image_url": "https://example.org/reference.jpg",
-        "id": "motherboard-example",
-        "has_local_image": false,
-        "local_image_url": null,
-        "image_attribution": null,
-        "specifications": {
-          "socket": {
-            "value": "AM3",
-            "unit": null,
-            "status": "reported",
-            "evidence": [
-              {
-                "dataset": "warcoder/pc-parts",
-                "field": "socket",
-                "value": "AM3",
-                "source_url": null
-              }
-            ]
-          }
-        }
-      },
-      "matched_identifier": "A890GXM-A",
-      "observed_text": "A890GXM-A V:1.0",
-      "score": 1.0,
-      "is_exact": true
+      "category": "motherboard",
+      "brand": "ECS",
+      "model": "ECS A890GXM-A",
+      "image_url": "https://example.org/reference.jpg",
+      "id": "motherboard-example",
+      "socket": "AM3",
+      "form_factor": "ATX",
+      "memory_slots": 4
     }
   ]
 }
 ```
 
-O exemplo acima ilustra o **formato**; ID, imagem e evidências concretas dependem da
+O exemplo acima ilustra o **formato**; ID e imagem dependem da
 versão do catálogo. `category` é `motherboard`, `gpu` ou `cpu`.
 
 | `status` | Significado | Ação no aplicativo |
 | --- | --- | --- |
-| `matched` | Pelo menos um identificador bateu exatamente. | Mostrar os itens e o texto que justificou a correspondência. Se houver mais de um, pedir escolha. |
+| `matched` | Pelo menos um identificador bateu exatamente. | Mostrar os itens. Se houver mais de um, pedir escolha. |
 | `suggestions` | Há candidatos parecidos, sem confirmação exata. | Mostrar como sugestões e pedir confirmação humana. Nunca chamar de identificação confirmada. |
-| `not_found` | Nenhum candidato suficiente. | Exibir `detected_text`, permitir corrigir o código ou tirar outra foto. |
+| `not_found` | Nenhum candidato suficiente. | Permitir corrigir o código ou tirar outra foto. |
 
-`matches` pode estar vazio. `score` vai de 0 a 1, mas **não é uma probabilidade
-calibrada**. Use `is_exact` e `status` para a decisão principal. O serviço pode
-retornar até cinco itens; numa foto que contém várias peças, um item encontrado pode
-ocultar sugestões de outros códigos. Peça uma foto por peça.
+`matches` é sempre uma lista, vazia em `not_found`, com até cinco candidatos. Cada
+candidato contém campos simples: texto, número ou booleano. `socket`, `memory_slots`,
+`cores`, `threads` e outros campos só aparecem quando há um valor sem conflito.
+O sufixo do nome informa a unidade, como `_ghz`, `_gb`, `_mhz`, `_mt_s`, `_mm`, `_mb` ou `_w`.
+Campo ausente significa dado indisponível ou conflitante, nunca zero. Use `status`
+para distinguir correspondência exata de sugestão. Peça uma foto por peça.
+Para memória de placas-mães, `max_memory_gb` é capacidade em GB;
+`max_memory_standard_mhz` e `max_memory_oc_mhz` diferenciam o limite sem e com
+overclock. `memory_slot_type` indica o encaixe físico (por exemplo, DIMM), e
+`memory_channels` indica os canais suportados. Para CPU, `memory_speed_mt_s` é a
+taxa máxima oficial de transferências por segundo, distinta do clock em MHz;
+`l2_cache_mb` e `l3_cache_mb` indicam o cache. Para GPU, `memory_type` indica a
+tecnologia da VRAM, `memory_speed_mhz` sua velocidade anunciada,
+`memory_bus_bits` a largura do barramento e `shader_units` as unidades de
+processamento quando o fabricante as informa. Esses campos só aparecem para
+modelos com fonte identificada; não são deduzidos a partir de outro SKU.
 
-Em `specifications`, cada campo traz `value`, `unit`, `status` e `evidence`:
+O JSON compacto é exclusivo de `/scan` e `/lookup`. Para detalhes, estado de cada
+especificação, licença da imagem e todas as colunas das fontes, consulte
+`GET /specs/{id}` e `GET /items/{id}/sources`. `image_url` na resposta compacta
+prioriza a imagem local; uma URL externa pode estar indisponível ou sem direitos de
+exibição comprovados. Uma URL local precisa ser resolvida pelo backend que atende
+o celular. Se não houver imagem, o campo é omitido. Na coleta de 12/10/2026,
+10.665 de 12.874 itens têm uma referência de imagem; o aplicativo ainda precisa
+mostrar um substituto quando `image_url` estiver ausente ou o host externo falhar.
 
-- `verified`: valor conferido em uma fonte específica, com URL de evidência.
-- `reported`: valor presente na base importada, ainda não verificado diretamente.
-- `conflict`: fontes discordam; `value` é `null`. Mostre as evidências e não escolha um
-  valor por conta própria.
+### Modelo simples em Kotlin
 
-Campo ausente significa dado indisponível, não valor zero. Isso importa em CPU:
-frequência, núcleos, threads e socket podem faltar em alguns registros.
+```kotlin
+import kotlinx.serialization.Serializable
 
-Para a foto de referência, prefira `local_image_url` quando não for `null`, compondo
-com a URL base do scanner **no backend**. Caso contrário, `image_url` pode apontar a
-um host externo e pode estar indisponível ou sem direitos de exibição comprovados.
-Se houver `image_attribution`, mostre criador, fonte e licença. Se não houver imagem
-adequada, exiba um estado "sem imagem"; não use a foto enviada como se fosse a foto
-de referência do catálogo.
+@Serializable
+data class ScanResponse(
+    val status: String,
+    val matches: List<Hardware> = emptyList(),
+)
+
+@Serializable
+data class Hardware(
+    val category: String,
+    val brand: String,
+    val model: String,
+    val id: String,
+    val image_url: String? = null,
+    val socket: String? = null,
+    val form_factor: String? = null,
+    val max_memory_gb: Int? = null,
+    val memory_slots: Int? = null,
+    val memory_type: String? = null,
+    val memory_slot_type: String? = null,
+    val memory_channels: Int? = null,
+    val max_memory_standard_mhz: Int? = null,
+    val max_memory_oc_mhz: Int? = null,
+    val memory_speed_mt_s: Int? = null,
+    val l2_cache_mb: Int? = null,
+    val l3_cache_mb: Int? = null,
+    val color: String? = null,
+    val base_clock_ghz: Double? = null,
+    val boost_clock_ghz: Double? = null,
+    val cores: Int? = null,
+    val threads: Int? = null,
+    val tdp_w: Int? = null,
+    val integrated_graphics: String? = null,
+    val smt: Boolean? = null,
+    val chipset: String? = null,
+    val vram_gb: Int? = null,
+    val memory_speed_mhz: Int? = null,
+    val memory_bus_bits: Int? = null,
+    val shader_units: Int? = null,
+    val core_clock_mhz: Int? = null,
+    val boost_clock_mhz: Int? = null,
+    val board_power_w: Int? = null,
+    val length_mm: Int? = null,
+    val resolution_class: String? = null,
+)
+```
 
 ### Erros que o cliente deve tratar
 
@@ -272,7 +304,7 @@ Em um app web ou protótipo móvel, um campo de arquivo pode abrir a câmera tra
       // Show a network or validation error to the user.
       return;
     }
-    // Render result.status, result.detected_text and result.matches.
+    // Render result.status and result.matches.
     // Confirm suggestions with the user before accepting an item.
   });
 </script>

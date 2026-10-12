@@ -7,9 +7,12 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 from PIL import Image, ImageDraw, ImageFont
+from pytest_mock import MockerFixture
+from rapidocr.utils.output import RapidOCROutput
 
 from scan_hardware.api import create_app
 from scan_hardware.config import Settings
+from scan_hardware.services.ocr import OcrScanner
 
 
 def test_printed_model_photo_matches_catalog_item(tmp_path: Path) -> None:
@@ -38,4 +41,20 @@ def test_printed_model_photo_matches_catalog_item(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "matched"
-    assert response.json()["matches"][0]["item"]["id"] == "board-1"
+    assert response.json()["matches"][0]["id"] == "board-1"
+
+
+def test_dark_label_uses_inverted_fallback(mocker: MockerFixture) -> None:
+    image = Image.new("RGB", (1000, 500), "black")
+    output = BytesIO()
+    image.save(output, format="PNG")
+
+    def recognize(content: bytes) -> RapidOCROutput:
+        with Image.open(BytesIO(content)) as received:
+            is_inverted = received.convert("L").getpixel((500, received.height // 2)) > 128
+        text = "GA-Z77X-UD5H" if is_inverted else "GIGABYTE"
+        return RapidOCROutput(txts=(text,), scores=(0.99,))
+
+    mocker.patch("scan_hardware.services.ocr.RapidOCR", return_value=recognize)
+
+    assert OcrScanner().read_text(output.getvalue()) == ["GIGABYTE", "GA-Z77X-UD5H"]

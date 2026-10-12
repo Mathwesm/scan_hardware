@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sqlite3
 from pathlib import Path
 
 import pytest
@@ -290,9 +291,8 @@ def test_gpu_image_joins_only_matching_chipset(tmp_path: Path) -> None:
     ]
 
     _import_groups(catalog, _build_groups(warcoder, rohit))
-    images = {
-        item.model: str(item.image_url) if item.image_url else None for item in catalog.list_items()
-    }
+    with sqlite3.connect(catalog.path) as connection:
+        images = dict(connection.execute("SELECT model, image_url FROM items"))
 
     assert images["Asus TUF GAMING GeForce RTX 4070 Ti"] is None
     assert images["Asus TUF GAMING GeForce RTX 4080"] == "https://example.com/4080.jpg"

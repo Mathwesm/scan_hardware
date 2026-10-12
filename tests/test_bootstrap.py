@@ -9,7 +9,7 @@ import pytest
 
 from scan_hardware.bootstrap import prepare_catalog
 from scan_hardware.config import Settings
-from scan_hardware.models.item import Category, Item, ItemInput, Match, ScanResult
+from scan_hardware.models.item import Category, Item, ItemInput, Match, ScanResponse, ScanResult
 from scan_hardware.photo_validation import PhotoCase, evaluate_case
 from scan_hardware.services.catalog import Catalog
 
@@ -67,4 +67,4 @@ def test_photo_evaluation_does_not_promote_suggestion_to_exact() -> None:
         expected_item_id="motherboard-1",
     )
 
-    assert not evaluate_case(case, result, 1.2, "test-digest").passed
+    assert not evaluate_case(case, ScanResponse.from_result(result), 1.2, "test-digest").passed

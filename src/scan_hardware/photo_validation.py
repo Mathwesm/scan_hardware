@@ -15,7 +15,7 @@ from loguru import logger
 from pydantic import BaseModel, Field
 
 from scan_hardware.api import create_app
-from scan_hardware.models.item import ScanResult
+from scan_hardware.models.item import ScanResponse
 
 
 class PhotoCase(BaseModel):
@@ -53,7 +53,7 @@ class CaseResult(BaseModel):
 
 
 def evaluate_case(
-    case: PhotoCase, result: ScanResult, elapsed_seconds: float, image_sha256: str
+    case: PhotoCase, result: ScanResponse, elapsed_seconds: float, image_sha256: str
 ) -> CaseResult:
     """Judge status and top candidate without treating a suggestion as exact.
 
@@ -66,7 +66,7 @@ def evaluate_case(
     Returns:
         Comparison with a Boolean pass decision.
     """
-    top_id = result.matches[0].item.id if result.matches else None
+    top_id = result.matches[0].id if result.matches else None
     passed = result.status == case.expected_status and (
         case.expected_item_id is None or top_id == case.expected_item_id
     )
@@ -110,7 +110,7 @@ def run_manifest(manifest_path: Path, output_root: Path) -> Path:
         )
         elapsed = time.perf_counter() - started
         response.raise_for_status()
-        result = ScanResult.model_validate(response.json())
+        result = ScanResponse.model_validate(response.json())
         case_result = evaluate_case(case, result, elapsed, hashlib.sha256(content).hexdigest())
         results.append(case_result)
         logger.info(

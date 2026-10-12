@@ -61,7 +61,7 @@ def test_scan_returns_matching_item_and_local_image(tmp_path: Path) -> None:
 
     assert scan_response.status_code == 200
     assert scan_response.json()["status"] == "matched"
-    assert scan_response.json()["matches"][0]["item"]["id"] == "board-1"
+    assert scan_response.json()["matches"][0]["id"] == "board-1"
     assert client.get("/items/board-1/image").content == picture
 
 
@@ -83,6 +83,7 @@ def test_lookup_without_catalog_returns_not_found(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "not_found"
+    assert response.json()["matches"] == []
     assert client.get("/ready").status_code == 503
 
 
@@ -146,12 +147,183 @@ def test_scan_exposes_cpu_specs_and_source_conflict(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "matched"
-    specs = response.json()["matches"][0]["item"]["specifications"]
-    assert specs["socket"]["value"] == "LGA1151"
-    assert specs["threads"]["value"] == 4
-    assert specs["tdp_w"]["status"] == "conflict"
-    assert specs["tdp_w"]["value"] is None
-    assert client.get("/items/cpu-1").json()["specifications"] == specs
+    match = response.json()["matches"][0]
+    assert match == {
+        "category": "cpu",
+        "brand": "Intel",
+        "model": "Intel Core i3-7350K",
+        "id": "cpu-1",
+        "socket": "LGA1151",
+        "base_clock_ghz": 4.2,
+        "cores": 2,
+        "threads": 4,
+    }
+    assert client.get("/specs/cpu-1").json()["specs"]["tdp_w"]["status"] == "conflict"
+    assert client.get("/items/cpu-1").status_code == 405
+
+    schema = client.get("/openapi.json").json()["components"]["schemas"]["HardwareSummary"]
+    assert {"id", "model", "socket", "cores", "threads"} <= schema["properties"].keys()
+    assert "specs" not in schema["properties"]
+
+
+@pytest.mark.parametrize(
+    ("item_id", "item", "source", "expected_fields"),
+    [
+        (
+            "board-1",
+            {
+                "category": "motherboard",
+                "brand": "Gigabyte",
+                "model": "Gigabyte GA-Z170X-UD5 TH",
+                "identifiers": ["GA-Z170X-UD5 TH"],
+            },
+            {"socket": "LGA1151", "size": "ATX", "max_memory": 64, "memory_slots": 4},
+            {"socket": "LGA1151", "form_factor": "ATX", "max_memory_gb": 64, "memory_slots": 4},
+        ),
+        (
+            "gpu-1",
+            {
+                "category": "gpu",
+                "brand": "Nvidia",
+                "model": "Nvidia RTX 4080",
+                "identifiers": ["RTX 4080"],
+            },
+            {"chipset": "GeForce RTX 4080", "VRAM": 16, "power": 320},
+            {"chipset": "GeForce RTX 4080", "vram_gb": 16, "board_power_w": 320},
+        ),
+    ],
+)
+def test_lookup_returns_flat_hardware_fields(
+    tmp_path: Path,
+    item_id: str,
+    item: dict[str, object],
+    source: dict[str, object],
+    expected_fields: dict[str, object],
+) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    assert client.put(f"/items/{item_id}", json=item).status_code == 200
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "warcoder/pc-parts", "dataset/item.json", 1, source, item_id
+    )
+
+    response = client.post("/lookup", json={"text": item["identifiers"][0]})
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "matched"
+    assert response.json()["matches"] == [
+        {
+            "category": item["category"],
+            "brand": item["brand"],
+            "model": item["model"],
+            "id": item_id,
+            **expected_fields,
+        }
+    ]
+
+
+def test_gigabyte_board_includes_exact_photo_and_memory_limits(tmp_path: Path) -> None:
+    item_id = "motherboard-2716c8c323f0e5902e139112"
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    assert (
+        client.put(
+            f"/items/{item_id}",
+            json={
+                "category": "motherboard",
+                "brand": "Gigabyte",
+                "model": "Gigabyte GA-Z77X-UD5H",
+                "identifiers": ["Gigabyte GA-Z77X-UD5H"],
+            },
+        ).status_code
+        == 200
+    )
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "warcoder/pc-parts",
+        "dataset/motherboard.json",
+        1,
+        {"max_memory": 32, "memory_slots": 4},
+        item_id,
+    )
+
+    response = client.post("/lookup", json={"text": "GA-Z77X-UD5H"})
+
+    assert response.status_code == 200
+    board = response.json()["matches"][0]
+    assert board["image_url"].startswith("https://static.gigabyte.com/")
+    assert board["max_memory_gb"] == 32
+    assert board["memory_type"] == "DDR3"
+    assert board["memory_slot_type"] == "DIMM"
+    assert board["memory_channels"] == 2
+    assert board["max_memory_standard_mhz"] == 1600
+    assert board["max_memory_oc_mhz"] == 2800
+    details = client.get(f"/specs/{item_id}").json()
+    assert details["image_attribution"] is None
+    assert details["specs"]["max_memory_oc_mhz"]["status"] == "verified"
+
+
+@pytest.mark.parametrize(
+    ("item_id", "category", "model", "identifier", "expected"),
+    [
+        (
+            "cpu-dd697180a182948f05745f01",
+            "cpu",
+            "AMD Ryzen 5 5600X",
+            "Ryzen 5 5600X",
+            {
+                "memory_type": "DDR4",
+                "memory_speed_mt_s": 3200,
+                "l2_cache_mb": 3,
+                "l3_cache_mb": 32,
+                "tdp_w": 65,
+            },
+        ),
+        (
+            "gpu-bd1343be29aefce878e7e33c",
+            "gpu",
+            "MSI GTX 1050 Ti 4GT OC GeForce GTX 1050 Ti",
+            "GTX 1050 Ti 4GT OC",
+            {
+                "memory_type": "GDDR5",
+                "memory_speed_mhz": 7008,
+                "memory_bus_bits": 128,
+                "shader_units": 768,
+            },
+        ),
+    ],
+)
+def test_lookup_exposes_verified_memory_details_for_cpu_and_gpu(
+    tmp_path: Path,
+    item_id: str,
+    category: str,
+    model: str,
+    identifier: str,
+    expected: dict[str, str | int],
+) -> None:
+    """A verified model-specific fact must reach the flat mobile response."""
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    assert (
+        client.put(
+            f"/items/{item_id}",
+            json={
+                "category": category,
+                "brand": model.split()[0],
+                "model": model,
+                "identifiers": [identifier],
+            },
+        ).status_code
+        == 200
+    )
+
+    response = client.post("/lookup", json={"text": identifier})
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "matched"
+    match = response.json()["matches"][0]
+    assert all(match[field] == value for field, value in expected.items())
+    details = client.get(f"/specs/{item_id}").json()["specs"]
+    assert all(details[field]["status"] == "verified" for field in expected)
 
 
 def test_demo_is_available_for_local_camera_testing(tmp_path: Path) -> None:
