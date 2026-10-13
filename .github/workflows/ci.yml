@@ -76,6 +76,8 @@ jobs:
       - name: Start scanner container
         if: runner.os == 'Linux'
         run: |
+          export POSTGRES_PASSWORD="${{ github.run_id }}"
+          export DATABASE_URL="postgresql://scanner:${POSTGRES_PASSWORD}@postgres:5432/scan_hardware"
           docker compose config --quiet
           docker run --detach --rm --name scan-hardware-ci \
             -e HOST=0.0.0.0 -p 127.0.0.1:18080:8000 scan-hardware-ci
@@ -88,3 +90,33 @@ jobs:
           done
           docker logs scan-hardware-ci
           exit 1
+
+  postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: scan_hardware_test
+          POSTGRES_USER: scanner
+          POSTGRES_PASSWORD: ${{ github.run_id }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U scanner -d scan_hardware_test"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Install dependencies
+        run: poetry install --no-interaction
+      - name: PostgreSQL migration and runtime
+        run: |
+          export TEST_DATABASE_URL="postgresql://scanner:${{ github.run_id }}@127.0.0.1:5432/scan_hardware_test"
+          poetry run pytest -q tests/test_postgres.py

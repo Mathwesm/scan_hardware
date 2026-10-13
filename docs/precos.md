@@ -84,8 +84,8 @@ poetry run python -m scan_hardware.price_import --manifest data/import/prices/ma
 ```
 
 O Docker Compose monta `data/import/prices/` em modo leitura e importa o manifesto
-automaticamente na inicialização, depois de preparar o catálogo. O banco SQLite fica
-no volume persistente `scanner_data`. Atualize o manifesto com ofertas recém-conferidas
+automaticamente na inicialização, depois de preparar o catálogo. As ofertas ficam
+no PostgreSQL do volume `postgres_data`. Atualize o manifesto com ofertas recém-conferidas
 e reinicie o serviço para importar o novo lote. Os preços vencem após 14 dias mesmo que
 o contêiner continue ligado.
 

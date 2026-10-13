@@ -1,7 +1,26 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: scan_hardware
+      POSTGRES_USER: scanner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scanner -d scan_hardware"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
   scan_hardware:
     build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
+      - DATABASE_URL=${DATABASE_URL:?Set DATABASE_URL in .env}
       - LOG_SERIALIZE=true
       - HOST=0.0.0.0
       - REQUIRE_CATALOG=true
@@ -29,5 +48,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  postgres_data:
   scanner_logs:
   scanner_data:

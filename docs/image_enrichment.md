@@ -41,7 +41,7 @@ registros inválidos e casos com URLs diferentes para a mesma chave são rejeita
 O manifesto guarda ID, categoria e modelo do nosso catálogo; se alguém substituir
 o item mantendo o ID, a URL externa deixa de ser aplicada.
 
-A prioridade da API é: imagem revisada manualmente, imagem cadastrada no SQLite,
+A prioridade da API é: imagem revisada manualmente, imagem cadastrada no catálogo,
 imagem do export exato. Uma imagem local enviada por `PUT /items/{id}/image`
 continua prevalecendo no campo `image_url` de `/scan` e `/lookup`.
 
