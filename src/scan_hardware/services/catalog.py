@@ -57,6 +57,17 @@ class Catalog:
                     PRIMARY KEY (dataset, file_name, row_number)
                 );
                 CREATE INDEX IF NOT EXISTS idx_source_records_item ON source_records(item_id);
+                CREATE TABLE IF NOT EXISTS item_images (
+                    item_id TEXT NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+                    file_name TEXT NOT NULL,
+                    view TEXT NOT NULL CHECK(view IN ('front', 'side', 'back', 'detail', 'other')),
+                    width INTEGER NOT NULL CHECK(width > 0),
+                    height INTEGER NOT NULL CHECK(height > 0),
+                    is_primary INTEGER NOT NULL CHECK(is_primary IN (0, 1)),
+                    PRIMARY KEY (item_id, file_name)
+                );
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_primary
+                ON item_images(item_id) WHERE is_primary = 1;
                 """
             )
 
@@ -253,3 +264,69 @@ class Catalog:
                 "SELECT image_digest FROM items WHERE id = ?", (item_id,)
             ).fetchone()
         return None if row is None else row["image_digest"]
+
+    def add_image(
+        self,
+        item_id: str,
+        file_name: str,
+        view: str,
+        width: int,
+        height: int,
+        is_primary: bool,
+    ) -> None:
+        """Attach immutable local image bytes to a product gallery idempotently."""
+        with self._connect() as connection:
+            exists = connection.execute("SELECT 1 FROM items WHERE id = ?", (item_id,)).fetchone()
+            if exists is None:
+                raise KeyError(item_id)
+            if is_primary:
+                connection.execute(
+                    "UPDATE item_images SET is_primary = 0 WHERE item_id = ?", (item_id,)
+                )
+            connection.execute(
+                """INSERT INTO item_images (item_id, file_name, view, width, height, is_primary)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(item_id, file_name) DO UPDATE SET
+                view = CASE WHEN excluded.is_primary = 1 THEN excluded.view
+                            ELSE item_images.view END,
+                width = excluded.width, height = excluded.height,
+                is_primary = MAX(item_images.is_primary, excluded.is_primary)""",
+                (item_id, file_name, view, width, height, int(is_primary)),
+            )
+            if is_primary:
+                connection.execute(
+                    "UPDATE items SET image_digest = ? WHERE id = ?", (file_name, item_id)
+                )
+
+    def list_images(self, item_id: str) -> list[dict[str, Any]]:
+        """Return the primary image first, preserving legacy single-image uploads."""
+        with self._connect() as connection:
+            item = connection.execute(
+                "SELECT image_digest FROM items WHERE id = ?", (item_id,)
+            ).fetchone()
+            if item is None:
+                raise KeyError(item_id)
+            rows = connection.execute(
+                """SELECT file_name, view, width, height, is_primary
+                FROM item_images WHERE item_id = ?
+                ORDER BY is_primary DESC, view, file_name""",
+                (item_id,),
+            ).fetchall()
+        images = [dict(row) for row in rows]
+        legacy = item["image_digest"]
+        if legacy and not any(image["file_name"] == legacy for image in images):
+            images.insert(
+                0,
+                {
+                    "file_name": legacy,
+                    "view": "other",
+                    "width": None,
+                    "height": None,
+                    "is_primary": 1,
+                },
+            )
+        return images
+
+    def has_image(self, item_id: str, file_name: str) -> bool:
+        """Check that an immutable image belongs to the requested item."""
+        return any(image["file_name"] == file_name for image in self.list_images(item_id))

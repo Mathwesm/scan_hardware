@@ -1,0 +1,16 @@
+{
+  "colors": [
+    {
+      "item_id": "motherboard-ecs-a785gm-m3-v1",
+      "category": "motherboard",
+      "model": "ECS A785GM-M3 (V1.0)",
+      "color": "Green / Black"
+    },
+    {
+      "item_id": "motherboard-ecs-g41t-mr23-v1",
+      "category": "motherboard",
+      "model": "ECS G41T-MR23 (V1.0)",
+      "color": "Green / Blue"
+    }
+  ]
+}

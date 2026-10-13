@@ -72,14 +72,23 @@ segredos da implantação.
 | `GET /specs/{id}` | ID recebido na resposta | Detalhes e especificações do produto. |
 | `GET /items/{id}/sources` | ID recebido na resposta | Linhas originais das fontes, com todas as colunas importadas. |
 | `GET /items/{id}/image` | ID com imagem local | Arquivo da imagem de referência. |
+| `GET /items/{id}/images` | ID recebido na resposta | Galeria com frente, lado, verso e detalhes disponíveis. |
+| `GET /items/{id}/images/{arquivo}` | `url` retornada pela galeria | Arquivo de uma foto local. |
 | `PUT /items/{id}` | JSON do produto | Cria ou substitui um item do catálogo. |
 | `PUT /items/{id}/image` | `multipart/form-data`, campo `image` | Associa uma imagem local a um item existente. |
+| `PUT /items/{id}/images/{view}` | `multipart/form-data`, campo `image` | Adiciona uma foto local; `view` aceita `front`, `side`, `back`, `detail`, `other`. |
 
 `/scan` e `/lookup` devolvem o mesmo formato. Em produção, as rotas `PUT` devem ser
 usadas apenas por processos administrativos autorizados. Os IDs em `/{id}` aceitam
 letras, dígitos, `_` e `-`, de 1 a 64 caracteres. O upload aceita JPEG, PNG ou WebP,
 com até **8.000.000 bytes** por padrão e **20 megapixels**. O limite de bytes pode ser
 alterado por `MAX_UPLOAD_BYTES`.
+
+Para várias fotos da mesma peça, o aplicativo pode buscar
+`GET /items/{id}/images` e mostrar a entrada `is_primary=true` primeiro.
+As demais podem ser apresentadas como miniaturas. `source=external` identifica
+uma URL de referência anterior, sem revisão de enquadramento local. Consulte o
+[guia de imagens locais](imagens_locais.md) para o manifesto usado pelo Docker.
 
 Exemplos, com a autenticação desligada no teste local:
 
@@ -128,6 +137,15 @@ candidato contém campos simples: texto, número ou booleano. `socket`, `memory_
 O sufixo do nome informa a unidade, como `_ghz`, `_gb`, `_mhz`, `_mt_s`, `_mm`, `_mb` ou `_w`.
 Campo ausente significa dado indisponível ou conflitante, nunca zero. Use `status`
 para distinguir correspondência exata de sugestão. Peça uma foto por peça.
+Quando `/scan` não tem cor confiável no catálogo, ele pode preencher `color` a
+partir dos pixels da foto. Nesse caso, `color_source` vale `photo_estimate`:
+é uma aproximação visual, sujeita a fundo, iluminação, enquadramento e peças
+com várias cores. Se a cor vem do catálogo, `color_source` vale `catalog`.
+Uma estimativa previamente gerada de uma imagem local da peça usa
+`color_source: "reference_estimate"`; ela também aparece em `/lookup` quando
+ID, categoria e modelo continuam exatamente iguais. Quando não há base
+suficiente, os campos são omitidos. Estimativas não substituem cores documentadas.
+O [processamento local de fotos](color_enrichment.md) explica como ampliar a cobertura.
 Para memória de placas-mães, `max_memory_gb` é capacidade em GB;
 `max_memory_standard_mhz` e `max_memory_oc_mhz` diferenciam o limite sem e com
 overclock. `memory_slot_type` indica o encaixe físico (por exemplo, DIMM), e
@@ -145,7 +163,7 @@ especificação, licença da imagem e todas as colunas das fontes, consulte
 prioriza a imagem local; uma URL externa pode estar indisponível ou sem direitos de
 exibição comprovados. Uma URL local precisa ser resolvida pelo backend que atende
 o celular. Se não houver imagem, o campo é omitido. Na coleta de 12/10/2026,
-10.665 de 12.874 itens têm uma referência de imagem; o aplicativo ainda precisa
+10.667 de 12.874 itens têm uma referência de imagem; o aplicativo ainda precisa
 mostrar um substituto quando `image_url` estiver ausente ou o host externo falhar.
 
 ### Modelo simples em Kotlin
@@ -179,6 +197,7 @@ data class Hardware(
     val l2_cache_mb: Int? = null,
     val l3_cache_mb: Int? = null,
     val color: String? = null,
+    val color_source: String? = null,
     val base_clock_ghz: Double? = null,
     val boost_clock_ghz: Double? = null,
     val cores: Int? = null,

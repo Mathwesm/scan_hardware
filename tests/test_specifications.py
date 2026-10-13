@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
+
+from scan_hardware.core import specifications
 from scan_hardware.core.specifications import build_specifications
+from scan_hardware.curation import ReportedColor
 from scan_hardware.models.item import Category
 
 
@@ -77,3 +81,43 @@ def test_gpu_and_motherboard_fields_keep_category_specific_meaning() -> None:
     assert gpu["core_clock_mhz"].unit == "MHz"
     assert board["socket"].value == "AM4"
     assert board["memory_slots"].value == 4
+
+
+def test_color_order_does_not_create_false_conflict() -> None:
+    rows = [
+        {"dataset": "source-a", "data": {"color": "Black / Silver"}},
+        {"dataset": "source-b", "data": {"color": "Silver / Black"}},
+    ]
+
+    specs = build_specifications(Category.MOTHERBOARD, rows)
+
+    assert specs["color"].status == "reported"
+    assert specs["color"].value == "Black / Silver"
+    assert {entry.value for entry in specs["color"].evidence} == {
+        "Black / Silver",
+        "Silver / Black",
+    }
+
+
+def test_exact_part_number_color_fills_only_missing_catalog_value(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The secondary source fills a gap but never replaces an imported fact."""
+    entry = ReportedColor(
+        item_id="gpu-exact",
+        category=Category.GPU,
+        model="Example GPU",
+        color="Black / Gray",
+        source_id="11111111-1111-1111-1111-111111111111",
+    )
+    monkeypatch.setattr(specifications, "reported_colors", lambda: {"gpu-exact": entry})
+
+    missing = build_specifications(Category.GPU, [], "gpu-exact")
+    existing = build_specifications(
+        Category.GPU, [{"dataset": "primary", "data": {"color": "White"}}], "gpu-exact"
+    )
+
+    assert missing["color"].value == "Black / Gray"
+    assert missing["color"].status == "reported"
+    assert missing["color"].evidence[0].dataset == "BuildCores OpenDB"
+    assert existing["color"].value == "White"

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from PIL import Image
+from PIL import Image, ImageDraw
 from pydantic import SecretStr
 
 from scan_hardware.api import create_app
@@ -40,6 +40,75 @@ def _png() -> bytes:
     return output.getvalue()
 
 
+def _colored_png() -> bytes:
+    """Create a visible board-like colored area for the photo estimate contract."""
+    image = Image.new("RGB", (300, 300), "white")
+    ImageDraw.Draw(image).rectangle((30, 70, 220, 250), fill="green")
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
+def _large_png(color: str) -> bytes:
+    """Create a full-resolution product view for gallery upload tests."""
+    image = Image.new("RGB", (900, 900), color)
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
+def _poorly_framed_png() -> bytes:
+    """Create a large file with the hardware occupying only one corner."""
+    image = Image.new("RGB", (1000, 1000), "white")
+    ImageDraw.Draw(image).rectangle((30, 30, 180, 180), fill="black")
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
+def test_scan_marks_photo_color_as_estimate_when_catalog_has_none(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+
+    response = client.post("/scan", files={"image": ("board.png", _colored_png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["matches"][0]["color"] == "Green"
+    assert response.json()["matches"][0]["color_source"] == "photo_estimate"
+
+
+def test_catalog_color_takes_precedence_over_photo_estimate(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "sample", "board.csv", 1, {"color": "Black"}, "board-1"
+    )
+
+    response = client.post("/scan", files={"image": ("board.png", _colored_png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["matches"][0]["color"] == "Black"
+    assert response.json()["matches"][0]["color_source"] == "catalog"
+
+
 def test_scan_returns_matching_item_and_local_image(tmp_path: Path) -> None:
     config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
     client = TestClient(create_app(config=config, scanner=FakeScanner()))
@@ -63,6 +132,77 @@ def test_scan_returns_matching_item_and_local_image(tmp_path: Path) -> None:
     assert scan_response.json()["status"] == "matched"
     assert scan_response.json()["matches"][0]["id"] == "board-1"
     assert client.get("/items/board-1/image").content == picture
+
+
+def test_gallery_keeps_front_primary_and_side_as_secondary(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+    front = _large_png("blue")
+    side = _png()
+
+    assert (
+        client.put(
+            "/items/board-1/images/front", files={"image": ("front.png", front, "image/png")}
+        ).status_code
+        == 200
+    )
+    assert (
+        client.put(
+            "/items/board-1/images/side", files={"image": ("side.png", side, "image/png")}
+        ).status_code
+        == 200
+    )
+    images = client.get("/items/board-1/images").json()
+
+    assert [(image["view"], image["is_primary"]) for image in images] == [
+        ("front", True),
+        ("side", False),
+    ]
+    assert client.get("/items/board-1/image").content == front
+    assert client.get(images[1]["url"]).content == side
+    assert client.get(images[1]["url"].replace("board-1", "board-2")).status_code == 404
+
+
+def test_gallery_rejects_tiny_primary_and_nonfront_primary(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+
+    tiny = client.put(
+        "/items/board-1/images/front", files={"image": ("tiny.png", _png(), "image/png")}
+    )
+    side = client.put(
+        "/items/board-1/images/side?primary=true",
+        files={"image": ("side.png", _large_png("red"), "image/png")},
+    )
+    corner = client.put(
+        "/items/board-1/images/front",
+        files={"image": ("corner.png", _poorly_framed_png(), "image/png")},
+    )
+
+    assert tiny.status_code == 422
+    assert "800 px" in tiny.json()["detail"]
+    assert side.status_code == 422
+    assert "front view" in side.json()["detail"]
+    assert corner.status_code == 422
+    assert "too small" in corner.json()["detail"]
 
 
 def test_scan_rejects_invalid_image(tmp_path: Path) -> None:

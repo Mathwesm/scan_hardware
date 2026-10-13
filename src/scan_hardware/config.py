@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     catalog_path: Path | None = None
     catalog_latest_pointer: Path = Path("data/latest.json")
     image_dir: Path = Path("data/images")
+    image_import_manifest: Path | None = None
     max_upload_bytes: int = 8_000_000
     ocr_min_confidence: float = 0.4
     require_catalog: bool = False
