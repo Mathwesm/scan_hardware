@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from scan_hardware.core.matching import match_items, normalize_identifier
+from scan_hardware.core.matching import match_items, normalize_identifier, search_items
 from scan_hardware.models.item import Category, Item
 
 
@@ -326,3 +326,63 @@ def test_short_ambiguous_b550_fragment_does_not_confirm_a_board() -> None:
     result = match_items(["BSSO"], [item])
 
     assert result.status == "not_found"
+
+
+def test_partial_bs500_search_ranks_related_b550_boards_without_false_confirmation() -> None:
+    items = [
+        Item(
+            id="board-long",
+            category=Category.MOTHERBOARD,
+            brand="Asus",
+            model="Asus TUF GAMING B550-PLUS",
+            identifiers=["TUF GAMING B550-PLUS"],
+        ),
+        Item(
+            id="board-short",
+            category=Category.MOTHERBOARD,
+            brand="ASRock",
+            model="ASRock B550M",
+            identifiers=["B550M"],
+        ),
+        Item(
+            id="board-other",
+            category=Category.MOTHERBOARD,
+            brand="Asus",
+            model="Asus B650M",
+            identifiers=["B650M"],
+        ),
+    ]
+
+    result = search_items("bs500", items)
+
+    assert result.status == "suggestions"
+    assert [match.item.id for match in result.matches] == ["board-short", "board-long"]
+    assert all(match.is_exact is False for match in result.matches)
+    assert result.matches[0].score > result.matches[1].score
+
+    scanned = match_items(["BS500"], items)
+    assert scanned.status == "suggestions"
+    assert scanned.matches[0].item.id == "board-short"
+    assert all(match.is_exact is False for match in scanned.matches)
+
+
+def test_full_code_search_keeps_exact_model_ahead_of_related_models() -> None:
+    correct = Item(
+        id="board-z77x",
+        category=Category.MOTHERBOARD,
+        brand="Gigabyte",
+        model="Gigabyte GA-Z77X-UD5H",
+        identifiers=["GA-Z77X-UD5H"],
+    )
+    similar = Item(
+        id="board-z170x",
+        category=Category.MOTHERBOARD,
+        brand="Gigabyte",
+        model="Gigabyte GA-Z170X-UD5 TH",
+        identifiers=["GA-Z170X-UD5 TH"],
+    )
+
+    result = search_items("GA-Z77X-UD5H", [similar, correct])
+
+    assert result.status == "matched"
+    assert [match.item.id for match in result.matches] == ["board-z77x"]

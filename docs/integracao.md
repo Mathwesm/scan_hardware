@@ -113,6 +113,9 @@ curl -X POST http://127.0.0.1:8000/scan -F "image=@placa.jpg"
 curl -X POST http://127.0.0.1:8000/lookup \
   -H "Content-Type: application/json" \
   -d '{"text":"A890GXM-A"}'
+curl -X POST http://127.0.0.1:8000/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"text":"bs500","limit":20,"offset":0}'
 ```
 
 No PowerShell, execute cada comando em uma linha ou use a continuação de linha do
@@ -153,7 +156,12 @@ considera a leitura corrigida na busca aproximada. Exemplos como `BS5OM-A` e
 em `matched`. Em textos incompletos como `TUF GAMING BSSO`, peça confirmação do
 modelo completo antes de mostrar uma peça como identificada.
 
-`matches` é sempre uma lista, vazia em `not_found`, com até cinco candidatos. Cada
+`matches` é sempre uma lista, vazia em `not_found`. `/scan` retorna até cinco
+candidatos. `/lookup` aceita texto parcial, inclusive `bs500` como leitura ambígua
+de `B550`, e retorna até 20 por página (ou `limit` entre 1 e 100). Envie `offset`
+para obter as páginas seguintes e leia `total_matches` para saber quantos existem.
+Cada sugestão inclui `match_score` de 0 a 1; é uma pontuação de ordenação, não uma
+probabilidade de acerto nem confirmação do modelo. Cada
 candidato contém campos simples: texto, número ou booleano. `socket`, `memory_slots`,
 `cores`, `threads` e outros campos só aparecem quando há um valor sem conflito.
 O sufixo do nome informa a unidade, como `_ghz`, `_gb`, `_mhz`, `_mt_s`, `_mm`, `_mb` ou `_w`.
@@ -197,6 +205,7 @@ import kotlinx.serialization.Serializable
 data class ScanResponse(
     val status: String,
     val matches: List<Hardware> = emptyList(),
+    val total_matches: Int? = null,
 )
 
 @Serializable
@@ -205,6 +214,7 @@ data class Hardware(
     val brand: String,
     val model: String,
     val id: String,
+    val match_score: Double? = null,
     val image_url: String? = null,
     val socket: String? = null,
     val form_factor: String? = null,

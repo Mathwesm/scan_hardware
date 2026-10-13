@@ -12,8 +12,11 @@ from scan_hardware.models.item import Category, Item, Match, ScanResult
 
 _WORD_PATTERN = re.compile(r"[A-Z0-9]+")
 _B550_OCR_PATTERN = re.compile(r"B[S5]{2}[O0]")
+_B550_SEARCH_PATTERN = re.compile(r"B[S5]{2}[O0]{1,2}")
 _BOARD_FAMILY_WORDS = ("PRIME", "TUF", "GAMING")
 _MIN_FUZZY_SCORE = 0.80
+_MIN_SEARCH_SIMILARITY = 0.75
+_MIN_SEARCH_SCORE = 0.60
 _MAX_MATCHES = 5
 _MIN_REVISION_PREFIX_LENGTH = 8
 _MIN_FUZZY_FRAGMENT_LENGTH = 5
@@ -258,3 +261,76 @@ def match_items(observed_text: list[str], items: list[Item]) -> ScanResult:
     matches = _fuzzy_matches(observations, items)
     status = "suggestions" if matches else "not_found"
     return ScanResult(status=status, detected_text=observed_text, matches=matches)
+
+
+def _search_score(query: str, alias: str) -> float:
+    """Score a complete code, prefix, contained family, or close typo."""
+    if query == alias:
+        return 1.0
+    if alias.startswith(query):
+        return max(0.75, 0.94 - 0.008 * (len(alias) - len(query)))
+    if query in alias:
+        return max(0.70, 0.86 - 0.004 * (len(alias) - len(query)))
+    similarity = fuzz.ratio(query, alias) / 100
+    return similarity * 0.85 if similarity >= _MIN_SEARCH_SIMILARITY else 0.0
+
+
+def _rank_search_item(query: str, item: Item, corrected_b550: bool) -> Match | None:
+    """Choose the strongest alias for one hardware item."""
+    best: Match | None = None
+    for identifier in item.identifiers:
+        for alias in _fuzzy_aliases(item, identifier):
+            if corrected_b550 and "B550" not in alias:
+                continue
+            score = _search_score(query, alias)
+            if corrected_b550:
+                score = min(score, 0.93)
+            if score < _MIN_SEARCH_SCORE or (best is not None and score <= best.score):
+                continue
+            best = Match(
+                item=item,
+                matched_identifier=identifier,
+                observed_text=query,
+                score=score,
+                is_exact=False,
+            )
+    return best
+
+
+def search_items(query: str, items: list[Item]) -> ScanResult:
+    """Rank all related catalog identifiers for a typed partial code.
+
+    Args:
+        query: User-entered model code or fragment.
+        items: Catalog items with their known aliases.
+
+    Returns:
+        Exact matches when confirmed; otherwise all ranked suggestions.
+    """
+    normalized = normalize_identifier(query)
+    if len(normalized) < MIN_IDENTIFIER_LENGTH:
+        return ScanResult(status="not_found", detected_text=[query], matches=[])
+    exact = _exact_matches([query], items)
+    if exact:
+        return ScanResult(status="matched", detected_text=[query], matches=exact)
+    corrected_b550 = bool(_B550_SEARCH_PATTERN.fullmatch(normalized))
+    target = "B550" if corrected_b550 else normalized
+    gpu_only = bool(re.match(r"(?:GEFORCE|RADEON|GTX|RTX)", target))
+    ranked: list[Match] = []
+    for item in items:
+        if corrected_b550 and item.category is not Category.MOTHERBOARD:
+            continue
+        if gpu_only and item.category is not Category.GPU:
+            continue
+        candidate = _rank_search_item(target, item, corrected_b550)
+        if candidate is not None:
+            ranked.append(candidate)
+    matches = sorted(
+        ranked,
+        key=lambda match: (-match.score, match.item.model.casefold(), match.item.id),
+    )
+    return ScanResult(
+        status="suggestions" if matches else "not_found",
+        detected_text=[query],
+        matches=matches,
+    )

@@ -138,6 +138,7 @@ class HardwareSummary(BaseModel):
     model: str
     image_url: str | None = None
     id: str
+    match_score: float | None = None
     estimated_price_brl: float | None = None
     price_offer_count: int | None = None
     price_observed_at: datetime | None = None
@@ -199,6 +200,8 @@ class HardwareSummary(BaseModel):
             "id": item.id,
             "price_status": item.price_status,
         }
+        if not match.is_exact:
+            values["match_score"] = round(match.score, 3)
         if item.reference_price_amount is not None:
             values["reference_price_amount"] = item.reference_price_amount
             values["reference_price_currency"] = item.reference_price_currency
@@ -236,6 +239,7 @@ class ScanResponse(BaseModel):
 
     status: Literal["matched", "suggestions", "not_found"]
     matches: list[HardwareSummary]
+    total_matches: int | None = None
 
     @classmethod
     def from_result(cls, result: ScanResult, photo_color: str | None = None) -> ScanResponse:

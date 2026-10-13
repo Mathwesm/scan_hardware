@@ -42,6 +42,7 @@
   <section id="results" aria-live="polite"></section>
   <script>
     const results = document.getElementById('results');
+    let lookupText = null;
     const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', memory_type: 'Tipo de memória', memory_slot_type: 'Tipo de slot', memory_channels: 'Canais de memória', memory_speed_mt_s: 'Memória suportada até', memory_speed_mhz: 'Velocidade da VRAM', memory_bus_bits: 'Barramento da VRAM', shader_units: 'Unidades de processamento', l2_cache_mb: 'Cache L2', l3_cache_mb: 'Cache L3', max_memory_standard_mhz: 'RAM até (sem OC)', max_memory_oc_mhz: 'RAM até (com OC)', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
     const units = { max_memory_gb: 'GB', vram_gb: 'GB', base_clock_ghz: 'GHz', boost_clock_ghz: 'GHz', tdp_w: 'W', core_clock_mhz: 'MHz', boost_clock_mhz: 'MHz', board_power_w: 'W', length_mm: 'mm', max_memory_standard_mhz: 'MHz', max_memory_oc_mhz: 'MHz', memory_speed_mt_s: 'MT/s', memory_speed_mhz: 'MHz', memory_bus_bits: 'bits', l2_cache_mb: 'MB', l3_cache_mb: 'MB' };
     function line(parent, tag, value, className) {
@@ -90,15 +91,21 @@
       selectImage(primary);
       if (primary.source === 'external') line(card, 'p', 'Imagem externa de referência; enquadramento não revisado.', 'muted');
     }
-    async function render(data) {
-      results.replaceChildren();
-      const title = data.status === 'matched' ? 'Modelo identificado' : data.status === 'suggestions' ? 'Possíveis modelos — confirme a revisão' : 'Nenhum modelo encontrado';
-      line(results, 'h2', title);
-      for (const match of data.matches || []) {
+    async function render(data, append = false) {
+      if (!append) {
+        results.replaceChildren();
+        const title = data.status === 'matched' ? 'Modelo identificado' : data.status === 'suggestions' ? 'Possíveis modelos — confirme a revisão' : 'Nenhum modelo encontrado';
+        line(results, 'h2', title);
+        if (typeof data.total_matches === 'number') line(results, 'p', `${data.total_matches} modelo(s) relacionado(s), ordenados por semelhança.`, 'muted');
+      }
+      const previousCount = results.querySelectorAll('article').length;
+      results.querySelector('#load-more')?.remove();
+      for (const [index, match] of (data.matches || []).entries()) {
         const card = document.createElement('article');
         results.appendChild(card);
         const modelName = match.model.toLowerCase().startsWith(`${match.brand.toLowerCase()} `) ? match.model : `${match.brand} ${match.model}`;
-        line(card, 'h3', modelName);
+        line(card, 'h3', `${previousCount + index + 1}. ${modelName}`);
+        if (typeof match.match_score === 'number') line(card, 'p', `Pontuação da busca: ${Math.round(match.match_score * 100)}/100`, 'muted');
         if (data.status === 'suggestions') line(card, 'p', 'Confirme o modelo antes de usar.', 'warning');
         if (typeof match.estimated_price_brl === 'number') {
           const amount = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(match.estimated_price_brl);
@@ -131,6 +138,26 @@
           line(specs, 'dd', formatted);
         }
       }
+      const shown = previousCount + (data.matches || []).length;
+      if (lookupText && typeof data.total_matches === 'number' && shown < data.total_matches) {
+        const more = document.createElement('button');
+        more.id = 'load-more';
+        more.type = 'button';
+        more.textContent = `Carregar mais (${shown} de ${data.total_matches})`;
+        more.addEventListener('click', async () => {
+          more.disabled = true;
+          try {
+            const response = await fetch('/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: lookupText, offset: shown }) });
+            const page = await response.json();
+            if (!response.ok) throw new Error(page.detail || `HTTP ${response.status}`);
+            await render(page, true);
+          } catch (error) {
+            more.disabled = false;
+            line(results, 'p', `Falha ao carregar mais: ${error.message}`, 'error');
+          }
+        });
+        results.appendChild(more);
+      }
     }
     async function submit(form, url, body) {
       const button = form.querySelector('button');
@@ -151,11 +178,13 @@
     }
     document.getElementById('photo-form').addEventListener('submit', event => {
       event.preventDefault();
+      lookupText = null;
       submit(event.currentTarget, '/scan', { method: 'POST', body: new FormData(event.currentTarget) });
     });
     document.getElementById('text-form').addEventListener('submit', event => {
       event.preventDefault();
-      submit(event.currentTarget, '/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: document.getElementById('code').value }) });
+      lookupText = document.getElementById('code').value;
+      submit(event.currentTarget, '/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: lookupText }) });
     });
   </script>
 </body>
