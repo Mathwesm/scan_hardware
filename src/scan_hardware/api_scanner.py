@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 from scan_hardware.config import Settings
 from scan_hardware.core.color import estimate_photo_color
-from scan_hardware.core.matching import match_items
+from scan_hardware.core.matching import match_items, search_items
 from scan_hardware.models.item import Category, ScanResponse, ScanResult
 from scan_hardware.services.catalog import Catalog
 from scan_hardware.services.ocr import InvalidImageError, OcrScanner, validate_image
@@ -20,6 +20,8 @@ class LookupRequest(BaseModel):
     """A decoded or manually entered hardware identifier."""
 
     text: str = Field(min_length=1, max_length=500)
+    limit: int = Field(default=20, ge=1, le=100)
+    offset: int = Field(default=0, ge=0)
 
 
 def _include_specifications(result: ScanResult, catalog: Catalog) -> ScanResult:
@@ -55,8 +57,12 @@ def register_scan_routes(
     )
     def lookup(request: LookupRequest) -> ScanResponse:
         """Match decoded text against the local hardware catalog."""
-        result = _include_specifications(match_items([request.text], catalog.list_items()), catalog)
-        return ScanResponse.from_result(result)
+        result = search_items(request.text, catalog.list_items())
+        total = len(result.matches)
+        result.matches = result.matches[request.offset : request.offset + request.limit]
+        response = ScanResponse.from_result(_include_specifications(result, catalog))
+        response.total_matches = total
+        return response
 
     @app.post(
         "/scan",

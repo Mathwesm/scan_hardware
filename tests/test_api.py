@@ -227,6 +227,33 @@ def test_lookup_without_catalog_returns_not_found(tmp_path: Path) -> None:
     assert client.get("/ready").status_code == 503
 
 
+def test_lookup_pages_ranked_partial_code_suggestions(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    for index, code in enumerate(("B550M", "B550-PLUS", "B550-F GAMING"), start=1):
+        response = client.put(
+            f"/items/board-{index}",
+            json={
+                "category": "motherboard",
+                "brand": "Demo",
+                "model": f"Demo {code}",
+                "identifiers": [code],
+            },
+        )
+        assert response.status_code == 200
+
+    first = client.post("/lookup", json={"text": "bs500", "limit": 1})
+    second = client.post("/lookup", json={"text": "bs500", "limit": 1, "offset": 1})
+
+    assert first.status_code == second.status_code == 200
+    assert first.json()["status"] == "suggestions"
+    assert first.json()["total_matches"] == 3
+    assert first.json()["matches"][0]["model"] == "Demo B550M"
+    assert first.json()["matches"][0]["match_score"] > second.json()["matches"][0]["match_score"]
+    assert second.json()["matches"][0]["id"] != first.json()["matches"][0]["id"]
+    assert client.post("/lookup", json={"text": "bs500", "limit": 101}).status_code == 422
+
+
 def test_item_sources_returns_all_original_fields(tmp_path: Path) -> None:
     config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
     client = TestClient(create_app(config=config, scanner=FakeScanner()))

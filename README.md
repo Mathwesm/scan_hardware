@@ -140,6 +140,10 @@ em `GET /items/{id}/sources`. Fotos JPEG, PNG e WebP são aceitas até
 8.000.000 bytes por padrão e 20 megapixels. O contrato completo e exemplos de
 resposta estão no [guia de integração](docs/integracao.md).
 
+`/lookup` aceita um código parcial, por exemplo `bs500`, e retorna candidatos
+ordenados por `match_score`. Use `limit` (1 a 100, padrão 20) e `offset` para
+percorrer `total_matches`; a pontuação serve para ordenar, não confirma o modelo.
+
 Quando a cor não consta no catálogo, `/scan` pode estimá-la da foto enviada.
 O resultado usa `color_source: "photo_estimate"` para distinguir esse valor de
 `color_source: "catalog"`. Uma estimativa prévia da imagem local de referência
