@@ -10,6 +10,7 @@ from scan_hardware.__main__ import main as serve
 from scan_hardware.catalog_import import import_archives
 from scan_hardware.config import Settings, settings
 from scan_hardware.image_seed import seed_images
+from scan_hardware.price_import import import_prices
 from scan_hardware.services.catalog import Catalog
 
 
@@ -59,6 +60,12 @@ def main() -> None:
             settings.image_dir,
             settings.catalog_latest_pointer.parent / "processed" / "image-import",
             settings.max_upload_bytes,
+        )
+    if settings.price_import_manifest is not None and settings.price_import_manifest.is_file():
+        import_prices(
+            settings.price_import_manifest,
+            Catalog(catalog_path),
+            settings.catalog_latest_pointer.parent / "processed" / "price-import",
         )
     serve()
 

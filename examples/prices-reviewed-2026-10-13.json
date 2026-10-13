@@ -1,0 +1,28 @@
+{
+  "offers": [
+    {
+      "item_id": "cpu-dd697180a182948f05745f01",
+      "identifier": "100-100000065BOX",
+      "retailer": "Performance Solutions",
+      "source_url": "https://www.performancesolutions.com.br/ryzen-5/processador-amd-ryzen-5-5600x",
+      "price_brl": "1599.99",
+      "observed_at": "2026-10-13T14:08:33Z"
+    },
+    {
+      "item_id": "motherboard-10616ec0d287298d043f89ea",
+      "identifier": "TUF GAMING B550M-E WIFI",
+      "retailer": "Pichau",
+      "source_url": "https://www.pichau.com.br/placa-mae-asus-tuf-gaming-b550m-e-wi-fi-ddr4-socket-am4-chipset-amd-b550-tuf-gaming-b550m-e-wifi",
+      "price_brl": "1882.23",
+      "observed_at": "2026-10-13T14:08:33Z"
+    },
+    {
+      "item_id": "gpu-015c15fb3a61fa17d436bfd0",
+      "identifier": "RX-76PSWFTFY",
+      "retailer": "LatinoGG",
+      "source_url": "https://latinogg.com.br/products/placa-de-video-xfx-speedster-swift210-8gb-radeon-rx7600-gddr6-rx-76pswftfy",
+      "price_brl": "1879.90",
+      "observed_at": "2026-10-13T14:08:33Z"
+    }
+  ]
+}

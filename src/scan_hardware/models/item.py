@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from enum import StrEnum
 from typing import Literal
 
@@ -92,6 +93,9 @@ class Item(ItemInput):
     id: str
     has_local_image: bool = False
     local_image_url: str | None = None
+    estimated_price_brl: float | None = None
+    price_offer_count: int | None = None
+    price_observed_at: datetime | None = None
     image_attribution: ImageAttribution | None = None
     specifications: dict[str, Specification] = Field(
         default_factory=dict,
@@ -128,6 +132,9 @@ class HardwareSummary(BaseModel):
     model: str
     image_url: str | None = None
     id: str
+    estimated_price_brl: float | None = None
+    price_offer_count: int | None = None
+    price_observed_at: datetime | None = None
     socket: str | None = None
     form_factor: str | None = None
     max_memory_gb: int | None = None
@@ -179,6 +186,10 @@ class HardwareSummary(BaseModel):
             "image_url": item.local_image_url or (str(item.image_url) if item.image_url else None),
             "id": item.id,
         }
+        if item.estimated_price_brl is not None:
+            values["estimated_price_brl"] = item.estimated_price_brl
+            values["price_offer_count"] = item.price_offer_count
+            values["price_observed_at"] = item.price_observed_at
         for key, specification in item.specifications.items():
             if specification.status != "conflict" and specification.value is not None:
                 values[key] = specification.value

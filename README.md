@@ -24,6 +24,8 @@ poetry run python -m scan_hardware
 
 Abra [http://127.0.0.1:8000/demo](http://127.0.0.1:8000/demo) para enviar uma foto
 ou digitar um código. A documentação interativa da API fica em `/docs`.
+Os [preços em R$](docs/precos.md) podem ser importados de ofertas revisadas e recentes;
+o JSON inclui valor, quantidade de lojas e data quando há dados suficientes.
 `GET /health` verifica o processo; `GET /ready` responde HTTP 200 com a contagem de
 itens quando o catálogo pode ser pesquisado e HTTP 503 quando está vazio.
 

@@ -100,6 +100,12 @@
         const modelName = match.model.toLowerCase().startsWith(`${match.brand.toLowerCase()} `) ? match.model : `${match.brand} ${match.model}`;
         line(card, 'h3', modelName);
         if (data.status === 'suggestions') line(card, 'p', 'Confirme o modelo antes de usar.', 'warning');
+        if (typeof match.estimated_price_brl === 'number') {
+          const amount = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(match.estimated_price_brl);
+          const count = match.price_offer_count || 1;
+          line(card, 'p', `${count > 1 ? 'Média de preços' : 'Preço observado'}: ${amount}`);
+          line(card, 'p', `${count} oferta${count > 1 ? 's' : ''} de produto novo, preço padrão sem frete. Conferido em ${new Date(match.price_observed_at).toLocaleDateString('pt-BR')}.`, 'muted');
+        }
         await renderImages(card, match);
         const specs = document.createElement('dl');
         card.appendChild(specs);

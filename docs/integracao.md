@@ -84,6 +84,13 @@ letras, dígitos, `_` e `-`, de 1 a 64 caracteres. O upload aceita JPEG, PNG ou 
 com até **8.000.000 bytes** por padrão e **20 megapixels**. O limite de bytes pode ser
 alterado por `MAX_UPLOAD_BYTES`.
 
+Quando houver uma oferta recente, cada candidato de `/scan` e `/lookup`, assim como
+`GET /specs/{id}`, inclui `estimated_price_brl` (número em R$),
+`price_offer_count` (lojas consideradas) e `price_observed_at` (UTC). Esses campos
+são omitidos quando não há oferta válida nos últimos 14 dias. O aplicativo deve
+apresentar `price_offer_count=1` como preço observado, pois não é média de mercado.
+Veja [importação e cálculo dos preços](precos.md).
+
 Para várias fotos da mesma peça, o aplicativo pode buscar
 `GET /items/{id}/images` e mostrar a entrada `is_primary=true` primeiro.
 As demais podem ser apresentadas como miniaturas. `source=external` identifica
