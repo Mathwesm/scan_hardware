@@ -16,7 +16,10 @@ _B550_SEARCH_PATTERN = re.compile(r"B[S5]{2}[O0]{1,2}")
 _CPU_CORE_PATTERN = re.compile(r"\b(I[3579])[-\s]*(\d{4,5}[A-Z]{0,3})\b")
 _CPU_RYZEN_PATTERN = re.compile(r"\bRYZEN\s+[3579]\s+(\d{4,5}[A-Z0-9]{0,3})\b")
 _GPU_FAMILY_PATTERN = re.compile(
-    r"\b(?:RTX|GTX)\s*-?\s*\d{3,4}(?:\s*(?:TI|SUPER))?\b" r"|\bRX\s*-?\s*\d{4}(?:\s*XT)?\b"
+    r"\b(?:RTX|GTX|GT)\s*-?\s*\d{3,4}(?:\s*(?:TI|SUPER))?\b"
+    r"|\bRX\s*-?\s*\d{4}(?:\s*XT)?\b"
+    r"|\bR[79]\s*-?\s*\d{3}(?:X)?\b"
+    r"|\bARC\s*-?\s*[AB]\d{3}\b"
 )
 _BOARD_FAMILY_WORDS = ("PRIME", "TUF", "GAMING")
 _MIN_FUZZY_SCORE = 0.80
@@ -118,7 +121,14 @@ def _exact_matches(observations: list[str], items: list[Item]) -> list[Match]:
                     break
     return sorted(
         exact_matches.values(),
-        key=lambda match: (len(normalize_identifier(match.matched_identifier)), match.item.id),
+        key=lambda match: (
+            any(
+                normalize_identifier(observed) == normalize_identifier(match.item.model)
+                for observed in observations
+            ),
+            len(normalize_identifier(match.matched_identifier)),
+            match.item.id,
+        ),
         reverse=True,
     )
 
@@ -345,7 +355,7 @@ def search_items(query: str, items: list[Item]) -> ScanResult:
         return ScanResult(status="matched", detected_text=[query], matches=exact)
     corrected_b550 = bool(_B550_SEARCH_PATTERN.fullmatch(normalized))
     target = "B550" if corrected_b550 else normalized
-    gpu_only = bool(re.match(r"(?:GEFORCE|RADEON|GTX|RTX|RX)", target))
+    gpu_only = bool(re.match(r"(?:GEFORCE|RADEON|GTX|RTX|GT|RX|R7|R9|ARC)", target))
     gpu_family_query = bool(_GPU_FAMILY_PATTERN.fullmatch(target))
     ranked: list[Match] = []
     for item in items:

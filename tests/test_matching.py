@@ -453,3 +453,48 @@ def test_plain_rtx_3060_ranks_above_3060_ti_for_partial_chipset_code() -> None:
     assert result.status == "suggestions"
     assert [match.item.id for match in result.matches] == ["gpu-3060", "gpu-3060ti"]
     assert result.matches[0].score > result.matches[1].score
+
+
+def test_complete_gpu_model_outranks_shared_chipset_fragment() -> None:
+    specific = Item(
+        id="gpu-pny",
+        category=Category.GPU,
+        brand="PNY",
+        model="PNY VCG16504SSFPPB GeForce GTX 1650 SUPER",
+        identifiers=["VCG16504SSFPPB"],
+    )
+    generic = Item(
+        id="gpu-msi",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GeForce GTX 1650 SUPER",
+        identifiers=["MSI GeForce GTX 1650 SUPER"],
+    )
+
+    result = search_items(specific.model, [generic, specific])
+
+    assert result.status == "matched"
+    assert result.matches[0].item.id == specific.id
+
+
+def test_r9_290_partial_code_ranks_plain_gpu_before_290x() -> None:
+    plain = Item(
+        id="gpu-290",
+        category=Category.GPU,
+        brand="XFX",
+        model="XFX DD Radeon R9 290",
+        identifiers=["XFX DD Radeon R9 290"],
+    )
+    faster = Item(
+        id="gpu-290x",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI R9 290X Radeon R9 290X",
+        identifiers=["MSI R9 290X Radeon R9 290X"],
+    )
+
+    result = search_items("R9 290", [faster, plain])
+
+    assert result.status == "suggestions"
+    assert result.matches[0].item.id == plain.id
+    assert [match.item.id for match in result.matches] == [plain.id, faster.id]
