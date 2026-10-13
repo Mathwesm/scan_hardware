@@ -19,18 +19,12 @@ _TOKEN = "123456:super-secret-value"
 
 
 def test_secret_token_never_appears_in_repr() -> None:
-    settings = Settings(telegram_bot_token=_TOKEN, telegram_chat_id="42")
+    settings = Settings(api_key=_TOKEN)
 
     assert _TOKEN not in repr(settings)
-    assert _TOKEN not in str(settings.telegram_bot_token)
-    assert settings.telegram_bot_token is not None
-    assert settings.telegram_bot_token.get_secret_value() == _TOKEN
-
-
-def test_telegram_is_disabled_when_only_one_credential_is_set() -> None:
-    assert Settings(telegram_bot_token=_TOKEN, telegram_chat_id=None).telegram_enabled is False
-    assert Settings(telegram_bot_token=None, telegram_chat_id="42").telegram_enabled is False
-    assert Settings(telegram_bot_token=_TOKEN, telegram_chat_id="42").telegram_enabled is True
+    assert _TOKEN not in str(settings.api_key)
+    assert settings.api_key is not None
+    assert settings.api_key.get_secret_value() == _TOKEN
 
 
 def test_setup_logging_writes_debug_records_to_disk(tmp_path: Path) -> None:
