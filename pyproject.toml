@@ -17,6 +17,7 @@ dependencies = [
     "rapidocr (>=3.9.2,<4.0.0)",
     "onnxruntime (>=1.30.0,<2.0.0)",
     "rapidfuzz (>=3.14,<4.0)",
+    "psycopg[binary] (>=3.2,<4.0)",
 ]
 
 [tool.poetry]

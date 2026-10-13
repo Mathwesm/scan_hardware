@@ -2,7 +2,8 @@
 
 Microserviço independente em Python para reconhecer o **modelo ou part number impresso**
 em placas-mães, placas de vídeo e processadores. Recebe uma foto, executa OCR local e
-procura o identificador em um catálogo SQLite. Retorna o item, especificações com fontes
+procura o identificador em um catálogo PostgreSQL no Docker. O SQLite permanece como
+formato de importação local e opção para testes sem Docker. Retorna o item, especificações com fontes
 e uma imagem de referência quando existe uma referência adequada. Também aceita busca
 direta por texto. Não classifica a aparência de uma peça sem código legível.
 
@@ -156,12 +157,27 @@ As gravações são destinadas à administração do catálogo.
 
 ## Docker e proteção da API
 
-O Compose importa os dois ZIPs na primeira inicialização e mantém o catálogo num
-volume. Coloque os arquivos nos caminhos acima e execute:
+O Compose sobe PostgreSQL e o scanner. Na primeira inicialização, importa os dois ZIPs
+para um SQLite versionado e migra as cinco tabelas normalizadas para PostgreSQL,
+verificando contagem e conteúdo. Os dois bancos e as fotos ficam em volumes persistentes.
+Coloque os arquivos nos caminhos acima, copie `.env.example` para `.env`, defina
+`POSTGRES_PASSWORD` e use a mesma senha em `DATABASE_URL`. Depois execute:
 
 ```bash
 docker compose up --build
 ```
+
+Abra `http://127.0.0.1:8000/demo`. Para conferir o banco:
+
+```bash
+docker compose exec postgres psql -U scanner -d scan_hardware -c "SELECT category, count(*) FROM items GROUP BY category;"
+```
+
+O scanner usa PostgreSQL como banco de operação; `scanner_data` guarda o SQLite de
+origem e as fotos. `postgres_data` guarda o banco PostgreSQL. Um SQLite de origem
+diferente do já migrado exige uma migração planejada: o serviço interrompe a
+inicialização em vez de misturar versões. Consulte o
+[guia de migração](docs/postgresql.md).
 
 A porta é publicada em `127.0.0.1:8000`, apenas na máquina local. Se faltar arquivo
 ou o catálogo estiver vazio, o início falha. Para uma implantação acessível a outro

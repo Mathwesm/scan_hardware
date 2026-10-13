@@ -1,4 +1,4 @@
-"""SQLite catalog for independently running scanner deployments."""
+"""Hardware catalog backed by SQLite or PostgreSQL."""
 
 from __future__ import annotations
 
@@ -7,7 +7,12 @@ import sqlite3
 from datetime import UTC, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
+from types import TracebackType
 from typing import Any
+
+import psycopg
+from psycopg.rows import dict_row
+from pydantic import SecretStr
 
 from scan_hardware.core.matching import normalize_identifier
 from scan_hardware.core.specifications import build_specifications
@@ -24,20 +29,56 @@ class IdentifierConflictError(Exception):
     """A normalized identifier already belongs to another catalog item."""
 
 
+class PostgresConnection:
+    """Adapt existing parameterized catalog queries to psycopg transactions."""
+
+    def __init__(self, database_url: SecretStr) -> None:
+        """Open a PostgreSQL connection without exposing credentials in logs."""
+        self._connection = psycopg.connect(
+            database_url.get_secret_value(), row_factory=dict_row, connect_timeout=5
+        )
+
+    def __enter__(self) -> PostgresConnection:
+        """Enter a transaction context."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        """Commit or roll back and close the connection."""
+        self._connection.__exit__(exc_type, exc_value, traceback)
+
+    def execute(self, query: str, parameters: tuple[Any, ...] = ()) -> Any:
+        """Run one query with positional parameters."""
+        return self._connection.execute(query.replace("?", "%s"), parameters)
+
+    def executemany(self, query: str, rows: list[tuple[Any, ...]]) -> None:
+        """Run one statement for a batch of parameter rows."""
+        with self._connection.cursor() as cursor:
+            cursor.executemany(query.replace("?", "%s"), rows)
+
+
 class Catalog:
     """Persist hardware records and their alternate printed identifiers."""
 
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path | None = None, *, database_url: SecretStr | None = None) -> None:
         """Initialize the database schema at the configured path.
 
         Args:
-            path: SQLite database file location.
+            path: SQLite database file location for offline tools.
+            database_url: PostgreSQL connection URL for the runtime service.
         """
+        if (path is None) == (database_url is None):
+            raise ValueError("Provide exactly one catalog path or database URL")
         self.path = path
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.database_url = database_url
+        if path is not None:
+            path.parent.mkdir(parents=True, exist_ok=True)
         with self._connect() as connection:
-            connection.executescript(
-                """
+            schema = """
                 CREATE TABLE IF NOT EXISTS items (
                     id TEXT PRIMARY KEY,
                     category TEXT NOT NULL,
@@ -86,7 +127,12 @@ class Catalog:
                 CREATE INDEX IF NOT EXISTS idx_price_observations_item
                 ON price_observations(item_id, observed_at);
                 """
-            )
+            if database_url is None:
+                connection.executescript(schema)
+            else:
+                for statement in schema.split(";"):
+                    if statement.strip():
+                        connection.execute(statement)
 
     def record_price_offer(self, offer: PriceOffer) -> None:
         """Store one exact-identifier price observation without overwriting history."""
@@ -101,9 +147,9 @@ class Catalog:
         cents = int((offer.price_brl * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
         with self._connect() as connection:
             connection.execute(
-                """INSERT OR IGNORE INTO price_observations
+                """INSERT INTO price_observations
                 (item_id, retailer, source_url, identifier, price_cents, observed_at)
-                VALUES (?, ?, ?, ?, ?, ?)""",
+                VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING""",
                 (
                     offer.item_id,
                     offer.retailer.strip(),
@@ -144,8 +190,12 @@ class Catalog:
         newest = max(observed for _, observed in latest.values())
         return float(mean_cents / 100), len(latest), newest
 
-    def _connect(self) -> sqlite3.Connection:
-        """Create a connection with foreign keys and a finite lock timeout."""
+    def _connect(self) -> Any:
+        """Create a transactional database connection with a finite timeout."""
+        if self.database_url is not None:
+            return PostgresConnection(self.database_url)
+        if self.path is None:
+            raise RuntimeError("Catalog path is missing")
         connection = sqlite3.connect(self.path, timeout=5)
         connection.execute("PRAGMA foreign_keys = ON")
         connection.row_factory = sqlite3.Row
@@ -190,7 +240,7 @@ class Catalog:
                     "INSERT INTO identifiers (normalized, display, item_id) VALUES (?, ?, ?)",
                     [(normalize_identifier(value), value, item_id) for value in item.identifiers],
                 )
-        except sqlite3.IntegrityError as error:
+        except (sqlite3.IntegrityError, psycopg.IntegrityError) as error:
             raise IdentifierConflictError("Identifier already belongs to another item") from error
         stored = self.get_item(item_id)
         if stored is None:
@@ -382,7 +432,8 @@ class Catalog:
                 view = CASE WHEN excluded.is_primary = 1 THEN excluded.view
                             ELSE item_images.view END,
                 width = excluded.width, height = excluded.height,
-                is_primary = MAX(item_images.is_primary, excluded.is_primary)""",
+                is_primary = CASE WHEN item_images.is_primary = 1 OR excluded.is_primary = 1
+                                  THEN 1 ELSE 0 END""",
                 (item_id, file_name, view, width, height, int(is_primary)),
             )
             if is_primary:

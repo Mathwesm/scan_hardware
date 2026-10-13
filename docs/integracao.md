@@ -1,7 +1,8 @@
 # Integração do microserviço Hardware Scanner
 
 Este guia é para quem vai criar o aplicativo móvel ou o backend que o atende. O scanner
-roda separadamente em Python, guarda o catálogo em SQLite e expõe uma API HTTP. Ele lê
+roda separadamente em Python, guarda o catálogo operacional em PostgreSQL no Docker
+(ou SQLite na execução local sem `DATABASE_URL`) e expõe uma API HTTP. Ele lê
 **identificadores impressos** com OCR e procura esses códigos no catálogo. Ele não
 classifica a aparência da placa inteira.
 
@@ -41,7 +42,9 @@ responde HTTP 503 se estiver vazio. O primeiro carregamento dos dois arquivos Ka
 está explicado no [README](../README.md#import-the-kaggle-catalog). Sem importação,
 o serviço pode subir, mas não encontra produtos.
 
-O `compose.yaml` aceita os ZIPs em `data/raw/kaggle/` e persiste o catálogo num volume.
+O `compose.yaml` aceita os ZIPs em `data/raw/kaggle/`, cria PostgreSQL e persiste
+o catálogo e as fotos em volumes locais. Configure `.env` como no
+[guia de migração](postgresql.md).
 Seu mapeamento de porta é `127.0.0.1:8000:8000`: o celular não acessa essa porta
 diretamente. Em outro servidor, use rede privada ou um proxy HTTPS e ajuste a
 publicação de portas à infraestrutura escolhida.

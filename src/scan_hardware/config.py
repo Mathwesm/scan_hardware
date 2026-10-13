@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     log_dir: Path = Path("logs")
     log_serialize: bool = False
     catalog_path: Path | None = None
+    database_url: SecretStr | None = None
     catalog_latest_pointer: Path = Path("data/latest.json")
     image_dir: Path = Path("data/images")
     image_import_manifest: Path | None = None
@@ -40,9 +41,6 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8000
 
-    telegram_bot_token: SecretStr | None = None
-    telegram_chat_id: str | None = None
-
     @property
     def resolved_catalog_path(self) -> Path:
         """Use an explicit path or the last validated imported catalog."""
@@ -55,11 +53,6 @@ class Settings(BaseSettings):
                 raise FileNotFoundError(f"Published catalog is missing: {path}")
             return path
         return Path("data/catalog.sqlite3")
-
-    @property
-    def telegram_enabled(self) -> bool:
-        """Whether both Telegram credentials are present."""
-        return self.telegram_bot_token is not None and self.telegram_chat_id is not None
 
 
 settings = Settings()

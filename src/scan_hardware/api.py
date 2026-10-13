@@ -33,7 +33,11 @@ def create_app(
         Ready-to-serve FastAPI application.
     """
     active_config = config or settings
-    active_catalog = catalog or Catalog(active_config.resolved_catalog_path)
+    active_catalog = catalog or (
+        Catalog(database_url=active_config.database_url)
+        if active_config.database_url is not None
+        else Catalog(active_config.resolved_catalog_path)
+    )
     if active_config.require_catalog and active_catalog.count_items() == 0:
         raise RuntimeError("Required catalog is empty")
     active_scanner = scanner or OcrScanner(active_config.ocr_min_confidence)

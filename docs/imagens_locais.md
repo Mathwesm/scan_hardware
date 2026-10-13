@@ -1,7 +1,8 @@
 # Galeria de imagens no servidor físico
 
 O serviço armazena fotos localmente em `data/images/` e os vínculos com as peças
-no SQLite. No Docker Compose, ambos ficam no volume persistente `scanner_data`.
+no PostgreSQL. No Docker Compose, as fotos ficam em `scanner_data` e os vínculos
+em `postgres_data`.
 Recriar o contêiner preserva as imagens; remover o volume apaga esse acervo.
 Não é necessário um serviço de bucket separado.
 
