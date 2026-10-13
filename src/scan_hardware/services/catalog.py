@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import UTC, datetime, timedelta
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +14,10 @@ from scan_hardware.core.specifications import build_specifications
 from scan_hardware.curation import verified_images
 from scan_hardware.image_enrichment import image_for_item
 from scan_hardware.models.item import Category, Item, ItemInput
+from scan_hardware.models.price import PriceOffer
+from scan_hardware.reference_prices import reference_price_for
+
+MAX_PRICE_AGE = timedelta(days=14)
 
 
 class IdentifierConflictError(Exception):
@@ -68,8 +74,75 @@ class Catalog:
                 );
                 CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_primary
                 ON item_images(item_id) WHERE is_primary = 1;
+                CREATE TABLE IF NOT EXISTS price_observations (
+                    item_id TEXT NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+                    retailer TEXT NOT NULL,
+                    source_url TEXT NOT NULL,
+                    identifier TEXT NOT NULL,
+                    price_cents INTEGER NOT NULL CHECK(price_cents > 0),
+                    observed_at TEXT NOT NULL,
+                    PRIMARY KEY (item_id, source_url, observed_at)
+                );
+                CREATE INDEX IF NOT EXISTS idx_price_observations_item
+                ON price_observations(item_id, observed_at);
                 """
             )
+
+    def record_price_offer(self, offer: PriceOffer) -> None:
+        """Store one exact-identifier price observation without overwriting history."""
+        if offer.observed_at > datetime.now(UTC):
+            raise ValueError("Price observation cannot be in the future")
+        item = self.get_item(offer.item_id)
+        if item is None:
+            raise KeyError(offer.item_id)
+        identifier = normalize_identifier(offer.identifier)
+        if identifier not in {normalize_identifier(value) for value in item.identifiers}:
+            raise ValueError("Price identifier does not belong to the catalog item")
+        cents = int((offer.price_brl * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        with self._connect() as connection:
+            connection.execute(
+                """INSERT OR IGNORE INTO price_observations
+                (item_id, retailer, source_url, identifier, price_cents, observed_at)
+                VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    offer.item_id,
+                    offer.retailer.strip(),
+                    str(offer.source_url),
+                    offer.identifier.strip(),
+                    cents,
+                    offer.observed_at.isoformat(),
+                ),
+            )
+
+    def price_summary(
+        self, item_id: str, *, at: datetime | None = None
+    ) -> tuple[float, int, datetime] | None:
+        """Average the newest standard offer per retailer from the last 14 days."""
+        now = at or datetime.now(UTC)
+        if now.tzinfo is None:
+            raise ValueError("Price summary time must include a timezone")
+        cutoff = (now - MAX_PRICE_AGE).astimezone(UTC)
+        with self._connect() as connection:
+            rows = connection.execute(
+                """SELECT retailer, price_cents, observed_at FROM price_observations
+                WHERE item_id = ?""",
+                (item_id,),
+            ).fetchall()
+        latest: dict[str, tuple[sqlite3.Row, datetime]] = {}
+        for row in rows:
+            observed = datetime.fromisoformat(row["observed_at"])
+            if not cutoff <= observed <= now:
+                continue
+            retailer = row["retailer"].casefold()
+            if retailer not in latest or observed > latest[retailer][1]:
+                latest[retailer] = (row, observed)
+        if not latest:
+            return None
+        mean_cents = (
+            Decimal(sum(row["price_cents"] for row, _ in latest.values())) / len(latest)
+        ).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+        newest = max(observed for _, observed in latest.values())
+        return float(mean_cents / 100), len(latest), newest
 
     def _connect(self) -> sqlite3.Connection:
         """Create a connection with foreign keys and a finite lock timeout."""
@@ -135,6 +208,8 @@ class Catalog:
             ).fetchall()
         curated_image = verified_images().get(item_id)
         external_image = image_for_item(item_id, Category(row["category"]), row["model"])
+        price = self.price_summary(item_id)
+        reference = reference_price_for(item_id, Category(row["category"]), row["model"])
         return Item(
             id=row["id"],
             category=Category(row["category"]),
@@ -148,6 +223,23 @@ class Catalog:
             identifiers=[alias["display"] for alias in aliases],
             has_local_image=row["image_digest"] is not None,
             local_image_url=f"/items/{item_id}/image" if row["image_digest"] else None,
+            estimated_price_brl=price[0] if price else None,
+            price_offer_count=price[1] if price else None,
+            price_observed_at=price[2] if price else None,
+            price_status=(
+                "average"
+                if price and price[1] > 1
+                else "observed"
+                if price
+                else "reference_only"
+                if reference
+                else "unavailable"
+            ),
+            reference_price_amount=float(reference.amount) if reference else None,
+            reference_price_currency=reference.currency if reference else None,
+            reference_price_context=reference.context if reference else None,
+            reference_price_source_url=str(reference.source_url) if reference else None,
+            reference_price_date=reference.source_date if reference else None,
             image_attribution=(
                 curated_image.attribution()
                 if curated_image and row["image_digest"] is None

@@ -1,0 +1,3867 @@
+{
+  "source": "Doshiba/pcpartpicker-parts-dataset",
+  "prices": [
+    {
+      "item_id": "cpu-01e79dfb7e6caeb2353a1ad4",
+      "category": "cpu",
+      "model": "Intel Pentium G2120",
+      "amount": "137.55",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PZphP6/intel-cpu-bx80637g2120"
+    },
+    {
+      "item_id": "cpu-02507472cc69511f97e6d5b3",
+      "category": "cpu",
+      "model": "AMD Athlon X4 760K",
+      "amount": "727.26",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bHdqqs/amd-cpu-ad760kwohlbox"
+    },
+    {
+      "item_id": "cpu-087d484b8fb43f5fa38a43da",
+      "category": "cpu",
+      "model": "Intel Core i5-3550",
+      "amount": "366.09",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8fW9TW/intel-cpu-bx80637i53550"
+    },
+    {
+      "item_id": "cpu-0d520347817eb7608d9b7c7c",
+      "category": "cpu",
+      "model": "Intel Core i7-3770K",
+      "amount": "219.76",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7KjG3C/intel-cpu-bx80637i73770k"
+    },
+    {
+      "item_id": "cpu-0eb12d97b54de572bd4f4a3f",
+      "category": "cpu",
+      "model": "Intel Core i7-4960X Extreme Edition",
+      "amount": "1111.13",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HFQypg/intel-cpu-bx80633i74960x"
+    },
+    {
+      "item_id": "cpu-111fb895f10b4c08c49e8a13",
+      "category": "cpu",
+      "model": "AMD Threadripper 3960X",
+      "amount": "1250.41",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kNyqqs/amd-ryzen-9-3960x-38-ghz-24-core-processor-100-100000010wof"
+    },
+    {
+      "item_id": "cpu-11e8b2a45c6727325d7426d1",
+      "category": "cpu",
+      "model": "Intel Core i5-3470",
+      "amount": "138.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PBCwrH/intel-cpu-bx80637i53470"
+    },
+    {
+      "item_id": "cpu-1234c4bc835c51a4a4576549",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1275 V3",
+      "amount": "598.16",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HDtCmG/intel-cpu-bx80646e31275v3"
+    },
+    {
+      "item_id": "cpu-16d69dfcb751628485caa370",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G6400",
+      "amount": "79",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FvCFf7/intel-pentium-gold-g6400-4-ghz-dual-core-processor-bx80701g6400"
+    },
+    {
+      "item_id": "cpu-2211dd27810f82885f226ec1",
+      "category": "cpu",
+      "model": "Intel Pentium E6600",
+      "amount": "188.54",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/z4TmP6/intel-cpu-bx80571e6600"
+    },
+    {
+      "item_id": "cpu-22441e765d67f73a0c44f8a9",
+      "category": "cpu",
+      "model": "Intel Pentium G4400T",
+      "amount": "185.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/fJbkcf/intel-cpu-cm8066201927506"
+    },
+    {
+      "item_id": "cpu-254c7e8d442b7e19fe2df550",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2620 V2",
+      "amount": "634.12",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6YMFf7/intel-cpu-bx80635e52620v2"
+    },
+    {
+      "item_id": "cpu-2a5f5c67bf969b94c982f786",
+      "category": "cpu",
+      "model": "Intel Core i5-6600K",
+      "amount": "204.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gx648d/intel-cpu-bx80662i56600k"
+    },
+    {
+      "item_id": "cpu-2d03d0d523885027f32e94e2",
+      "category": "cpu",
+      "model": "Intel Core 2 Quad Q9650",
+      "amount": "254.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gvGkcf/intel-cpu-bx80569q9650"
+    },
+    {
+      "item_id": "cpu-33494b39b6fbfb17d7c9f0b3",
+      "category": "cpu",
+      "model": "Intel Core i3-4150",
+      "amount": "79.27",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qMJwrH/intel-cpu-bx80646i34150"
+    },
+    {
+      "item_id": "cpu-33a77f439c78bc1b483a8642",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G5420",
+      "amount": "99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/v2xbt6/intel-pentium-gold-g5420-38-ghz-dual-core-processor-bx80684g5420"
+    },
+    {
+      "item_id": "cpu-34873282b46ac95c34f1b5a9",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2637 V3",
+      "amount": "164.83",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/pp98TW/intel-cpu-cm8064401724101"
+    },
+    {
+      "item_id": "cpu-34b5cb1428b108ab5c92eea9",
+      "category": "cpu",
+      "model": "Intel Core i5-4590S",
+      "amount": "61.03",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xvzv6h/intel-cpu-bx80646i54590s"
+    },
+    {
+      "item_id": "cpu-3e257cfe6e99bf4231c5ca5f",
+      "category": "cpu",
+      "model": "Intel Core i5-6402P",
+      "amount": "308.45",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JC648d/intel-core-i5-6402p-28ghz-quad-core-processor-bx80662i56402p"
+    },
+    {
+      "item_id": "cpu-3f26deebd917d1bb5cf31cef",
+      "category": "cpu",
+      "model": "Intel Core i5-650",
+      "amount": "205.28",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BkZQzy/intel-cpu-bx80616i5650"
+    },
+    {
+      "item_id": "cpu-4021af5bb02261001e5c0a27",
+      "category": "cpu",
+      "model": "Intel Core i5-2400S",
+      "amount": "60.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/B3phP6/intel-cpu-bx80623i52400s"
+    },
+    {
+      "item_id": "cpu-42b6bbde7f4d7ef73ba8a47a",
+      "category": "cpu",
+      "model": "Intel Pentium E6500",
+      "amount": "92.96",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rKTmP6/intel-cpu-bx80571e6500"
+    },
+    {
+      "item_id": "cpu-441e58d8387c27564c928b95",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1265L V3",
+      "amount": "888.43",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wvLypg/intel-cpu-cm8064601467406"
+    },
+    {
+      "item_id": "cpu-486cad7ed966224b3a235f81",
+      "category": "cpu",
+      "model": "Intel Celeron G3930",
+      "amount": "40.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/WqVBD3/intel-celeron-g3930-29ghz-dual-core-processor-bx80677g3930"
+    },
+    {
+      "item_id": "cpu-4db50ead70f0dfde4677aed2",
+      "category": "cpu",
+      "model": "Intel Core i7-4770",
+      "amount": "130.83",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sCNp99/intel-cpu-bx80646i74770"
+    },
+    {
+      "item_id": "cpu-4eae8c3854dc97c79b613660",
+      "category": "cpu",
+      "model": "AMD Ryzen 3 4100",
+      "amount": "55.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/drBG3C/amd-ryzen-3-4100-38-ghz-quad-core-processor-100-100000510box"
+    },
+    {
+      "item_id": "cpu-51a685bb81a6b4a6a97a5b4c",
+      "category": "cpu",
+      "model": "AMD Athlon X2 370K",
+      "amount": "49.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kx7wrH/amd-cpu-ad370kokhlbox"
+    },
+    {
+      "item_id": "cpu-53f5f05c9f234585183db312",
+      "category": "cpu",
+      "model": "Intel Core 2 Duo E7500",
+      "amount": "259.64",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dLNp99/intel-cpu-bx80571e7500"
+    },
+    {
+      "item_id": "cpu-58fcee51b2d790e4c4faaaeb",
+      "category": "cpu",
+      "model": "Intel Core i3-3210",
+      "amount": "244.67",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dR7wrH/intel-cpu-bx80637i33210"
+    },
+    {
+      "item_id": "cpu-5c4b8d1242acd23b8eceadec",
+      "category": "cpu",
+      "model": "Intel Core i5-4690",
+      "amount": "110.23",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/r8W9TW/intel-cpu-bx80646i54690"
+    },
+    {
+      "item_id": "cpu-5f32778e471d7b976d7640f9",
+      "category": "cpu",
+      "model": "Intel Core i3-2120",
+      "amount": "69",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2CXfrH/intel-cpu-bx80623i32120"
+    },
+    {
+      "item_id": "cpu-6408ae5df99cac02c7f1ba8f",
+      "category": "cpu",
+      "model": "Intel Xeon E-2286G",
+      "amount": "1169.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/D2848d/intel-xeon-e-2286g-4-thz-6-core-oemtray-processor-cm8068404173706"
+    },
+    {
+      "item_id": "cpu-6b0c3817f2df33206d2212d1",
+      "category": "cpu",
+      "model": "Intel Core i5-4440",
+      "amount": "195.29",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Qs9KHx/intel-cpu-bx80646i54440"
+    },
+    {
+      "item_id": "cpu-6bd84fcb210826aec1556052",
+      "category": "cpu",
+      "model": "Intel Core i7-4790K",
+      "amount": "201.46",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6vzv6h/intel-cpu-bx80646i74790k"
+    },
+    {
+      "item_id": "cpu-702203425cad8f6026786b63",
+      "category": "cpu",
+      "model": "Intel Core i3-540",
+      "amount": "72.84",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/WF6BD3/intel-cpu-bx80616i3540"
+    },
+    {
+      "item_id": "cpu-70e1edb52cba0023b845de77",
+      "category": "cpu",
+      "model": "Intel Core i5-4460",
+      "amount": "108.59",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/F63RsY/intel-cpu-bx80646i54460"
+    },
+    {
+      "item_id": "cpu-730ac93ab60e3713566a260d",
+      "category": "cpu",
+      "model": "Intel Core i7-4770S",
+      "amount": "169.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cvPfrH/intel-cpu-bx80646i74770s"
+    },
+    {
+      "item_id": "cpu-7eda7701a20c8259ba11f9bb",
+      "category": "cpu",
+      "model": "Intel Celeron G440",
+      "amount": "143.35",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ctGkcf/intel-cpu-bx80623g440"
+    },
+    {
+      "item_id": "cpu-803c20433af8c4ad8e05572e",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2430V2",
+      "amount": "163.87",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7K8H99/intel-xeon-e5-2430v2-25ghz-6-core-processor-bx80634e52430v2"
+    },
+    {
+      "item_id": "cpu-837a273542971c0c82681388",
+      "category": "cpu",
+      "model": "Intel Core i7-4790S",
+      "amount": "208.52",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YZg323/intel-cpu-bx80646i74790s"
+    },
+    {
+      "item_id": "cpu-8562eba1bfbb980bd012c7c1",
+      "category": "cpu",
+      "model": "Intel Core i7-4930K",
+      "amount": "191.63",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/pvphP6/intel-cpu-bx80633i74930k"
+    },
+    {
+      "item_id": "cpu-8571639ed318e5e2ccc55f1a",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2620 V4",
+      "amount": "645.98",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XjZ2FT/intel-cpu-bx80660e52620v4"
+    },
+    {
+      "item_id": "cpu-88551efed3eb6de67e2bc5dc",
+      "category": "cpu",
+      "model": "Intel Celeron G5905",
+      "amount": "43.7",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NyNgXL/intel-celeron-g5905-56-ghz-dual-core-oemtray-processor-cm8070104292115"
+    },
+    {
+      "item_id": "cpu-88d5b553bc565ef0dc076082",
+      "category": "cpu",
+      "model": "Intel Celeron G1820",
+      "amount": "75",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/W67wrH/intel-cpu-bx80646g1820"
+    },
+    {
+      "item_id": "cpu-8a101767a12c95293ada6aa0",
+      "category": "cpu",
+      "model": "Intel Core i7-2600",
+      "amount": "266.74",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/nvyFf7/intel-cpu-bx80623i72600"
+    },
+    {
+      "item_id": "cpu-8af422772344f6d69993ac2d",
+      "category": "cpu",
+      "model": "Intel Core i7-6700T",
+      "amount": "194.38",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/WV7CmG/intel-cpu-cm8066201920202"
+    },
+    {
+      "item_id": "cpu-8e6767a6fe271a554eb1e629",
+      "category": "cpu",
+      "model": "Intel Xeon E5-1630 V4",
+      "amount": "139.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cxVD4D/intel-xeon-e5-1630-v4-37ghz-quad-core-oemtray-processor-cm8066002395300"
+    },
+    {
+      "item_id": "cpu-8e9802c53df8d8c47aca2e41",
+      "category": "cpu",
+      "model": "Intel Core i5-4570",
+      "amount": "191.63",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wXK7YJ/intel-cpu-bx80646i54570"
+    },
+    {
+      "item_id": "cpu-9b0c6c30e776f206a620dbb6",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G6500",
+      "amount": "99.16",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Qkyqqs/intel-pentium-gold-g6500-41-ghz-dual-core-processor-bx80701g6500"
+    },
+    {
+      "item_id": "cpu-9c2e7f2391677916fca8a780",
+      "category": "cpu",
+      "model": "Intel Celeron G6900",
+      "amount": "64",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QKbTwP/intel-celeron-g6900-34-ghz-dual-core-processor-bx80715g6900"
+    },
+    {
+      "item_id": "cpu-9ef846d022542d13c2d980ba",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2680 V4",
+      "amount": "139.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zqmxFT/intel-cpu-bx80660e52680v4"
+    },
+    {
+      "item_id": "cpu-9f3736ec4881cf6ffdfa81f3",
+      "category": "cpu",
+      "model": "Intel Core i5-4570T",
+      "amount": "93.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PhM323/intel-cpu-bx80646i54570t"
+    },
+    {
+      "item_id": "cpu-a1b6342613d25a6e25c1a497",
+      "category": "cpu",
+      "model": "Intel Celeron G4920",
+      "amount": "163.36",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dMTPxr/intel-celeron-g4920-32ghz-dual-core-processor-bx80684g4920"
+    },
+    {
+      "item_id": "cpu-a82353ceb2d9be4f163cf8ec",
+      "category": "cpu",
+      "model": "AMD A10-9700E",
+      "amount": "281.79",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/fxyxFT/amd-a10-9700e-30ghz-quad-core-processor-ad9700ahabbox"
+    },
+    {
+      "item_id": "cpu-ad2aa968fed163e171b3e6d0",
+      "category": "cpu",
+      "model": "AMD A6-3670K",
+      "amount": "149",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QG8Zxr/amd-cpu-ad3670wngxbox"
+    },
+    {
+      "item_id": "cpu-ad2df099ba6a207562b39b0b",
+      "category": "cpu",
+      "model": "Intel Core i3-4160",
+      "amount": "93.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XVtCmG/intel-cpu-bx80646i34160"
+    },
+    {
+      "item_id": "cpu-add6400ae753c065c29cb9c2",
+      "category": "cpu",
+      "model": "Intel Core 2 Duo E8200",
+      "amount": "152.36",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/X8ckcf/intel-cpu-bx80570e8200"
+    },
+    {
+      "item_id": "cpu-b373a7e8b799b7eb347c926e",
+      "category": "cpu",
+      "model": "Intel Celeron G1840",
+      "amount": "72.79",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PTdqqs/intel-cpu-bx80646g1840"
+    },
+    {
+      "item_id": "cpu-bd404fddd269564adb88cba7",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2630 V3",
+      "amount": "49",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JZx9TW/intel-cpu-cm8064401831000"
+    },
+    {
+      "item_id": "cpu-bf93145f08703910d6f9bbb1",
+      "category": "cpu",
+      "model": "Intel Core i5-660",
+      "amount": "103.72",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4csKHx/intel-cpu-bx80616i5660"
+    },
+    {
+      "item_id": "cpu-c04f2998a81c14cdb4ff4ce2",
+      "category": "cpu",
+      "model": "Intel Celeron G3930T",
+      "amount": "188.54",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/J2fmP6/intel-celeron-g3930t-27ghz-dual-core-oemtray-processor-cm8067703016211"
+    },
+    {
+      "item_id": "cpu-c303121be41e76b1d5c48514",
+      "category": "cpu",
+      "model": "Intel Core i5-4590",
+      "amount": "74.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7bNp99/intel-cpu-bx80646i54590"
+    },
+    {
+      "item_id": "cpu-c68da89591627c7e28f326c6",
+      "category": "cpu",
+      "model": "AMD A10-9700",
+      "amount": "279.22",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/n9s8TW/amd-a10-9700-35ghz-quad-core-processor-ad9700agabbox"
+    },
+    {
+      "item_id": "cpu-cbbaf45e6481118debf74dbd",
+      "category": "cpu",
+      "model": "Intel Xeon E-2274G",
+      "amount": "546.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/GGPgXL/intel-xeon-e-2274g-4-thz-quad-core-oemtray-processor-cm8068404174407"
+    },
+    {
+      "item_id": "cpu-ce63571308754a957ae99bd3",
+      "category": "cpu",
+      "model": "AMD A6-9500E",
+      "amount": "69.34",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YRL7YJ/amd-a6-9500e-30ghz-dual-core-processor-ad9500ahabbox"
+    },
+    {
+      "item_id": "cpu-d01666765b62f5963cbbdc68",
+      "category": "cpu",
+      "model": "Intel Celeron E1200",
+      "amount": "237.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9MH323/intel-cpu-bx80557e1200"
+    },
+    {
+      "item_id": "cpu-d12c9611c141d43be5d9ad30",
+      "category": "cpu",
+      "model": "Intel Core 2 Duo E8300",
+      "amount": "183.01",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/p6fp99/intel-cpu-eu80570pj0736m"
+    },
+    {
+      "item_id": "cpu-d88b31bd4c2d489897347d35",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2620",
+      "amount": "234.88",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2M9KHx/intel-cpu-bx80621e52620"
+    },
+    {
+      "item_id": "cpu-d8d26d0c759280eae973b652",
+      "category": "cpu",
+      "model": "AMD Athlon X2 340",
+      "amount": "21.91",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VXK7YJ/amd-cpu-ad340xokhjbox"
+    },
+    {
+      "item_id": "cpu-e53dc93d94432bd50bfbc8a8",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2699 V4",
+      "amount": "425.77",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rd98TW/intel-cpu-cm8066002022506"
+    },
+    {
+      "item_id": "cpu-e6f50ceeb51d603f9612136a",
+      "category": "cpu",
+      "model": "Intel Pentium G6950",
+      "amount": "727.26",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VkZQzy/intel-cpu-bx80616g6950"
+    },
+    {
+      "item_id": "cpu-e87b11d808c39c55f330d9c5",
+      "category": "cpu",
+      "model": "AMD A6-3500",
+      "amount": "258.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/v7Lypg/amd-cpu-ad3500ojgxbox"
+    },
+    {
+      "item_id": "cpu-ebb1af210c241aee9ef2ca6a",
+      "category": "cpu",
+      "model": "Intel Celeron G5900",
+      "amount": "59",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/37gQzy/intel-celeron-g5900-34-ghz-dual-core-processor-bx80701g5900"
+    },
+    {
+      "item_id": "cpu-f39c2c526e54dc209180dad7",
+      "category": "cpu",
+      "model": "AMD Ryzen 9 3900XT",
+      "amount": "542.21",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/RwfFf7/amd-ryzen-9-3900xt-38-ghz-12-core-processor-100-100000277wof"
+    },
+    {
+      "item_id": "cpu-f4271d4f706ccd3cea86a59e",
+      "category": "cpu",
+      "model": "AMD FX-6200",
+      "amount": "669.41",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VP4gXL/amd-cpu-fd6200frgubox"
+    },
+    {
+      "item_id": "cpu-ffd2c1f7cbe2c9700ddecb33",
+      "category": "cpu",
+      "model": "Intel Pentium G4400",
+      "amount": "32.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YV7CmG/intel-cpu-bx80662g4400"
+    },
+    {
+      "item_id": "gpu-00ce077c18a2786ff87a646b",
+      "category": "gpu",
+      "model": "Asus TUF Gaming EVO OC GeForce GTX 1660 Ti",
+      "amount": "555.79",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/mXTp99/asus-tuf-gaming-evo-oc-geforce-gtx-1660-ti-6-gb-video-card-tuf-gtx1660ti-o6g-evo-gaming"
+    },
+    {
+      "item_id": "gpu-00eb590e5c74d3b2281b6c6d",
+      "category": "gpu",
+      "model": "MSI GeForce RTX 3070 Suprim X 8G LHR GeForce RTX 3070 LHR",
+      "amount": "1721.35",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6GhFf7/msi-geforce-rtx-3070-lhr-8-gb-suprim-x-video-card-rtx3070suprimx8glhr"
+    },
+    {
+      "item_id": "gpu-01067c8d25337a0d3edb42c5",
+      "category": "gpu",
+      "model": "AMD 100-505999 Radeon Pro WX 3100",
+      "amount": "167.6",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/24X2FT/amd-100-505999-radeon-pro-wx-3100-4-gb-video-card-100-505999"
+    },
+    {
+      "item_id": "gpu-012f541f18aa73e122f21003",
+      "category": "gpu",
+      "model": "Asus Phoenix GeForce RTX 3050 8GB",
+      "amount": "280",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Q9pzK8/asus-geforce-rtx-3050-8gb-8-gb-phoenix-video-card-ph-rtx3050-8g"
+    },
+    {
+      "item_id": "gpu-015716052956b4eb5684f407",
+      "category": "gpu",
+      "model": "EVGA XC GAMING GeForce RTX 3060 12GB",
+      "amount": "723.43",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/LpbTwP/evga-geforce-rtx-3060-12-gb-xc-gaming-video-card-12g-p5-3657-kr"
+    },
+    {
+      "item_id": "gpu-021f8c48702f36531870465d",
+      "category": "gpu",
+      "model": "PNY VCQM5000-PB Quadro M5000",
+      "amount": "307.91",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dDqbt6/pny-video-card-vcqm5000pb"
+    },
+    {
+      "item_id": "gpu-025a83354d1ea75681a9df27",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC GeForce RTX 3050 8GB",
+      "amount": "404.38",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/KgH7YJ/gigabyte-geforce-rtx-3050-8gb-8-gb-gaming-oc-video-card-gv-n3050gaming-oc-8gd"
+    },
+    {
+      "item_id": "gpu-029e8661dd97ec521ce48e2e",
+      "category": "gpu",
+      "model": "MSI GAMING TRIO GeForce RTX 4090",
+      "amount": "3189.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8hVmP6/msi-gaming-trio-geforce-rtx-4090-24-gb-video-card-geforce-rtx-4090-gaming-trio-24g"
+    },
+    {
+      "item_id": "gpu-02ee3af639829cf5beac747e",
+      "category": "gpu",
+      "model": "EVGA SC ULTRA GAMING GeForce GTX 1650 SUPER",
+      "amount": "754.98",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/LBrYcf/evga-geforce-gtx-1650-super-4-gb-sc-ultra-gaming-video-card-04g-p4-1357-kr"
+    },
+    {
+      "item_id": "gpu-0315f8e8f3e88206189a3a41",
+      "category": "gpu",
+      "model": "EVGA 01G-P3-1372-TR GeForce GTX 460",
+      "amount": "193.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/M8Bv6h/evga-video-card-01gp31372tr"
+    },
+    {
+      "item_id": "gpu-03325514cabc4e5b5d9c226e",
+      "category": "gpu",
+      "model": "PNY T-Series T1000 8GB",
+      "amount": "520.16",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/T6wypg/pny-t1000-8gb-8-gb-t-series-video-card-vcnt10008gb-pb"
+    },
+    {
+      "item_id": "gpu-04de46c77b7ed22388306323",
+      "category": "gpu",
+      "model": "MSI GAMING X GeForce RTX 3050 8GB",
+      "amount": "499",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HjC48d/msi-geforce-rtx-3050-8gb-8-gb-gaming-x-video-card-geforce-rtx-3050-gaming-x-8g"
+    },
+    {
+      "item_id": "gpu-053311437165bc2f990acce0",
+      "category": "gpu",
+      "model": "PowerColor Red Devil Radeon RX 7900 XT",
+      "amount": "1470.02",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/z9xRsY/powercolor-red-devil-radeon-rx-7900-xt-20-gb-video-card-rx7900xt-20g-eoc"
+    },
+    {
+      "item_id": "gpu-07141cc728847b2d3ad17df5",
+      "category": "gpu",
+      "model": "Gigabyte OC GeForce GTX 1660 SUPER",
+      "amount": "530.49",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/CnpmP6/gigabyte-geforce-gtx-1660-super-6-gb-oc-video-card-gv-n166soc-6gd"
+    },
+    {
+      "item_id": "gpu-075c63af73b5c17b6b9d3341",
+      "category": "gpu",
+      "model": "Inno3D X3 OC GeForce RTX 3070 Ti",
+      "amount": "799.5",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/46BG3C/inno3d-geforce-rtx-3070-ti-8-gb-x3-oc-video-card-n307t3-086xx-1820va45"
+    },
+    {
+      "item_id": "gpu-083238dc35937a350b2c0373",
+      "category": "gpu",
+      "model": "Inno3D iChill X3 GeForce RTX 3080 Ti",
+      "amount": "1759.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/nZQcCJ/inno3d-geforce-rtx-3080-ti-12-gb-ichill-x3-video-card-c308t3-126xx-1810va37"
+    },
+    {
+      "item_id": "gpu-0887a605c96f694239b553f2",
+      "category": "gpu",
+      "model": "PNY VCQK620-PB Quadro K620",
+      "amount": "100",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Vq6BD3/pny-video-card-vcqk620pb"
+    },
+    {
+      "item_id": "gpu-0917d2b09fcd1d07054572f8",
+      "category": "gpu",
+      "model": "PowerColor Hellhound Radeon RX 7600",
+      "amount": "325.44",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zspQzy/powercolor-hellhound-radeon-rx-7600-xt-8-gb-video-card-rx7600-8g-loc"
+    },
+    {
+      "item_id": "gpu-0a2363a68d2ee76217e566af",
+      "category": "gpu",
+      "model": "PNY T-Series T400 2GB",
+      "amount": "250",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/N3WzK8/pny-t400-2gb-2-gb-t-series-video-card-vcnt400-pb"
+    },
+    {
+      "item_id": "gpu-0cabd0a1b4948190074ea471",
+      "category": "gpu",
+      "model": "Asus ROG STRIX GAMING OC GeForce RTX 3080 Ti",
+      "amount": "1899.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HfpzK8/asus-geforce-rtx-3080-ti-12-gb-rog-strix-gaming-oc-video-card-rog-strix-rtx3080ti-o12g-gaming"
+    },
+    {
+      "item_id": "gpu-0cb151591590aef156095e57",
+      "category": "gpu",
+      "model": "EVGA Superclocked GeForce GTX 780",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BtMFf7/evga-video-card-03gp42783kr"
+    },
+    {
+      "item_id": "gpu-0d5c551518c66eaf1b40f16e",
+      "category": "gpu",
+      "model": "PNY VCQRTX4000-PB Quadro RTX 4000",
+      "amount": "490.21",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/k866Mp/pny-vcqrtx4000-pb-quadro-rtx-4000-8-gb-video-card-vcqrtx4000-pb"
+    },
+    {
+      "item_id": "gpu-0ee13f97f60bb8c8ba5cedee",
+      "category": "gpu",
+      "model": "Gigabyte EAGLE Radeon RX 6400",
+      "amount": "242",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XpkWGX/gigabyte-radeon-rx-6400-4-gb-eagle-video-card-gv-r64eagle-4gd"
+    },
+    {
+      "item_id": "gpu-0f4912ca361e2cfc0132cbf1",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 6900 XT",
+      "amount": "1342.51",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YfvdnQ/gigabyte-radeon-rx-6900-xt-16-gb-gaming-oc-video-card-gv-r69xtgamingoc16gd"
+    },
+    {
+      "item_id": "gpu-0f4b1bf0fca965d2054d7dff",
+      "category": "gpu",
+      "model": "XFX Speedster MERC 310 Black Edition Radeon RX 7900 XTX",
+      "amount": "899",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/GtXJ7P/xfx-speedster-merc-310-black-edition-radeon-rx-7900-xtx-24-gb-video-card-rx-79xmercb9"
+    },
+    {
+      "item_id": "gpu-0f50b7a4919253ef639176f1",
+      "category": "gpu",
+      "model": "Palit NE5XTIX015KB GeForce GTX Titan X",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tNNypg/palit-video-card-ne5xtix015kb"
+    },
+    {
+      "item_id": "gpu-101b488c68de825e7d9c01d0",
+      "category": "gpu",
+      "model": "XFX Speedster QICK 319 BLACK Radeon RX 6700 XT",
+      "amount": "742.5",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Q4stt6/xfx-radeon-rx-6700-xt-12-gb-speedster-qick-319-black-video-card-rx-67xtypbdp"
+    },
+    {
+      "item_id": "gpu-1126e15010b2cd3f68134f8c",
+      "category": "gpu",
+      "model": "PowerColor Hellhound Radeon RX 6700 XT",
+      "amount": "928.75",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cBhFf7/powercolor-radeon-rx-6700-xt-12-gb-hellhound-video-card-axrx-6700xt-12gbd6-3dhl"
+    },
+    {
+      "item_id": "gpu-1141a50c6d0a1dc48be7b736",
+      "category": "gpu",
+      "model": "AMD 100-506115 Radeon Pro WX 3200",
+      "amount": "144.85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/h8MTwP/amd-radeon-pro-wx-3200-4-gb-video-card-100-506115"
+    },
+    {
+      "item_id": "gpu-11bd24958242d85c144c10dc",
+      "category": "gpu",
+      "model": "ATI 100-505647 FirePro V7900",
+      "amount": "324.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/yjzv6h/ati-video-card-100505647"
+    },
+    {
+      "item_id": "gpu-11dc6797a621d67676a190b4",
+      "category": "gpu",
+      "model": "Asus GT1030-2G-BRK GeForce GT 1030",
+      "amount": "98.17",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QRzkcf/asus-geforce-gt-1030-2-gb-video-card-gt1030-2g-brk"
+    },
+    {
+      "item_id": "gpu-11f26f531cb40c33a6ffee05",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity OC GeForce RTX 3080 Ti",
+      "amount": "1597.88",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QTmmP6/zotac-geforce-rtx-3080-ti-12-gb-gaming-trinity-oc-video-card-zt-a30810j-10p"
+    },
+    {
+      "item_id": "gpu-13b1b3fe6e468f1fba26ceeb",
+      "category": "gpu",
+      "model": "Asus Dual GeForce RTX 3060 V2 OC Edition GeForce RTX 3060 12GB",
+      "amount": "372.45",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/KXYmP6/asus-geforce-rtx-3060-12-gb-dual-oc-v2-video-card-dual-rtx3060-o12g-v2"
+    },
+    {
+      "item_id": "gpu-14059c8c98aa11c0e1501419",
+      "category": "gpu",
+      "model": "MSI GAMING GeForce GTX 970",
+      "amount": "444.02",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2j4NnQ/msi-video-card-gtx970gaming4g"
+    },
+    {
+      "item_id": "gpu-1a6f86028fec5d44ac54305d",
+      "category": "gpu",
+      "model": "PNY VCQK2000-PB Quadro K2000",
+      "amount": "311.75",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/N3Lypg/pny-video-card-vcqk2000pb"
+    },
+    {
+      "item_id": "gpu-1a820f3907b08ee7bda3f661",
+      "category": "gpu",
+      "model": "EVGA 02G-P4-2680-KR GeForce GTX 680",
+      "amount": "395",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kZMFf7/evga-video-card-02gp42680kr"
+    },
+    {
+      "item_id": "gpu-1b145c27587de8dcc4efce9a",
+      "category": "gpu",
+      "model": "AMD 100-506095 Radeon Pro W5500",
+      "amount": "440.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7dtKHx/amd-radeon-pro-w5500-8-gb-video-card-100-506095"
+    },
+    {
+      "item_id": "gpu-1c032bfcd5680212aff8ca21",
+      "category": "gpu",
+      "model": "Sapphire NITRO+ PURE Radeon RX 6950 XT",
+      "amount": "1433.59",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6PkWGX/sapphire-radeon-rx-6950-xt-16-gb-nitro-video-card-11317-04-20g"
+    },
+    {
+      "item_id": "gpu-1c95de090aaa1d820c0b0120",
+      "category": "gpu",
+      "model": "Sapphire NITRO+ Radeon RX 6800 XT",
+      "amount": "599",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9yJmP6/sapphire-radeon-rx-6800-xt-16-gb-nitro-video-card-11304-02-20g"
+    },
+    {
+      "item_id": "gpu-1e10dd74c5f228c9876ad622",
+      "category": "gpu",
+      "model": "VisionTek 900614 Radeon HD 7750",
+      "amount": "223.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8yvRsY/visiontek-video-card-900614"
+    },
+    {
+      "item_id": "gpu-1eb0d2738db713e74f2a36af",
+      "category": "gpu",
+      "model": "Gigabyte GV-N1030D4-2GL GeForce GT 1030 DDR4",
+      "amount": "135.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xC448d/gigabyte-geforce-gt-1030-ddr4-2gb-video-card-gv-n1030d4-2gl"
+    },
+    {
+      "item_id": "gpu-1ff638098c243405dc00222e",
+      "category": "gpu",
+      "model": "AMD 100-505957 Radeon Pro WX 9100",
+      "amount": "1599.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bxhj4D/amd-radeon-pro-wx-9100-16gb-video-card-100-505957"
+    },
+    {
+      "item_id": "gpu-2027beedb450b625d606e946",
+      "category": "gpu",
+      "model": "Gigabyte Vision OC GeForce RTX 3090",
+      "amount": "1689.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Zk2bt6/gigabyte-vision-oc-geforce-rtx-3090-24-gb-video-card-gv-n3090visionoc24gd"
+    },
+    {
+      "item_id": "gpu-204ee2a77a86e0277e7eb1f3",
+      "category": "gpu",
+      "model": "Asus DUAL OC GeForce RTX 3050 8GB",
+      "amount": "358.45",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tBJgXL/asus-geforce-rtx-3050-8gb-8-gb-dual-oc-video-card-dual-rtx3050-o8g"
+    },
+    {
+      "item_id": "gpu-209bfee978cd8ee48952cf5a",
+      "category": "gpu",
+      "model": "PNY VCQK1200DVI-PB Quadro K1200",
+      "amount": "602.01",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/W3FXsY/pny-video-card-vcqk1200dvipb"
+    },
+    {
+      "item_id": "gpu-218b9d1e53a204a943873b9d",
+      "category": "gpu",
+      "model": "PNY UPRISING GeForce RTX 3080 12GB LHR",
+      "amount": "1302.97",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sG6p99/pny-geforce-rtx-3080-12gb-lhr-12-gb-uprising-video-card-vcg308012ltfmpb"
+    },
+    {
+      "item_id": "gpu-22579d4aa31597ef20445e5f",
+      "category": "gpu",
+      "model": "PNY VCQFX1800-PCIE-PB Quadro FX 1800",
+      "amount": "391.54",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2hQypg/pny-video-card-vcqfx1800pciepb"
+    },
+    {
+      "item_id": "gpu-239f695450991a44c8486e40",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X OC GeForce RTX 4080",
+      "amount": "1579.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9YVmP6/msi-ventus-3x-oc-geforce-rtx-4080-16-gb-video-card-rtx-4080-16gb-ventus-3x-oc"
+    },
+    {
+      "item_id": "gpu-2445b727a9d29136b06e0b0d",
+      "category": "gpu",
+      "model": "AMD RADEON PRO WX 4100",
+      "amount": "299.93",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/pVCrxr/amd-radeon-pro-wx-4100-4gb-video-card-radeon-pro-wx-4100"
+    },
+    {
+      "item_id": "gpu-25499b8d3701e9ccd5bd1cc5",
+      "category": "gpu",
+      "model": "EVGA FTW3 ULTRA GAMING LE iCX3 GeForce RTX 3080 Ti",
+      "amount": "1993.83",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FFPQzy/evga-geforce-rtx-3080-ti-12-gb-ftw3-ultra-gaming-le-icx3-video-card-12g-p5-3967-kr"
+    },
+    {
+      "item_id": "gpu-254f103bed5de669c90486e6",
+      "category": "gpu",
+      "model": "Asus GTXTITANBLACK-6GD5 GeForce GTX Titan Black",
+      "amount": "1398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wBNp99/asus-video-card-gtxtitanblack6gd5"
+    },
+    {
+      "item_id": "gpu-260568196f3a48c0cdf84d31",
+      "category": "gpu",
+      "model": "PNY VCQP620-PB Quadro P620",
+      "amount": "327.77",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VXQG3C/pny-quadro-p620-2-gb-video-card-vcqp620-pb"
+    },
+    {
+      "item_id": "gpu-2648fcd37c83544be96cc935",
+      "category": "gpu",
+      "model": "MSI GT 710 1GD3H LP GeForce GT 710",
+      "amount": "69",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rtnG3C/msi-video-card-gt7101gd3hlp"
+    },
+    {
+      "item_id": "gpu-26bf58323ec5ef690c2d590e",
+      "category": "gpu",
+      "model": "PNY VCQK420-2GB-PB Quadro K420",
+      "amount": "478.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JskwrH/pny-quadro-k420-2gb-video-card-vcqk420-2gb-pb"
+    },
+    {
+      "item_id": "gpu-28b1feef9df0a83a85dc4f2b",
+      "category": "gpu",
+      "model": "PNY XLR8 Gaming UPRISING EPIC-X RGB OC GeForce RTX 3090 Ti",
+      "amount": "2583.87",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zmpzK8/pny-geforce-rtx-3090-ti-24-gb-xlr8-gaming-uprising-epic-x-rgb-oc-video-card-vcg3090t24tfxmpb-o"
+    },
+    {
+      "item_id": "gpu-2947fc0c3dc3290796b070ee",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge OC GeForce RTX 3060 12GB",
+      "amount": "649.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sM8bt6/zotac-geforce-rtx-3060-12-gb-gaming-twin-edge-oc-video-card-zt-a30600h-10m"
+    },
+    {
+      "item_id": "gpu-29c4ad5401ac79fd1b4383b6",
+      "category": "gpu",
+      "model": "Sapphire NITRO+ SE Radeon RX 6800 XT",
+      "amount": "1159.74",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7yJmP6/sapphire-radeon-rx-6800-xt-16-gb-nitro-se-video-card-11304-01-20g"
+    },
+    {
+      "item_id": "gpu-2d88929d4b78b4898e1cb089",
+      "category": "gpu",
+      "model": "MSI MECH 2X OC Radeon RX 6500 XT",
+      "amount": "410.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Xh8bt6/msi-radeon-rx-6500-xt-4-gb-mech-2x-oc-video-card-radeon-rx-6500-xt-mech-2x-4g-oc"
+    },
+    {
+      "item_id": "gpu-2ed5b76f0aa537ff5706be85",
+      "category": "gpu",
+      "model": "MSI GAMING X Radeon RX 6700 XT",
+      "amount": "629",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/3RkWGX/msi-radeon-rx-6700-xt-12-gb-gaming-x-video-card-radeon-rx-6700-xt-gaming-x-12g"
+    },
+    {
+      "item_id": "gpu-2eee8d901d1a2f24d73dcecf",
+      "category": "gpu",
+      "model": "Gigabyte EAGLE GeForce RTX 3050 8GB",
+      "amount": "382",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qy7G3C/gigabyte-geforce-rtx-3050-8gb-8-gb-eagle-video-card-gv-n3050eagle-8gd"
+    },
+    {
+      "item_id": "gpu-31f828cf37b02de07a55373a",
+      "category": "gpu",
+      "model": "EVGA 03G-P4-2881-KR GeForce GTX 780 Ti",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FLtCmG/evga-video-card-03gp42881kr"
+    },
+    {
+      "item_id": "gpu-32f35520e0d1971a906f47de",
+      "category": "gpu",
+      "model": "ASRock Challenger D OC Radeon RX 6600 XT",
+      "amount": "849.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/DgFbt6/asrock-radeon-rx-6600-xt-8-gb-challenger-d-oc-video-card-rx6600xt-cld-8go"
+    },
+    {
+      "item_id": "gpu-3375ddb401195e4a0186e792",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge GeForce RTX 3060 12GB",
+      "amount": "286.38",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cBPQzy/zotac-geforce-rtx-3060-12-gb-gaming-twin-edge-video-card-zt-a30600e-10m"
+    },
+    {
+      "item_id": "gpu-347aa9141cc8df6281092d6c",
+      "category": "gpu",
+      "model": "PNY VCQ295NVS-X16-DVI-PB Quadro NVS 295",
+      "amount": "398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/CG8Zxr/pny-video-card-vcq295nvsx16dvipb"
+    },
+    {
+      "item_id": "gpu-3485132d9e11675e1af485db",
+      "category": "gpu",
+      "model": "Asus GT730-SL-2GD5-BRK GeForce GT 730",
+      "amount": "82.06",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xFH7YJ/asus-geforce-gt-730-2-gb-video-card-gt730-sl-2gd5-brk"
+    },
+    {
+      "item_id": "gpu-3532f72715a38ef052177bfb",
+      "category": "gpu",
+      "model": "Asus DUAL OC V2 Radeon RX 7600",
+      "amount": "335.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7Jn9TW/asus-dual-oc-v2-radeon-rx-7600-8-gb-video-card-dual-rx7600-o8g-v2"
+    },
+    {
+      "item_id": "gpu-358e75d2b0a8af7228b662b3",
+      "category": "gpu",
+      "model": "PNY UPRISING GeForce RTX 3070 LHR",
+      "amount": "524.69",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7ZmmP6/pny-uprising-geforce-rtx-3070-lhr-8-gb-video-card-vcg30708ldfmpb"
+    },
+    {
+      "item_id": "gpu-36ec0aa95a9d21d951a38263",
+      "category": "gpu",
+      "model": "PNY VCQP2000-PB Quadro P2000",
+      "amount": "290",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/x4bkcf/pny-vcqp2000-pb-quadro-p2000-5-gb-video-card-vcqp2000-pb"
+    },
+    {
+      "item_id": "gpu-39a3dd6d66c8282bef5740b0",
+      "category": "gpu",
+      "model": "PNY VCQ4000-PB Quadro 4000",
+      "amount": "374.5",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6kNp99/pny-video-card-vcq4000pb"
+    },
+    {
+      "item_id": "gpu-3a35a36b60377f2d92750f8b",
+      "category": "gpu",
+      "model": "Gigabyte GV-N730D5-2GL GeForce GT 730",
+      "amount": "89",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BYdxFT/gigabyte-geforce-gt-730-2gb-video-card-gv-n730d5-2gl"
+    },
+    {
+      "item_id": "gpu-3a6c27d2fb7140c18a178d04",
+      "category": "gpu",
+      "model": "PowerColor Red Devil Radeon RX 5700 XT",
+      "amount": "1556.09",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/vK4BD3/powercolor-radeon-rx-5700-xt-8-gb-red-devil-video-card-axrx-5700xt-8gbd6-3dheoc"
+    },
+    {
+      "item_id": "gpu-3b1495a6b15b5c910bf3c26e",
+      "category": "gpu",
+      "model": "MSI Ventus XS OCV1 GeForce GTX 1650 G6",
+      "amount": "499.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/27cG3C/msi-ventus-xs-ocv1-geforce-gtx-1650-g6-4-gb-video-card-g165d6vxsc1"
+    },
+    {
+      "item_id": "gpu-3ed661875cb192853126618c",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 6950 XT",
+      "amount": "1597.8",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7qfnTW/gigabyte-radeon-rx-6950-xt-16-gb-gaming-oc-video-card-gv-r695xtgaming-oc-16gd"
+    },
+    {
+      "item_id": "gpu-3f454992c7c9fdc5ee7daea6",
+      "category": "gpu",
+      "model": "MSI DUKE GeForce RTX 2070",
+      "amount": "1544.3",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/nczkcf/msi-geforce-rtx-2070-8gb-video-card-geforce-rtx-2070-duke-8g-oc"
+    },
+    {
+      "item_id": "gpu-3f84e622c60ec44075339618",
+      "category": "gpu",
+      "model": "PNY RTX A-Series RTX A2000 6GB",
+      "amount": "625.26",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/L4zhP6/pny-rtx-a2000-6gb-6-gb-rtx-a-series-video-card-vcnrtxa2000-pb"
+    },
+    {
+      "item_id": "gpu-3fe632da09be7e347b7e1b98",
+      "category": "gpu",
+      "model": "Zotac GAMING GeForce GTX 1660 Ti",
+      "amount": "500.24",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cY3H99/zotac-geforce-gtx-1660-ti-6-gb-gaming-video-card-zt-t16610f-10l"
+    },
+    {
+      "item_id": "gpu-3ff6f9682413cc2fd576f531",
+      "category": "gpu",
+      "model": "PNY VCQP400-PB Quadro P400",
+      "amount": "139",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VMkwrH/pny-quadro-p400-2gb-video-card-vcqp400-pb"
+    },
+    {
+      "item_id": "gpu-406a9e19566a2c7bdf859af5",
+      "category": "gpu",
+      "model": "Asus EAH5550/DI/1GD3(LP) Radeon HD 5550",
+      "amount": "95.72",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/d6zv6h/asus-video-card-eah5550di1gd3lp"
+    },
+    {
+      "item_id": "gpu-42a7c870bbc097166280ec98",
+      "category": "gpu",
+      "model": "PNY VCQM6000-24GB-PB Quadro M6000",
+      "amount": "981.4",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/fqmxFT/pny-video-card-vcqm600024gbpb"
+    },
+    {
+      "item_id": "gpu-4449c589795c256362b65b07",
+      "category": "gpu",
+      "model": "MSI GT 1030 2GHD4 LP OC GeForce GT 1030 DDR4",
+      "amount": "100",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YP8j4D/msi-geforce-gt-1030-ddr4-2gb-video-card-gt-1030-2ghd4-lp-oc"
+    },
+    {
+      "item_id": "gpu-44ce0cd19414b12e94e67b34",
+      "category": "gpu",
+      "model": "Zotac AMP Extreme Core Holo GeForce RTX 3090 Ti",
+      "amount": "2502",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MBt9TW/zotac-geforce-rtx-3090-ti-24-gb-amp-extreme-core-holo-video-card-zt-a30910b-10p"
+    },
+    {
+      "item_id": "gpu-451273d8e407218cc0786b45",
+      "category": "gpu",
+      "model": "MSI Radeon RX 6800 XT Gaming X Trio 16G",
+      "amount": "1879.12",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TzbCmG/msi-radeon-rx-6800-xt-16-gb-gaming-x-trio-video-card-rx-6800-xt-gaming-x-trio-16g"
+    },
+    {
+      "item_id": "gpu-453c63701450e18e7f0eabb6",
+      "category": "gpu",
+      "model": "Asus TUF GAMING GeForce RTX 4080",
+      "amount": "1589.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/yRLFf7/asus-tuf-gaming-geforce-rtx-4080-16-gb-video-card-tuf-rtx4080-16g-gaming"
+    },
+    {
+      "item_id": "gpu-45f98e7dbc9ed3ea3c2c5d89",
+      "category": "gpu",
+      "model": "Sapphire PULSE Radeon RX 6750 XT",
+      "amount": "649",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8yNxFT/sapphire-radeon-rx-6750-xt-12-gb-pulse-video-card-11318-03-20g"
+    },
+    {
+      "item_id": "gpu-464cde289ae5c85630c537e7",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity GeForce RTX 3080 12GB LHR",
+      "amount": "1149.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/hHLFf7/zotac-geforce-rtx-3080-12gb-lhr-12-gb-gaming-trinity-video-card-zt-a30820d-10plhr"
+    },
+    {
+      "item_id": "gpu-48abe9704d372fefbb409621",
+      "category": "gpu",
+      "model": "PNY VCNRTX4000ADALP-PB RTX 4000 SFF Ada Generation",
+      "amount": "1772.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/hjHqqs/pny-vcnrtx4000adalp-pb-rtx-4000-sff-ada-generation-20-gb-video-card-vcnrtx4000adalp-pb"
+    },
+    {
+      "item_id": "gpu-48e3cf82bf6f8a04d1ae658d",
+      "category": "gpu",
+      "model": "PNY UPRISING GeForce RTX 3060 Ti",
+      "amount": "659.91",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HjfFf7/pny-geforce-rtx-3060-ti-8-gb-uprising-video-card-vcg3060t8dfmpb"
+    },
+    {
+      "item_id": "gpu-49701f09ada763db06dead7d",
+      "category": "gpu",
+      "model": "Asus DirectCU II GeForce GTX 760 X2",
+      "amount": "660.24",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Wj3RsY/asus-video-card-mars7604gd5"
+    },
+    {
+      "item_id": "gpu-49b28959382baa7ffb7f33cd",
+      "category": "gpu",
+      "model": "Zotac ZT-P10300A-10L GeForce GT 1030",
+      "amount": "88.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/b4KhP6/zotac-geforce-gt-1030-2gb-video-card-zt-p10300a-10l"
+    },
+    {
+      "item_id": "gpu-49d86f9b82d9a747678c58f9",
+      "category": "gpu",
+      "model": "Asus TUF GAMING GeForce RTX 4070 Ti",
+      "amount": "2776.29",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kVqPxr/asus-tuf-gaming-geforce-rtx-4070-ti-12-gb-video-card-tuf-rtx4070ti-12g-gaming"
+    },
+    {
+      "item_id": "gpu-49e9d0c5928b235565428179",
+      "category": "gpu",
+      "model": "Asus GT730-4H-SL-2GD5 GeForce GT 730",
+      "amount": "85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ywBG3C/asus-gt730-4h-sl-2gd5-geforce-gt-730-2-gb-pcie-x1-video-card-gt730-4h-sl-2gd5"
+    },
+    {
+      "item_id": "gpu-4a9fbf116c3d1019e19081c9",
+      "category": "gpu",
+      "model": "Sapphire NITRO+ Radeon RX 7900 XTX",
+      "amount": "1699.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/F3fnTW/sapphire-nitro-radeon-rx-7900-xtx-24-gb-video-card-11322-01-20g"
+    },
+    {
+      "item_id": "gpu-4af9cb03de388c12b1ba7ed7",
+      "category": "gpu",
+      "model": "PNY XLR8 Gaming REVEL EPIC-X RGB GeForce RTX 3060 12GB",
+      "amount": "633.87",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4m8bt6/pny-geforce-rtx-3060-12-gb-xlr8-gaming-revel-epic-x-rgb-video-card-vcg306012sfxppb"
+    },
+    {
+      "item_id": "gpu-4c015bfe0dea2c651fdf2d95",
+      "category": "gpu",
+      "model": "PNY VCQK6000-PB Quadro K6000",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2j3RsY/pny-video-card-vcqk6000pb"
+    },
+    {
+      "item_id": "gpu-4c2d7c0eac1835167075da28",
+      "category": "gpu",
+      "model": "Asus ROG STRIX GAMING OC V2 GeForce RTX 3080 10GB LHR",
+      "amount": "2920.92",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/H4jBD3/asus-geforce-rtx-3080-lhr-10-gb-rog-strix-gaming-oc-v2-video-card-rog-strix-rtx3080-o10g-v2-gaming"
+    },
+    {
+      "item_id": "gpu-4c6eaf515c2b8390eeab69d5",
+      "category": "gpu",
+      "model": "Sparkle ORC OC Arc A750",
+      "amount": "220.67",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Pshv6h/sparkle-orc-oc-arc-a750-8-gb-video-card-sa750c-8goc"
+    },
+    {
+      "item_id": "gpu-4c843dbf21510f860da68047",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC V2 GeForce RTX 3060 Ti LHR",
+      "amount": "505.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/RVH7YJ/asus-geforce-rtx-3060-ti-lhr-8-gb-tuf-gaming-oc-v2-video-card-tuf-rtx3060ti-o8g-v2-gaming"
+    },
+    {
+      "item_id": "gpu-4e3adb0fa3e6fc77a9565a0a",
+      "category": "gpu",
+      "model": "Asus ENGTS250/DI/512MD3/WW GeForce GTS 250",
+      "amount": "123.6",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qktCmG/asus-video-card-engts250di512md3ww"
+    },
+    {
+      "item_id": "gpu-526e61875daaa4d694780692",
+      "category": "gpu",
+      "model": "PowerColor Fighter OC Radeon RX 6500 XT",
+      "amount": "239.09",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/p8vdnQ/powercolor-radeon-rx-6500-xt-4-gb-fighter-oc-video-card-axrx-6500xt-4gbd6-dhoc"
+    },
+    {
+      "item_id": "gpu-5325db6bcc25dcb7fc51ba44",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 7600",
+      "amount": "282.55",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rh7scf/gigabyte-gaming-oc-radeon-rx-7600-xt-8-gb-video-card-gv-r76gaming-oc-8gd"
+    },
+    {
+      "item_id": "gpu-5563019b8a0df8bc65b7ec93",
+      "category": "gpu",
+      "model": "Asus ROG STRIX Radeon RX VEGA 64",
+      "amount": "1188.77",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7nYWGX/asus-radeon-rx-vega-64-8gb-rog-strix-video-card-rog-strix-rxvega64-o8g-gaming"
+    },
+    {
+      "item_id": "gpu-55a194fcd0ff1ff6c0170658",
+      "category": "gpu",
+      "model": "PNY T-Series T1000 4GB",
+      "amount": "359",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PXhFf7/pny-t1000-4gb-4-gb-t-series-video-card-vcnt1000-pb"
+    },
+    {
+      "item_id": "gpu-561accccf2c76b649467f681",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X OC GeForce RTX 3070 Ti",
+      "amount": "735.55",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XTmmP6/msi-geforce-rtx-3070-ti-8-gb-ventus-3x-oc-video-card-geforce-rtx-3070-ti-ventus-3x-8g-oc"
+    },
+    {
+      "item_id": "gpu-56861f798814ef8c673bdd52",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 4070",
+      "amount": "999.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MQDQzy/asus-tuf-gaming-oc-geforce-rtx-4070-12-gb-video-card-tuf-rtx4070-o12g-gaming"
+    },
+    {
+      "item_id": "gpu-57270492a3ab760182f30272",
+      "category": "gpu",
+      "model": "PNY VCQGV100-PB Quadro GV100",
+      "amount": "11999.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/D7GxFT/pny-quadro-gv100-32gb-video-card-vcqgv100-pb"
+    },
+    {
+      "item_id": "gpu-57bcca4a2edfa0eabb5d1c8f",
+      "category": "gpu",
+      "model": "MSI NTITAN Black 6GD5 GeForce GTX Titan Black",
+      "amount": "1398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wHx9TW/msi-video-card-ntitanblack6gd5"
+    },
+    {
+      "item_id": "gpu-58cf2ae42fd08271c2f4e117",
+      "category": "gpu",
+      "model": "PowerColor Fighter Radeon RX 7600",
+      "amount": "326.17",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jKqrxr/powercolor-fighter-radeon-rx-7600-xt-8-gb-video-card-rx7600-8g-f"
+    },
+    {
+      "item_id": "gpu-59507e762f618309de089143",
+      "category": "gpu",
+      "model": "EVGA FTW3 ULTRA GAMING GeForce RTX 3070 Ti",
+      "amount": "889.29",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/M2rRsY/evga-geforce-rtx-3070-ti-8-gb-ftw3-ultra-gaming-video-card-08g-p5-3797-kl"
+    },
+    {
+      "item_id": "gpu-5a066c94eb976364d3fbd0a8",
+      "category": "gpu",
+      "model": "PNY VCQK5200-PB Quadro K5200",
+      "amount": "192.14",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/md8Zxr/pny-video-card-vcqk5200pb"
+    },
+    {
+      "item_id": "gpu-5a11542c878943fb2fcfd842",
+      "category": "gpu",
+      "model": "PNY VCQP4000-PB Quadro P4000",
+      "amount": "300",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7ms8TW/pny-quadro-p4000-8gb-video-card-vcqp4000-pb"
+    },
+    {
+      "item_id": "gpu-5d610a6a248765e3b65cf89e",
+      "category": "gpu",
+      "model": "Zotac ZT-71310-10L GeForce GT 710",
+      "amount": "62.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/mqH8TW/zotac-geforce-gt-710-2-gb-video-card-zt-71310-10l"
+    },
+    {
+      "item_id": "gpu-5ea0f55dc6fdc77b9de8c944",
+      "category": "gpu",
+      "model": "MSI Radeon RX 6800 GAMING X TRIO 16G",
+      "amount": "3277.5",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7TbCmG/msi-radeon-rx-6800-16-gb-gaming-x-trio-video-card-rx6800gamingxtrio16g"
+    },
+    {
+      "item_id": "gpu-5f0a3d27e106f0aa2987ebee",
+      "category": "gpu",
+      "model": "ATI 100-505553 FirePro V5700",
+      "amount": "398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BvrG3C/ati-video-card-100505553"
+    },
+    {
+      "item_id": "gpu-60cf2d2e84cfd0d3ad9007fe",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity OC GeForce RTX 3070 Ti",
+      "amount": "775",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JxPQzy/zotac-gaming-trinity-oc-geforce-rtx-3070-ti-8-gb-video-card-zt-a30710j-10p"
+    },
+    {
+      "item_id": "gpu-625b38d8ac885bef831f81ed",
+      "category": "gpu",
+      "model": "PNY XLR8 GeForce GTX 1080",
+      "amount": "1307.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rYNypg/pny-geforce-gtx-1080-8gb-xlr8-video-card-vcggtx10808xgpb-oc"
+    },
+    {
+      "item_id": "gpu-632232a02a50d26eef0d52c6",
+      "category": "gpu",
+      "model": "Sparkle TITAN OC Arc A750",
+      "amount": "229",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/d6DQzy/sparkle-titan-oc-arc-a750-8-gb-video-card-sa750t-8goc"
+    },
+    {
+      "item_id": "gpu-633394654056577eb7c09ef6",
+      "category": "gpu",
+      "model": "HP C2J94AT Quadro K4000",
+      "amount": "461.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qDphP6/hp-video-card-c2j94at"
+    },
+    {
+      "item_id": "gpu-642c9202f72ca9c8c601c3f7",
+      "category": "gpu",
+      "model": "Zotac ZT-71115-20L GeForce GT 730",
+      "amount": "119.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MHx9TW/zotac-video-card-zt7111520l"
+    },
+    {
+      "item_id": "gpu-66ea6be40dd45d8f877fc9b1",
+      "category": "gpu",
+      "model": "Gigabyte AORUS MASTER Rev 2.0 GeForce RTX 3070 LHR",
+      "amount": "1798.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/V4jBD3/gigabyte-geforce-rtx-3070-lhr-8-gb-aorus-master-rev-20-video-card-gv-n3070aorus-m-8gd-rev-20"
+    },
+    {
+      "item_id": "gpu-66f4939fbb94857e09aed636",
+      "category": "gpu",
+      "model": "NVIDIA Founders Edition GeForce RTX 4070",
+      "amount": "989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/K688TW/nvidia-founders-edition-geforce-rtx-4070-12-gb-video-card-900-1g141-2544-000"
+    },
+    {
+      "item_id": "gpu-6741dd37e411305ccea31d0f",
+      "category": "gpu",
+      "model": "ASRock Phantom Gaming OC Radeon RX 7900 XTX",
+      "amount": "1045.74",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gCBG3C/asrock-phantom-gaming-oc-radeon-rx-7900-xtx-24-gb-video-card-rx7900xtx-pg-24go"
+    },
+    {
+      "item_id": "gpu-681035f7355a8cde7e3416ac",
+      "category": "gpu",
+      "model": "MSI GAMING X Radeon RX 5700 XT",
+      "amount": "1489.16",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jbK2FT/msi-radeon-rx-5700-xt-8-gb-gaming-x-video-card-radeon-rx-5700-xt-gaming-x"
+    },
+    {
+      "item_id": "gpu-685c37a8379c3d54939320f7",
+      "category": "gpu",
+      "model": "Zotac ArcticStorm GeForce GTX Titan X",
+      "amount": "1542.53",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NXPzK8/zotac-video-card-zt9040210p"
+    },
+    {
+      "item_id": "gpu-6917884a1d769a310f188dc7",
+      "category": "gpu",
+      "model": "Asus Phoenix Radeon RX 550 - 512",
+      "amount": "202.49",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gZYmP6/asus-phoenix-radeon-rx-550-512-2-gb-video-card-ph-550-2g"
+    },
+    {
+      "item_id": "gpu-69313c8ad5319ddc2683c14b",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Rev 2.0 GeForce RTX 3060 12GB",
+      "amount": "677.23",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/GzgFf7/gigabyte-gaming-oc-rev-20-geforce-rtx-3060-12gb-12-gb-video-card-gv-n3060gaming-oc-12gd-rev-20"
+    },
+    {
+      "item_id": "gpu-69c999c95ee4dc844971ef22",
+      "category": "gpu",
+      "model": "MSI VENTUS 2X OC GeForce RTX 3050 8GB",
+      "amount": "379",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qJZ9TW/msi-geforce-rtx-3050-8gb-8-gb-ventus-2x-oc-video-card-geforce-rtx-3050-ventus-2x-8g-oc"
+    },
+    {
+      "item_id": "gpu-6a5260e91525e6317f3e3419",
+      "category": "gpu",
+      "model": "Sapphire NITRO+ SE Radeon RX 6900 XT",
+      "amount": "788.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9QPQzy/sapphire-radeon-rx-6900-xt-16-gb-nitro-se-video-card-11308-03-20g"
+    },
+    {
+      "item_id": "gpu-6a9a49eac09c3ce491e6be42",
+      "category": "gpu",
+      "model": "AMD 100-506208 Radeon PRO W6600",
+      "amount": "832.96",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zNXJ7P/amd-100-506208-radeon-pro-w6600-8-gb-video-card-100-506208"
+    },
+    {
+      "item_id": "gpu-6b57e80f5d9e01b7256a09e7",
+      "category": "gpu",
+      "model": "Gigabyte AORUS MASTER GeForce RTX 3070 Ti",
+      "amount": "969.55",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/DBvdnQ/gigabyte-geforce-rtx-3070-ti-8-gb-aorus-master-video-card-gv-n307taorus-m-8gd"
+    },
+    {
+      "item_id": "gpu-6c0f52ed3c729a5287b0622c",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC PRO Rev 3.0 GeForce RTX 3060 Ti LHR",
+      "amount": "877.26",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rMD7YJ/gigabyte-geforce-rtx-3060-ti-lhr-8-gb-gaming-oc-pro-rev-30-video-card-gv-n306tgamingoc-pro-8gd-rev-30"
+    },
+    {
+      "item_id": "gpu-6d0036fb2c08ac3829b80f39",
+      "category": "gpu",
+      "model": "PNY RTX A-Series RTX A5000",
+      "amount": "2706.79",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/B2ddnQ/pny-rtx-a5000-24-gb-rtx-a-series-video-card-vcnrtxa5000-pb"
+    },
+    {
+      "item_id": "gpu-6d8792099b84b858717140b4",
+      "category": "gpu",
+      "model": "PNY VCQM6000-PB Quadro M6000",
+      "amount": "511.85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/j2RFf7/pny-video-card-vcqm6000pb"
+    },
+    {
+      "item_id": "gpu-6d97391f92e6e41bf1b1b767",
+      "category": "gpu",
+      "model": "EVGA HYBRID GeForce GTX Titan X",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qcYWGX/evga-video-card-12gp41999kr"
+    },
+    {
+      "item_id": "gpu-6e9f7dc2e88bff5fd55eb4b2",
+      "category": "gpu",
+      "model": "Asus STRIX GAMING OC GeForce RTX 3090",
+      "amount": "1979.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/fzVG3C/asus-geforce-rtx-3090-24-gb-strix-gaming-oc-video-card-rog-strix-rtx3090-o24g-gaming"
+    },
+    {
+      "item_id": "gpu-6ed93701bb68eb4c74e18cf8",
+      "category": "gpu",
+      "model": "MSI AERO ITX OC GeForce RTX 2060",
+      "amount": "1290",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BvMwrH/msi-geforce-rtx-2060-6-gb-aero-itx-oc-video-card-rtx-2060-aero-itx-6g-oc"
+    },
+    {
+      "item_id": "gpu-6f29adf6ba0eb049a52b5791",
+      "category": "gpu",
+      "model": "ASRock Steel Legend OC Radeon RX 7600",
+      "amount": "310.35",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ZPJp99/asrock-steel-legend-oc-radeon-rx-7600-xt-8-gb-video-card-rx7600-sl-8go"
+    },
+    {
+      "item_id": "gpu-6fbdd7dc1bbee03f693a643b",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity GeForce RTX 3090",
+      "amount": "1689.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tfTzK8/zotac-geforce-rtx-3090-24-gb-gaming-trinity-video-card-zt-a30900d-10p"
+    },
+    {
+      "item_id": "gpu-71204c43dfb5c5004f12925a",
+      "category": "gpu",
+      "model": "KFA2 EX (1-Click OC) GeForce RTX 3070 Ti",
+      "amount": "835",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ptC48d/kfa2-geforce-rtx-3070-ti-8-gb-ex-1-click-oc-video-card-37ism6md4dek"
+    },
+    {
+      "item_id": "gpu-71896a9c9c9a68b41c5ddb4d",
+      "category": "gpu",
+      "model": "MSI MECH 2X OC Radeon RX 6700 XT",
+      "amount": "999.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9K4Ycf/msi-radeon-rx-6700-xt-12-gb-mech-2x-oc-video-card-radeon-rx-6700-xt-mech-2x-12g-oc"
+    },
+    {
+      "item_id": "gpu-760ff2b4e7637a577f9c1a99",
+      "category": "gpu",
+      "model": "Sparkle ELF Arc A380",
+      "amount": "163.11",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JVWJ7P/sparkle-elf-arc-a380-6-gb-video-card-sa380e-6g"
+    },
+    {
+      "item_id": "gpu-77a9f5392c1bc21a7f0e69d7",
+      "category": "gpu",
+      "model": "EVGA 02G-P3-2717-KR GeForce GT 710",
+      "amount": "113.23",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jk98TW/evga-video-card-02gp32717kr"
+    },
+    {
+      "item_id": "gpu-77d4be26b55adc3048f582bb",
+      "category": "gpu",
+      "model": "NVIDIA Founders Edition GeForce GTX 1070 Ti",
+      "amount": "1098",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4ZrmP6/nvidia-geforce-gtx-1070-ti-8gb-founders-edition-video-card-900-1g411-2510-000"
+    },
+    {
+      "item_id": "gpu-79931a28bfb3431e2dee742b",
+      "category": "gpu",
+      "model": "PNY RTX A-Series RTX A4000",
+      "amount": "1600",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zQKKHx/pny-rtx-a4000-16-gb-rtx-a-series-video-card-vcnrtxa4000-pb"
+    },
+    {
+      "item_id": "gpu-79ec0bbce05d37991c000cc3",
+      "category": "gpu",
+      "model": "Gigabyte EAGLE Radeon RX 6600 XT",
+      "amount": "699",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/hjRYcf/gigabyte-radeon-rx-6600-xt-8-gb-eagle-video-card-gv-r66xteagle-8gd"
+    },
+    {
+      "item_id": "gpu-7a774ef08caeff4c73a7b94b",
+      "category": "gpu",
+      "model": "PNY VCQRTX8000-PB Quadro RTX 8000",
+      "amount": "6139.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8kF48d/pny-vcqrtx8000-pb-quadro-rtx-8000-48-gb-video-card-vcqrtx8000-pb"
+    },
+    {
+      "item_id": "gpu-7afaf9b8e3c091a06a97e6e5",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity GeForce RTX 3080 Ti",
+      "amount": "1611.91",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/K6BG3C/zotac-geforce-rtx-3080-ti-12-gb-gaming-trinity-video-card-zt-a30810d-10p"
+    },
+    {
+      "item_id": "gpu-7b95260b785c0dbfa5401d5f",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 3090",
+      "amount": "1979.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/GTkgXL/asus-geforce-rtx-3090-24-gb-tuf-gaming-oc-video-card-tuf-rtx3090-o24g-gaming"
+    },
+    {
+      "item_id": "gpu-7c164981276331878436811c",
+      "category": "gpu",
+      "model": "EVGA 12G-P4-2990-KR GeForce GTX Titan X",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/vnnG3C/evga-video-card-12gp42990kr"
+    },
+    {
+      "item_id": "gpu-7c418d0b2ebe3e1fe23180f4",
+      "category": "gpu",
+      "model": "PNY VCQK4000-PB Quadro K4000",
+      "amount": "380.6",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/DGphP6/pny-video-card-vcqk4000pb"
+    },
+    {
+      "item_id": "gpu-7db54d32db88aa4aa77f24aa",
+      "category": "gpu",
+      "model": "XFX DD Ultra Radeon RX 5700",
+      "amount": "354.01",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tt7p99/xfx-radeon-rx-5700-8-gb-dd-ultra-video-card-rx-57xl8lbd6"
+    },
+    {
+      "item_id": "gpu-7de30f89bc62cdbb3dfb5365",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC GeForce RTX 4090",
+      "amount": "3489.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TgkWGX/gigabyte-gaming-oc-geforce-rtx-4090-24-gb-video-card-gv-n4090gaming-oc-24gd"
+    },
+    {
+      "item_id": "gpu-7e3421127beb809551d8d5bd",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 4060 Ti",
+      "amount": "777.36",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bdbRsY/asus-tuf-gaming-oc-geforce-rtx-4060-ti-8-gb-video-card-tuf-rtx4060ti-o8g-gaming"
+    },
+    {
+      "item_id": "gpu-7ecbe561a59a826c1ee2c5cc",
+      "category": "gpu",
+      "model": "PNY T-Series T600",
+      "amount": "390",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/h3rRsY/pny-t600-4-gb-t-series-video-card-vcnt600-pb"
+    },
+    {
+      "item_id": "gpu-80e515877ef4b0cab193e950",
+      "category": "gpu",
+      "model": "AMD 100-506189 Radeon PRO W6400",
+      "amount": "239.37",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jpZ9TW/amd-100-506189-radeon-pro-w6400-4-gb-video-card-100-506189100-506189"
+    },
+    {
+      "item_id": "gpu-8156b502026efe63cf3c9121",
+      "category": "gpu",
+      "model": "MSI GTX 980Ti 6GD5 V1 GeForce GTX 980 Ti",
+      "amount": "604.15",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/stp323/msi-video-card-gtx980ti6gd5v1"
+    },
+    {
+      "item_id": "gpu-82407bd023faa9b9d1c1af20",
+      "category": "gpu",
+      "model": "EVGA 01G-P3-1377-TR GeForce GTX 460",
+      "amount": "248.62",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2Tckcf/evga-video-card-01gp31377tr"
+    },
+    {
+      "item_id": "gpu-8265671385822095eae0bb49",
+      "category": "gpu",
+      "model": "EVGA KO ULTRA GAMING GeForce RTX 2060",
+      "amount": "311",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2H7p99/evga-geforce-rtx-2060-6-gb-ko-ultra-gaming-video-card-06g-p4-2068-kr"
+    },
+    {
+      "item_id": "gpu-82f7727b46f1560a02e631fc",
+      "category": "gpu",
+      "model": "Zotac ZT-70502-10P GeForce GTX 780 Ti",
+      "amount": "1098",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/82H323/zotac-video-card-zt7050210p"
+    },
+    {
+      "item_id": "gpu-8822241b603a0ea9ba17debc",
+      "category": "gpu",
+      "model": "EVGA Founders Edition GeForce GTX 1080 Ti",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tgyxFT/evga-geforce-gtx-1080-ti-11gb-founder-edition-video-card-11g-p4-6390-kr"
+    },
+    {
+      "item_id": "gpu-8831f2ba3ea1b6245c423ede",
+      "category": "gpu",
+      "model": "Asus MINI-GTX950-2G GeForce GTX 950 75W",
+      "amount": "494.44",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6Y98TW/asus-video-card-minigtx9502g"
+    },
+    {
+      "item_id": "gpu-89ab7db0c9c34dd5801b0cf1",
+      "category": "gpu",
+      "model": "Gigabyte WINDFORCE OC GeForce RTX 4070",
+      "amount": "989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FnLdnQ/gigabyte-windforce-oc-geforce-rtx-4070-12-gb-video-card-gv-n4070wf3oc-12gd"
+    },
+    {
+      "item_id": "gpu-8a59c7207ef3a48f9ed02c80",
+      "category": "gpu",
+      "model": "Asus ENGTX460/2DI/768MD5 GeForce GTX 460",
+      "amount": "242.51",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/b8Bv6h/asus-video-card-engtx4602di768md5"
+    },
+    {
+      "item_id": "gpu-8b0e9705ca3f384efd40af1f",
+      "category": "gpu",
+      "model": "PNY VCQ420NVS-X1-DVI-PB Quadro NVS 420",
+      "amount": "498",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jwBv6h/pny-video-card-vcq420nvsx1dvipb"
+    },
+    {
+      "item_id": "gpu-8c235b580c28bf80f2155184",
+      "category": "gpu",
+      "model": "PNY VCQGP100-PB Quadro GP100",
+      "amount": "4968.05",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cYp323/pny-quadro-gp100-16gb-video-card-vcqgp100-pb"
+    },
+    {
+      "item_id": "gpu-8d0a3309e2a80282a85e4393",
+      "category": "gpu",
+      "model": "ASRock Intel Arc A380 Challenger ITX",
+      "amount": "163.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6zqPxr/asrock-intel-arc-a380-challenger-itx-arc-a380-6-gb-video-card-a380-cli-6go"
+    },
+    {
+      "item_id": "gpu-8d22bfb3b65dc13e572588aa",
+      "category": "gpu",
+      "model": "Asus GT720-2GD3-CSM GeForce GT 720",
+      "amount": "314.44",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FLW9TW/asus-video-card-gt7202gd3csm"
+    },
+    {
+      "item_id": "gpu-8d349672c6127c0c8591a61b",
+      "category": "gpu",
+      "model": "PNY VCQ400-PB Quadro 400",
+      "amount": "498",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4rkD4D/pny-video-card-vcq400pb"
+    },
+    {
+      "item_id": "gpu-8d8f9ace2563529b2f5e3e66",
+      "category": "gpu",
+      "model": "EVGA 03G-P4-2781-KR GeForce GTX 780",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jQphP6/evga-video-card-03gp42781kr"
+    },
+    {
+      "item_id": "gpu-8dd8ba763e6287482b345e98",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge GeForce RTX 3070 LHR",
+      "amount": "728.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Gk7G3C/zotac-geforce-rtx-3070-lhr-8-gb-gaming-twin-edge-video-card-zt-a30700e-10plhr"
+    },
+    {
+      "item_id": "gpu-8eaf792ddf8e02d2463bce30",
+      "category": "gpu",
+      "model": "PNY VCQP5000-PB Quadro P5000",
+      "amount": "563.29",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cKdFf7/pny-quadro-p5000-16gb-video-card-vcqp5000-pb"
+    },
+    {
+      "item_id": "gpu-8efabcb181e9b2d4b5562254",
+      "category": "gpu",
+      "model": "ASRock Challenger D Radeon RX 6600",
+      "amount": "414.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/D9ytt6/asrock-radeon-rx-6600-8-gb-challenger-d-video-card-rx6600-cld-8g"
+    },
+    {
+      "item_id": "gpu-8efabfd248bde0f540ec68c5",
+      "category": "gpu",
+      "model": "Asus STRIX GAMING GeForce RTX 3090",
+      "amount": "1879.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4fTzK8/asus-geforce-rtx-3090-24-gb-strix-gaming-video-card-rog-strix-rtx3090-24g-gaming"
+    },
+    {
+      "item_id": "gpu-920b5bbf6b12705c6280272f",
+      "category": "gpu",
+      "model": "ASRock Phantom Gaming D OC Radeon RX 6500 XT",
+      "amount": "258.32",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dmvdnQ/asrock-radeon-rx-6500-xt-4-gb-phantom-gaming-d-oc-video-card-rx6500xt-pgd-4go"
+    },
+    {
+      "item_id": "gpu-935703f82dea8009b3bdf056",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 3090 Ti",
+      "amount": "1879.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4rstt6/asus-geforce-rtx-3090-ti-24-gb-tuf-gaming-oc-video-card-tuf-rtx3090ti-o24g-gaming"
+    },
+    {
+      "item_id": "gpu-936817542ead0780e6a939af",
+      "category": "gpu",
+      "model": "AMD RADEON PRO WX 5100",
+      "amount": "390.87",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Hnwqqs/amd-radeon-pro-wx-5100-8gb-video-card-radeon-pro-wx-5100"
+    },
+    {
+      "item_id": "gpu-939f7095b9dd85c2b8220c27",
+      "category": "gpu",
+      "model": "PNY VCQK4200-PB Quadro K4200",
+      "amount": "461.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7DCwrH/pny-video-card-vcqk4200pb"
+    },
+    {
+      "item_id": "gpu-953296f6b28e280908a1a013",
+      "category": "gpu",
+      "model": "MSI ARMOR OC GeForce GTX 1660 Ti",
+      "amount": "1136.3",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FdBTwP/msi-geforce-gtx-1660-ti-6-gb-armor-oc-video-card-gtx-1660-ti-armor-6g-oc"
+    },
+    {
+      "item_id": "gpu-95ca76b2057fe25c12180fec",
+      "category": "gpu",
+      "model": "MSI GAMING X TRIO GeForce RTX 3070 Ti",
+      "amount": "832.19",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JjGbt6/msi-geforce-rtx-3070-ti-8-gb-gaming-x-trio-video-card-geforce-rtx-3070-ti-gaming-x-trio-8g"
+    },
+    {
+      "item_id": "gpu-95fbbed04b2dbd383db89ba9",
+      "category": "gpu",
+      "model": "MSI GeForce RTX 3070 Ventus 3X 8G OC LHR GeForce RTX 3070 LHR",
+      "amount": "1627.64",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cxNxFT/msi-geforce-rtx-3070-lhr-8-gb-ventus-3x-oc-video-card-rtx-3070-ventus-3x-8g-oc-lhr"
+    },
+    {
+      "item_id": "gpu-96d9b8406a36948aab88737d",
+      "category": "gpu",
+      "model": "HP C2J93AT Quadro K2000",
+      "amount": "273.73",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/vgDwrH/hp-video-card-c2j93at"
+    },
+    {
+      "item_id": "gpu-973217cdf287f4fcdc4f2949",
+      "category": "gpu",
+      "model": "PNY VCQ450NVS-X16-DVI-PB Quadro NVS 450",
+      "amount": "398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9tTmP6/pny-video-card-vcq450nvsx16dvipb"
+    },
+    {
+      "item_id": "gpu-995aeedc3d2f6af040d15828",
+      "category": "gpu",
+      "model": "Zotac GAMING AMP GeForce GTX 1660 SUPER",
+      "amount": "349.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sFZzK8/zotac-geforce-gtx-1660-super-6-gb-gaming-amp-video-card-zt-t16620d-10m"
+    },
+    {
+      "item_id": "gpu-99a7d1694bb2c33dd57db752",
+      "category": "gpu",
+      "model": "MSI AIR BOOST OC Radeon RX VEGA 56",
+      "amount": "773.37",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bfdxFT/msi-radeon-rx-vega-56-8gb-air-boost-video-card-rx-vega-56-air-boost-8g-oc"
+    },
+    {
+      "item_id": "gpu-9a6c492f704a15a831842565",
+      "category": "gpu",
+      "model": "PNY VCQK2200-PB Quadro K2200",
+      "amount": "447.03",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XwMFf7/pny-video-card-vcqk2200pb"
+    },
+    {
+      "item_id": "gpu-9beb96a0bbf6c8690936e3ef",
+      "category": "gpu",
+      "model": "PNY VCQ2000D-PB Quadro 2000D",
+      "amount": "82.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/fNMFf7/pny-video-card-vcq2000dpb"
+    },
+    {
+      "item_id": "gpu-9c6e6c52c833af9ee054ed65",
+      "category": "gpu",
+      "model": "Asus GTXTITANX-12GD5 GeForce GTX Titan X",
+      "amount": "1699",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/L2RFf7/asus-video-card-gtxtitanx12gd5"
+    },
+    {
+      "item_id": "gpu-9c86930d5005be30ae36a18d",
+      "category": "gpu",
+      "model": "Gigabyte OC Rev 2.0 GeForce RTX 2060",
+      "amount": "909.57",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jW6qqs/gigabyte-geforce-rtx-2060-6-gb-oc-rev-20-video-card-gv-n2060oc-6gd-rev-20"
+    },
+    {
+      "item_id": "gpu-9d75c754d90a45b9144f1870",
+      "category": "gpu",
+      "model": "EVGA SSC GAMING ACX 3.0 GeForce GTX 1050 Ti",
+      "amount": "558.84",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/D44NnQ/evga-geforce-gtx-1050-ti-4gb-ssc-gaming-acx-30-video-card-04g-p4-6255-kr"
+    },
+    {
+      "item_id": "gpu-9ddb537c9c1fe23aa7c31e2e",
+      "category": "gpu",
+      "model": "Asus DUAL MINI OC V2 GeForce RTX 3060 Ti LHR",
+      "amount": "505.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gB92FT/asus-geforce-rtx-3060-ti-lhr-8-gb-dual-mini-oc-v2-video-card-dual-rtx3060ti-o8g-mini-v2"
+    },
+    {
+      "item_id": "gpu-9e990d30bcbbd9f2b7a8da46",
+      "category": "gpu",
+      "model": "Zotac ZT-90201-10P GeForce GTX 980",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8Px9TW/zotac-video-card-zt9020110p"
+    },
+    {
+      "item_id": "gpu-9fca773481af715690d024a1",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge OC GeForce RTX 3070 LHR",
+      "amount": "996",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rMTp99/zotac-geforce-rtx-3070-lhr-8-gb-gaming-twin-edge-oc-video-card-zt-a30700h-10plhr"
+    },
+    {
+      "item_id": "gpu-a1d1ce3fc8c92f4943658795",
+      "category": "gpu",
+      "model": "MSI BLACK TRIO GeForce RTX 3090 Ti",
+      "amount": "1989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NR92FT/msi-black-trio-geforce-rtx-3090-ti-24-gb-video-card-rtx-3090-ti-black-trio-24g"
+    },
+    {
+      "item_id": "gpu-a1d3b9a7111eb59bc7832b58",
+      "category": "gpu",
+      "model": "PNY VCQP600-PB Quadro P600",
+      "amount": "139",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/m6H48d/pny-quadro-p600-2gb-video-card-vcqp600-pb"
+    },
+    {
+      "item_id": "gpu-a42508e7a0c4888a263bee1e",
+      "category": "gpu",
+      "model": "Sapphire PULSE Radeon RX 6650 XT",
+      "amount": "364.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/DfLFf7/sapphire-radeon-rx-6650-xt-8-gb-pulse-video-card-11319-03-20g"
+    },
+    {
+      "item_id": "gpu-a7679567b1f86bae16a052f4",
+      "category": "gpu",
+      "model": "MSI AERO ITX OC GeForce GTX 1070",
+      "amount": "824.66",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8fgPxr/msi-geforce-gtx-1070-8gb-video-card-gtx-1070-aero-itx-8g-oc"
+    },
+    {
+      "item_id": "gpu-a8fe882d30525876acdcb0ef",
+      "category": "gpu",
+      "model": "Gigabyte EAGLE OC GeForce RTX 4080",
+      "amount": "1589.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/dzzhP6/gigabyte-eagle-oc-geforce-rtx-4080-16-gb-video-card-gv-n4080eagle-oc-16gd"
+    },
+    {
+      "item_id": "gpu-a90f9294add73ec3beed5bca",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 4080",
+      "amount": "1589.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7FBG3C/asus-tuf-gaming-oc-geforce-rtx-4080-16-gb-video-card-tuf-rtx4080-o16g-gaming"
+    },
+    {
+      "item_id": "gpu-a95d37d045bb793d42dfe37c",
+      "category": "gpu",
+      "model": "PNY VCNVS810DP-PB",
+      "amount": "1798.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/g8Jkcf/pny-nvs-810-4gb-video-card-vcnvs810dp-pb"
+    },
+    {
+      "item_id": "gpu-aa04fd8378f3117d7877fa15",
+      "category": "gpu",
+      "model": "Zotac ZT-90401-10P GeForce GTX Titan X",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NqkwrH/zotac-video-card-zt9040110p"
+    },
+    {
+      "item_id": "gpu-aa3d9f37ca50532946be5bc7",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC Radeon RX 6700 XT",
+      "amount": "1470.67",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/mL2WGX/asus-radeon-rx-6700-xt-12-gb-tuf-gaming-oc-video-card-tuf-rx6700xt-o12g-gaming"
+    },
+    {
+      "item_id": "gpu-aa55975fb72499f7930c46aa",
+      "category": "gpu",
+      "model": "PowerColor ITX Radeon RX 6500 XT",
+      "amount": "184.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/DxjBD3/powercolor-radeon-rx-6500-xt-4-gb-itx-video-card-axrx-6500xt-4gbd6-dh"
+    },
+    {
+      "item_id": "gpu-aac836244c3676e87627b9bb",
+      "category": "gpu",
+      "model": "MSI GAMING X TRIO Radeon RX 6750 XT",
+      "amount": "544.57",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bfLFf7/msi-gaming-x-trio-radeon-rx-6750-xt-12-gb-video-card-radeon-rx-6750-xt-gaming-x-trio-12g"
+    },
+    {
+      "item_id": "gpu-abdcb6ae77008d53b3cc86da",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge OC GeForce RTX 3050 8GB",
+      "amount": "412.38",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7BJgXL/zotac-geforce-rtx-3050-8gb-8-gb-gaming-twin-edge-oc-video-card-zt-a30500h-10m"
+    },
+    {
+      "item_id": "gpu-ac03ce220ad8b38a32fbfe4f",
+      "category": "gpu",
+      "model": "Asus STRIX GAMING Advanced GeForce GTX 1660 SUPER",
+      "amount": "780.72",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/W7vqqs/asus-geforce-gtx-1660-super-6-gb-strix-gaming-advanced-video-card-rog-strix-gtx1660s-a6g-gaming"
+    },
+    {
+      "item_id": "gpu-ac59e49416bc360ebd5c2161",
+      "category": "gpu",
+      "model": "MSI GAMING X GeForce RTX 2060 SUPER",
+      "amount": "940",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Wzyqqs/msi-geforce-rtx-2060-super-8-gb-gaming-x-video-card-rtx-2060-super-gaming-x"
+    },
+    {
+      "item_id": "gpu-ac5dd728d2e861c2a2a296e3",
+      "category": "gpu",
+      "model": "Asus TUF Gaming TOP Radeon RX 6900 XT",
+      "amount": "1223.11",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qbM48d/asus-tuf-gaming-top-radeon-rx-6900-xt-16-gb-video-card-tuf-rx6900xt-t16g-gaming"
+    },
+    {
+      "item_id": "gpu-acb208be5d360c4dfa4e2cd9",
+      "category": "gpu",
+      "model": "Gigabyte AORUS ELITE Rev 2.0 GeForce RTX 3060 Ti LHR",
+      "amount": "733.78",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/3jvdnQ/gigabyte-aorus-elite-rev-20-geforce-rtx-3060-ti-lhr-8-gb-video-card-gv-n306taorus-e-8gd-rev-20"
+    },
+    {
+      "item_id": "gpu-ad37824e7faf7a914dae7b01",
+      "category": "gpu",
+      "model": "Asus ROG STRIX GAMING OC GeForce RTX 3070 Ti",
+      "amount": "1155.36",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XmLFf7/asus-geforce-rtx-3070-ti-8-gb-rog-strix-gaming-oc-video-card-rog-strix-rtx3070ti-o8g-gaming"
+    },
+    {
+      "item_id": "gpu-aefb6d12b860074c6a573c09",
+      "category": "gpu",
+      "model": "PNY VCQP6000-PB Quadro P6000",
+      "amount": "930.98",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sNZ2FT/pny-vcqp6000-pb-quadro-p6000-24-gb-video-card-vcqp6000-pb"
+    },
+    {
+      "item_id": "gpu-af65720a38d4ddee41fe4f36",
+      "category": "gpu",
+      "model": "Asus HD7870-DC2-2GD5-V2 Radeon HD 7870 GHz Edition",
+      "amount": "459.29",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wkYXsY/asus-video-card-hd7870dc22gd5v2"
+    },
+    {
+      "item_id": "gpu-afca0b6f285c4c1451408d55",
+      "category": "gpu",
+      "model": "MSI GT 710 2GD3H LP GeForce GT 710",
+      "amount": "54.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gkYWGX/msi-geforce-gt-710-2gb-low-profile-video-card-gt-710-2gd3h-lp"
+    },
+    {
+      "item_id": "gpu-b1b1a9a209d004f9d99ba262",
+      "category": "gpu",
+      "model": "Gigabyte Vision OC GeForce RTX 3070 Ti",
+      "amount": "911.02",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MR4Ycf/gigabyte-geforce-rtx-3070-ti-8-gb-vision-oc-video-card-gv-n307tvision-oc-8gd"
+    },
+    {
+      "item_id": "gpu-b284e900e9ce7e2da76a804b",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X OC GeForce RTX 4070",
+      "amount": "989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9ZZXsY/msi-ventus-3x-oc-geforce-rtx-4070-12-gb-video-card-rtx-4070-ventus-3x-12g-oc"
+    },
+    {
+      "item_id": "gpu-b2e5244604ddd978b6046e1e",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 6800",
+      "amount": "1115.7",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Nw9tt6/gigabyte-radeon-rx-6800-16-gb-gaming-oc-video-card-gv-r68gaming-oc-16gd"
+    },
+    {
+      "item_id": "gpu-b418328750b4a132fc994558",
+      "category": "gpu",
+      "model": "PNY XLR8 Gaming REVEL EPIC-X RGB GeForce RTX 3070 Ti",
+      "amount": "829",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BsKKHx/pny-geforce-rtx-3070-ti-8-gb-xlr8-gaming-revel-epic-x-rgb-video-card-vcg3070t8tfxppb"
+    },
+    {
+      "item_id": "gpu-b43b590be597a0a823a1d210",
+      "category": "gpu",
+      "model": "Inno3D Twin X2 OC GeForce RTX 2060 SUPER",
+      "amount": "569.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/nDzFf7/inno3d-geforce-rtx-2060-super-8-gb-twin-x2-oc-video-card-n206s2-08d6x-1710va15l"
+    },
+    {
+      "item_id": "gpu-b50a3446b77bcaa950dd5aba",
+      "category": "gpu",
+      "model": "Lenovo 4X61J52232 RTX A2000 12GB",
+      "amount": "994.15",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xKfnTW/lenovo-rtx-a2000-12gb-12-gb-video-card-4x61j52232"
+    },
+    {
+      "item_id": "gpu-b6448739bebaaf10ad3d3be1",
+      "category": "gpu",
+      "model": "Inno3D Gaming OC X2 GeForce RTX 3050 8GB",
+      "amount": "489.06",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/LLNxFT/inno3d-geforce-rtx-3050-8gb-8-gb-gaming-oc-x2-video-card-n30502-08d6x-11902120"
+    },
+    {
+      "item_id": "gpu-b64ffc99d19aff7d1b438931",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 6750 XT",
+      "amount": "557.39",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/RbYmP6/gigabyte-radeon-rx-6750-xt-12-gb-gaming-oc-video-card-gv-r675xtgaming-oc-12gd"
+    },
+    {
+      "item_id": "gpu-b7d6e00d57cd547a3532f6e1",
+      "category": "gpu",
+      "model": "Zotac GAMING AMP Holo GeForce RTX 3080 Ti",
+      "amount": "1914.32",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/FBvdnQ/zotac-geforce-rtx-3080-ti-12-gb-gaming-amp-holo-video-card-zt-a30810f-10p"
+    },
+    {
+      "item_id": "gpu-b94361b6efba999c2df1ee74",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X OC GeForce RTX 3060 Ti LHR",
+      "amount": "964.25",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/89BG3C/msi-geforce-rtx-3060-ti-lhr-8-gb-ventus-3x-oc-video-card-geforce-rtx-3060-ti-ventus-3x-8g-oc-lhr"
+    },
+    {
+      "item_id": "gpu-b9e554ac4b8a43b6949ddd46",
+      "category": "gpu",
+      "model": "Zotac GAMING AMP Holo GeForce RTX 3080 10GB",
+      "amount": "1151.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QQXYcf/zotac-geforce-rtx-3080-10-gb-gaming-amp-holo-video-card-zt-a30800f-10p"
+    },
+    {
+      "item_id": "gpu-ba1c45d7f32f71f821357321",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC GeForce RTX 3090 Ti",
+      "amount": "1989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/8nhFf7/gigabyte-geforce-rtx-3090-ti-24-gb-gaming-oc-video-card-gv-n309tgaming-oc-24gd"
+    },
+    {
+      "item_id": "gpu-baa300f5ce95412816ccbe2b",
+      "category": "gpu",
+      "model": "Asus DUAL OC V2 GeForce RTX 3070 LHR",
+      "amount": "1055.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/nv2WGX/asus-geforce-rtx-3070-lhr-8-gb-dual-oc-v2-video-card-dual-rtx3070-o8g-v2"
+    },
+    {
+      "item_id": "gpu-bab37a443e0256160927dde4",
+      "category": "gpu",
+      "model": "Zotac ZT-90301-10M GeForce GTX 960",
+      "amount": "220.33",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TLkwrH/zotac-video-card-zt9030110m"
+    },
+    {
+      "item_id": "gpu-baef1e854f10acdd2ad7a4d6",
+      "category": "gpu",
+      "model": "Sapphire PULSE Radeon RX 6500 XT",
+      "amount": "219.91",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Mc7G3C/sapphire-radeon-rx-6500-xt-4-gb-pulse-video-card-11314-01-20g"
+    },
+    {
+      "item_id": "gpu-bba32d054599c4ca3a7049b3",
+      "category": "gpu",
+      "model": "PNY XLR8 Gaming REVEL EPIC-X RGB Dual Fan GeForce RTX 3060 12GB",
+      "amount": "679",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ftJgXL/pny-geforce-rtx-3060-12-gb-xlr8-gaming-revel-epic-x-rgb-dual-fan-video-card-vcg306012dfxppb"
+    },
+    {
+      "item_id": "gpu-bc8aed1d706e5a614f3cb5ca",
+      "category": "gpu",
+      "model": "PNY VCQM4000-PB Quadro M4000",
+      "amount": "201.04",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/pskwrH/nvidia-video-card-vcqm4000pb"
+    },
+    {
+      "item_id": "gpu-be2c75ac54fc8d93ee29a100",
+      "category": "gpu",
+      "model": "Palit GameRock GeForce RTX 3070 Ti",
+      "amount": "582.73",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kh92FT/palit-geforce-rtx-3070-ti-8-gb-gamerock-video-card-ned307t019p2-1047g"
+    },
+    {
+      "item_id": "gpu-c0c326a41cc6f485cc1b60f0",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity OC GeForce RTX 3090",
+      "amount": "1689.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YcYmP6/zotac-geforce-rtx-3090-24-gb-gaming-trinity-oc-video-card-zt-a30900j-10p"
+    },
+    {
+      "item_id": "gpu-c167ce1e2ca3924928998d39",
+      "category": "gpu",
+      "model": "Zotac GAMING Twin Edge OC GeForce RTX 3060 Ti LHR",
+      "amount": "706.11",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9m3gXL/zotac-geforce-rtx-3060-ti-lhr-8-gb-gaming-twin-edge-oc-video-card-zt-a30610h-10mlhr"
+    },
+    {
+      "item_id": "gpu-c3119bd11b6864f1c1945351",
+      "category": "gpu",
+      "model": "PNY VCQK1200DP-PB Quadro K1200",
+      "amount": "598",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/68KhP6/pny-video-card-vcqk1200dppb"
+    },
+    {
+      "item_id": "gpu-c342675a0dd43a3bf98d450b",
+      "category": "gpu",
+      "model": "EVGA Superclocked GeForce GTX Titan Black",
+      "amount": "1398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9gR48d/evga-video-card-06gp43791kr"
+    },
+    {
+      "item_id": "gpu-c4653423cb59e9994346ff79",
+      "category": "gpu",
+      "model": "PowerColor Fighter Radeon RX 6650 XT",
+      "amount": "638.04",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/z9H7YJ/powercolor-fighter-radeon-rx-6650-xt-8-gb-video-card-axrx-6650xt-8gbd6-3dh"
+    },
+    {
+      "item_id": "gpu-c49fe4020c31e9fb88dfee80",
+      "category": "gpu",
+      "model": "PowerColor Low Profile Radeon RX 6400",
+      "amount": "409.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gNwypg/powercolor-radeon-rx-6400-4-gb-low-profile-video-card-axrx-6400-lp-4gbd6-dh"
+    },
+    {
+      "item_id": "gpu-c52badf2f1463399b0e2b161",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X OC GeForce RTX 3080 Ti",
+      "amount": "1786.62",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cW92FT/msi-geforce-rtx-3080-ti-12-gb-ventus-3x-oc-video-card-geforce-rtx-3080-ti-ventus-3x-12g-oc"
+    },
+    {
+      "item_id": "gpu-c5a201f14c1c171f71e9b481",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Radeon RX 6800 XT",
+      "amount": "1160.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Lg848d/gigabyte-gaming-oc-radeon-rx-6800-xt-16-gb-video-card-gv-r68xtgamingoc16gd"
+    },
+    {
+      "item_id": "gpu-c8373e1d2555793bf7d38225",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity OC GeForce RTX 3080 12GB LHR",
+      "amount": "1293.14",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HyRYcf/zotac-geforce-rtx-3080-12gb-lhr-12-gb-gaming-trinity-oc-video-card-zt-a30820j-10plhr"
+    },
+    {
+      "item_id": "gpu-c854a4b1f801bf64a78473b5",
+      "category": "gpu",
+      "model": "Asus TUF GAMING GeForce RTX 4090",
+      "amount": "3489.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/brddnQ/asus-tuf-gaming-geforce-rtx-4090-24-gb-video-card-tuf-rtx4090-24g-gaming"
+    },
+    {
+      "item_id": "gpu-c88b87602881f3202d045ba2",
+      "category": "gpu",
+      "model": "PNY VCQRTX5000-PB Quadro RTX 5000",
+      "amount": "820",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sChKHx/pny-quadro-rtx-5000-16-gb-video-card-vcqrtx5000-pb"
+    },
+    {
+      "item_id": "gpu-cafd2664ac2dead85514c9e8",
+      "category": "gpu",
+      "model": "Sapphire PULSE Radeon RX 7600",
+      "amount": "326.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xC88TW/sapphire-pulse-radeon-rx-7600-xt-8-gb-video-card-11324-01-20g"
+    },
+    {
+      "item_id": "gpu-cb36a1a30e60a60626613260",
+      "category": "gpu",
+      "model": "NVIDIA Founders Edition GeForce RTX 4080",
+      "amount": "1689.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/6nWzK8/nvidia-founders-edition-geforce-rtx-4080-16-gb-video-card-900-1g136-2560-000"
+    },
+    {
+      "item_id": "gpu-cc3163c25cf10d6850cb834f",
+      "category": "gpu",
+      "model": "XFX Speedster QICK 308 Black Radeon RX 7600",
+      "amount": "289",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/W74Zxr/xfx-speedster-qick-308-black-radeon-rx-7600-xt-8-gb-video-card-rx-76pqickby"
+    },
+    {
+      "item_id": "gpu-cc40f07c1efd70d97a9255af",
+      "category": "gpu",
+      "model": "XFX Speedster SWFT 105 Radeon RX 6400",
+      "amount": "199.39",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/39ddnQ/xfx-radeon-rx-6400-4-gb-speedster-swft-105-video-card-rx-64xl4sfg2"
+    },
+    {
+      "item_id": "gpu-ce1d841428a4e78435a12a27",
+      "category": "gpu",
+      "model": "MSI GeForce RTX 3090 VENTUS 3X 24G OC",
+      "amount": "1979.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/vyn8TW/msi-geforce-rtx-3090-24-gb-ventus-3x-video-card-rtx-3090-ventus-3x-24g-oc"
+    },
+    {
+      "item_id": "gpu-ce95fcdc7a2863e26411dc86",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC GeForce RTX 4080",
+      "amount": "1589.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JGWzK8/gigabyte-gaming-oc-geforce-rtx-4080-16-gb-video-card-gv-n4080gaming-oc-16gd"
+    },
+    {
+      "item_id": "gpu-d0e9e9273ae9bc10256dc776",
+      "category": "gpu",
+      "model": "MSI MECH 2X Radeon RX 6700 XT",
+      "amount": "970.16",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/7whFf7/msi-radeon-rx-6700-xt-12-gb-mech-2x-video-card-radeon-rx-6700-xt-mech-2x-12g"
+    },
+    {
+      "item_id": "gpu-d10c532c4cec6f7fc5ddd432",
+      "category": "gpu",
+      "model": "ATI 100-505637 FirePro V3900",
+      "amount": "349",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PRdqqs/ati-video-card-100505637"
+    },
+    {
+      "item_id": "gpu-d17c8d6e6eb7feaac19c12b4",
+      "category": "gpu",
+      "model": "Zotac GAMING AMP Extreme AIRO GeForce RTX 4080",
+      "amount": "1589.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PL6p99/zotac-gaming-amp-extreme-airo-geforce-rtx-4080-16-gb-video-card-zt-d40810b-10p"
+    },
+    {
+      "item_id": "gpu-d199ada8bb52aa5697fd1193",
+      "category": "gpu",
+      "model": "MSI GeForce RTX 3090 TI SUPRIM X 24G",
+      "amount": "1989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/G7Fbt6/msi-geforce-rtx-3090-ti-24-gb-suprim-x-video-card-rtx-3090-ti-suprim-x-24g"
+    },
+    {
+      "item_id": "gpu-d1d7d26f5f26a931edd12562",
+      "category": "gpu",
+      "model": "Lenovo 0B47075 Quadro 410",
+      "amount": "84.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NfYXsY/lenovo-video-card-0b47075"
+    },
+    {
+      "item_id": "gpu-d26f55eb5e4a9d90424bf0bc",
+      "category": "gpu",
+      "model": "Asus DUAL OC Radeon RX 6600 XT",
+      "amount": "595.9",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/X26p99/asus-radeon-rx-6600-xt-8-gb-dual-oc-video-card-dual-rx6600xt-o8g"
+    },
+    {
+      "item_id": "gpu-d2fe8ae3051bcc41d2e5c5d6",
+      "category": "gpu",
+      "model": "MSI SUPRIM X GeForce RTX 3080 10GB LHR",
+      "amount": "879.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/F4jBD3/msi-geforce-rtx-3080-lhr-10-gb-suprim-x-video-card-geforce-rtx-3080-suprim-x-10g-lhr"
+    },
+    {
+      "item_id": "gpu-d3d595436552e94cb3f0cc33",
+      "category": "gpu",
+      "model": "Asus ARES/2DIS/4GD5 Radeon HD 5870 X2",
+      "amount": "1322.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HCh9TW/asus-video-card-ares2dis4gd5"
+    },
+    {
+      "item_id": "gpu-d3e65739bf9e8adc0ec00c7b",
+      "category": "gpu",
+      "model": "Gigabyte GV-N250OC-1GI GeForce GTS 250",
+      "amount": "190.22",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MpsKHx/gigabyte-video-card-gvn250oc1gi"
+    },
+    {
+      "item_id": "gpu-d3f666055c0bf5915b126019",
+      "category": "gpu",
+      "model": "ASRock Challenger D Arc A750",
+      "amount": "339",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/yyJgXL/asrock-challenger-d-arc-a750-8-gb-video-card-a750-cld-8go"
+    },
+    {
+      "item_id": "gpu-d42b53fd43263b6dae9e9845",
+      "category": "gpu",
+      "model": "AMD 100-505956 Radeon Pro WX 8200",
+      "amount": "636.1",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BHw7YJ/amd-radeon-pro-wx-8200-8-gb-video-card-100-505956"
+    },
+    {
+      "item_id": "gpu-d62fe3378fceb10b0fca5460",
+      "category": "gpu",
+      "model": "EVGA SC GAMING ACX 3.0 Black Edition GeForce GTX 1070",
+      "amount": "878.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ph38TW/evga-geforce-gtx-1070-8gb-sc-gaming-video-card-08g-p4-5173-kr"
+    },
+    {
+      "item_id": "gpu-d63dc12ac38b0f960e5fe703",
+      "category": "gpu",
+      "model": "PNY T-Series T400 4GB",
+      "amount": "270",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Z6wypg/pny-t400-4gb-4-gb-t-series-video-card-vcnt4004gb-pb"
+    },
+    {
+      "item_id": "gpu-d8a8c476db29094b7d72c507",
+      "category": "gpu",
+      "model": "Zotac ZT-71302-20L GeForce GT 710",
+      "amount": "50",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Jgbkcf/zotac-video-card-zt7130220l"
+    },
+    {
+      "item_id": "gpu-d8daf6c2957de97c4a62dfef",
+      "category": "gpu",
+      "model": "XFX Speedster QICK 210 Radeon RX 6500 XT",
+      "amount": "448.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ykstt6/xfx-speedster-qick-210-radeon-rx-6500-xt-4-gb-video-card-rx-65xt4dbdq"
+    },
+    {
+      "item_id": "gpu-d8f7b0d9976de47ebeac2226",
+      "category": "gpu",
+      "model": "Gigabyte AORUS MASTER Rev 2.0 Radeon RX 6900 XT",
+      "amount": "900",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/pZddnQ/gigabyte-aorus-master-rev-20-radeon-rx-6900-xt-16-gb-video-card-gv-r69xtaorus-m-16gd-rev-20"
+    },
+    {
+      "item_id": "gpu-d92be004f4759d9fc454f8a7",
+      "category": "gpu",
+      "model": "PNY VCQ6000-PB Quadro 6000",
+      "amount": "998",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wRdqqs/pny-video-card-vcq6000pb"
+    },
+    {
+      "item_id": "gpu-da1e99c88c26dcbdb513d33e",
+      "category": "gpu",
+      "model": "PNY VERTO GeForce RTX 4070 Ti",
+      "amount": "892.15",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4ymmP6/pny-verto-geforce-rtx-4070-ti-12-gb-video-card-vcg4070t12tfxpb1"
+    },
+    {
+      "item_id": "gpu-dab5b89f3b45808013e3b957",
+      "category": "gpu",
+      "model": "PNY VCQ450NVS-X16-PB Quadro NVS 450",
+      "amount": "374",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YMh9TW/pny-video-card-vcq450nvsx16pb"
+    },
+    {
+      "item_id": "gpu-daca5b723670f207f9e8c1cc",
+      "category": "gpu",
+      "model": "Asus STRIX-GTX980TI-DC3-6GD5-GAMING GeForce GTX 980 Ti",
+      "amount": "830.64",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/LQqbt6/asus-video-card-strixgtx980tidc36gd5gaming"
+    },
+    {
+      "item_id": "gpu-db38eb2a1f1cfd0897b2f5fb",
+      "category": "gpu",
+      "model": "Asus DUAL OC Radeon RX 7600",
+      "amount": "335.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kyWJ7P/asus-dual-oc-radeon-rx-7600-8-gb-video-card-dual-rx7600-o8g"
+    },
+    {
+      "item_id": "gpu-dcb413b68ec0d3ab283ee2ee",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC Rev 2.0 GeForce RTX 3080 10GB LHR",
+      "amount": "1957.85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MYzhP6/gigabyte-gaming-oc-rev-20-geforce-rtx-3080-10gb-lhr-10-gb-video-card-gv-n3080gaming-oc-10gd-rev-20"
+    },
+    {
+      "item_id": "gpu-dd94a62fd6088cd8da7d0e62",
+      "category": "gpu",
+      "model": "AMD 100-506001 Radeon Pro WX 2100",
+      "amount": "187.75",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rnkwrH/amd-radeon-pro-wx-2100-2-gb-video-card-100-506001"
+    },
+    {
+      "item_id": "gpu-de1fcf31f9f7b78da42e0aaa",
+      "category": "gpu",
+      "model": "Asus TUF GAMING OC GeForce RTX 3080 12GB LHR",
+      "amount": "1048.75",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qnFbt6/asus-geforce-rtx-3080-12gb-lhr-12-gb-tuf-gaming-oc-video-card-tuf-rtx3080-o12g-gaming"
+    },
+    {
+      "item_id": "gpu-dfdf06ad833b4423b1b34607",
+      "category": "gpu",
+      "model": "MSI GeForce RTX 3090 GAMING X TRIO 24G",
+      "amount": "1779",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/yPpmP6/msi-geforce-rtx-3090-24-gb-gaming-x-trio-video-card-rtx-3090-gaming-x-trio-24g"
+    },
+    {
+      "item_id": "gpu-dff369cfc16ae37408759751",
+      "category": "gpu",
+      "model": "AMD RADEON PRO WX 7100",
+      "amount": "346.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/hYwqqs/amd-radeon-pro-wx-7100-8gb-video-card-radeon-pro-wx-7100"
+    },
+    {
+      "item_id": "gpu-e1368edf68fa451eb1beed53",
+      "category": "gpu",
+      "model": "Asus Phoenix OC GeForce GTX 1660 SUPER",
+      "amount": "381",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jkfFf7/asus-geforce-gtx-1660-super-6-gb-phoenix-oc-video-card-ph-gtx1660s-o6g"
+    },
+    {
+      "item_id": "gpu-e21ff8847e2ec4cbd7d63cc6",
+      "category": "gpu",
+      "model": "Gigabyte GV-N295-18I-B GeForce GTX 295",
+      "amount": "605.08",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sYGkcf/gigabyte-video-card-gvn29518ib"
+    },
+    {
+      "item_id": "gpu-e2def87c4d2990d55204ac80",
+      "category": "gpu",
+      "model": "Gigabyte GAMING OC GeForce RTX 3090",
+      "amount": "1879.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wrkgXL/gigabyte-geforce-rtx-3090-24-gb-gaming-oc-video-card-gv-n3090gaming-oc-24gd"
+    },
+    {
+      "item_id": "gpu-e487988b8e5efdc02965adb5",
+      "category": "gpu",
+      "model": "MSI VENTUS 3X PLUS OC GeForce RTX 3080 10GB LHR",
+      "amount": "757.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/m3BG3C/msi-geforce-rtx-3080-lhr-10-gb-ventus-3x-plus-oc-video-card-geforce-rtx-3080-ventus-3x-plus-10g-oc-lhr"
+    },
+    {
+      "item_id": "gpu-e4de9d06b9665e3ab26d971c",
+      "category": "gpu",
+      "model": "Asus ROG STRIX OC GeForce RTX 4060",
+      "amount": "1440.2",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XCdG3C/asus-rog-strix-oc-geforce-rtx-4060-8-gb-video-card-rog-strix-rtx4060-o8g-gaming"
+    },
+    {
+      "item_id": "gpu-e526c200061860b06eb34513",
+      "category": "gpu",
+      "model": "Asus STRIX GAMING OC Radeon RX 5700",
+      "amount": "688.77",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gjpmP6/asus-radeon-rx-5700-8-gb-strix-gaming-oc-video-card-rog-strix-rx5700-o8g-gaming"
+    },
+    {
+      "item_id": "gpu-e5578fe94cd07e5d3c6754f7",
+      "category": "gpu",
+      "model": "Gigabyte EAGLE Radeon RX 6500 XT",
+      "amount": "270",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/JNjBD3/gigabyte-radeon-rx-6500-xt-4-gb-eagle-video-card-gv-r65xteagle-4gd"
+    },
+    {
+      "item_id": "gpu-e5bf8fb20ad18a9bcfc8089b",
+      "category": "gpu",
+      "model": "ASRock Challenger OC Radeon RX 7600",
+      "amount": "296.49",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/BYdG3C/asrock-challenger-oc-radeon-rx-7600-xt-8-gb-video-card-rx7600-cl-8go"
+    },
+    {
+      "item_id": "gpu-ea6b6b54118f7f88144bf13a",
+      "category": "gpu",
+      "model": "EVGA 06G-P4-3790-KR GeForce GTX Titan Black",
+      "amount": "1398",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MhR48d/evga-video-card-06gp43790kr"
+    },
+    {
+      "item_id": "gpu-eae96b42ffbec964fd2820a7",
+      "category": "gpu",
+      "model": "MSI Radeon RX 5600 XT GAMING MX",
+      "amount": "1207.95",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xCYQzy/msi-radeon-rx-5600-xt-6-gb-gaming-mx-video-card-rx-5600-xt-gaming-mx"
+    },
+    {
+      "item_id": "gpu-eaf4970567d79020fe745db9",
+      "category": "gpu",
+      "model": "KFA2 (1-Click OC) GeForce RTX 3070 Ti",
+      "amount": "835",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Hw3gXL/kfa2-geforce-rtx-3070-ti-8-gb-1-click-oc-video-card-37ism6md4cok"
+    },
+    {
+      "item_id": "gpu-ed570dbc47e0d0bdff8b475c",
+      "category": "gpu",
+      "model": "Asus R7240-2GD3-L Radeon R7 240",
+      "amount": "71",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/XyJwrH/asus-video-card-r72402gd3l"
+    },
+    {
+      "item_id": "gpu-ed93f253258f03b435655199",
+      "category": "gpu",
+      "model": "MSI Radeon RX 6900 XT GAMING X TRIO 16G",
+      "amount": "879",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/gKnypg/msi-radeon-rx-6900-xt-16-gb-gaming-x-trio-video-card-rx-6900-xt-gaming-x-trio-16g"
+    },
+    {
+      "item_id": "gpu-ee5384decc25409a860efa81",
+      "category": "gpu",
+      "model": "Asus DUAL V2 GeForce RTX 3070 LHR",
+      "amount": "860.47",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sp3NnQ/asus-dual-v2-geforce-rtx-3070-lhr-8-gb-video-card-dual-rtx3070-8g-v2"
+    },
+    {
+      "item_id": "gpu-ef984a160718e2dfb32fee2e",
+      "category": "gpu",
+      "model": "ASRock OC Formula Radeon RX 6900 XT",
+      "amount": "835.71",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/tH2WGX/asrock-radeon-rx-6900-xt-16-gb-oc-formula-video-card-rx6900xt-ocf-16g"
+    },
+    {
+      "item_id": "gpu-f10138606834a04a13586175",
+      "category": "gpu",
+      "model": "PNY VCQK600-PB Quadro K600",
+      "amount": "278.81",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wRrG3C/pny-video-card-vcqk600pb"
+    },
+    {
+      "item_id": "gpu-f22742c1cb308b62806afc87",
+      "category": "gpu",
+      "model": "ATI FirePro W8000",
+      "amount": "358.51",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/RFR48d/ati-video-card-100505633"
+    },
+    {
+      "item_id": "gpu-f2e845c4c3e81bafeb5cede2",
+      "category": "gpu",
+      "model": "Asus 90YV0810-U0NA00 GeForce GTX Titan X",
+      "amount": "1198",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/GccMnQ/asus-video-card-90yv0810u0na00"
+    },
+    {
+      "item_id": "gpu-f2eadafec34b9793329aa59d",
+      "category": "gpu",
+      "model": "Gigabyte VISION OC Rev 2.0 GeForce RTX 3060 Ti LHR",
+      "amount": "732.7",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xghFf7/gigabyte-geforce-rtx-3060-ti-lhr-8-gb-vision-oc-rev-20-video-card-gv-n306tvision-oc-8gd-rev-20"
+    },
+    {
+      "item_id": "gpu-f3d54a4f929f4ac7fbe45f65",
+      "category": "gpu",
+      "model": "MSI VENTUS 2X OCV1 GeForce RTX 3060 Ti LHR",
+      "amount": "604.97",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/L9BG3C/msi-geforce-rtx-3060-ti-lhr-8-gb-ventus-2x-ocv1-video-card-geforce-rtx-3060-ti-ventus-2x-8g-ocv1-lhr"
+    },
+    {
+      "item_id": "gpu-f5801929d4d47c1fcba4f31c",
+      "category": "gpu",
+      "model": "PNY VCQRTX6000-PB Quadro RTX 6000",
+      "amount": "1750",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sLNv6h/pny-quadro-rtx-6000-24-gb-video-card-vcqrtx6000-pb"
+    },
+    {
+      "item_id": "gpu-f583b4141351f803c9341b65",
+      "category": "gpu",
+      "model": "PNY XLR8 Gaming REVEL EPIC-X RGB GeForce RTX 3080 10GB",
+      "amount": "1601.33",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9g6qqs/pny-geforce-rtx-3080-10-gb-xlr8-gaming-revel-epic-x-rgb-video-card-vcg308010tfxppb"
+    },
+    {
+      "item_id": "gpu-f7b606abe3f9fca70c5f68fa",
+      "category": "gpu",
+      "model": "PowerColor Red Devil OC Radeon RX 6800 XT",
+      "amount": "2460.96",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9KJmP6/powercolor-radeon-rx-6800-xt-16-gb-red-devil-oc-video-card-axrx-6800xt-16gbd6-3dheoc"
+    },
+    {
+      "item_id": "gpu-f7c39276aaff246883c1d726",
+      "category": "gpu",
+      "model": "Gigabyte D6 LP Radeon RX 6400",
+      "amount": "274",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/hxqPxr/gigabyte-radeon-rx-6400-4-gb-d6-lp-video-card-gv-r64d6-4gl"
+    },
+    {
+      "item_id": "gpu-f90282c1e538511a874d8348",
+      "category": "gpu",
+      "model": "PowerColor Red Devil Radeon RX 6700 XT",
+      "amount": "1832.23",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/2kJgXL/powercolor-radeon-rx-6700-xt-12-gb-red-devil-video-card-axrx-6700xt-12gbd6-3dheoc"
+    },
+    {
+      "item_id": "gpu-f97368d29d3db87136cec7f2",
+      "category": "gpu",
+      "model": "Gigabyte AORUS ELITE Radeon RX 6750 XT",
+      "amount": "650.89",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9QQcCJ/gigabyte-radeon-rx-6750-xt-12-gb-aorus-elite-video-card-gv-r675xtaorus-e-12gd"
+    },
+    {
+      "item_id": "gpu-fa3e981d96462465a5450aae",
+      "category": "gpu",
+      "model": "Gigabyte WINDFORCE OC GeForce GTX 1070",
+      "amount": "822.1",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4XyxFT/gigabyte-geforce-gtx-1070-8gb-windforce-oc-video-card-gv-n1070wf2oc-8gd"
+    },
+    {
+      "item_id": "gpu-fbeb0135c37ca0debef3195d",
+      "category": "gpu",
+      "model": "Zotac GAMING Trinity GeForce RTX 4090",
+      "amount": "2989.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/3fNxFT/zotac-gaming-trinity-geforce-rtx-4090-24-gb-video-card-zt-d40900d-10p"
+    },
+    {
+      "item_id": "gpu-fce71b453590bedd4dcffec6",
+      "category": "gpu",
+      "model": "Gigabyte AORUS MASTER Radeon RX 6900 XT",
+      "amount": "1101",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TCzhP6/gigabyte-radeon-rx-6900-xt-16-gb-aorus-master-video-card-gv-r69xtaorus-m-16gd"
+    },
+    {
+      "item_id": "gpu-fe8b8247e2aeced2cb79ef01",
+      "category": "gpu",
+      "model": "AMD 100-506085 Radeon Pro W5700",
+      "amount": "234.86",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HZFKHx/amd-radeon-pro-w5700-8-gb-video-card-100-506085"
+    },
+    {
+      "item_id": "gpu-feca46400b4af32e1135a1cd",
+      "category": "gpu",
+      "model": "EVGA SC GAMING GeForce RTX 2060",
+      "amount": "287.22",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9F7v6h/evga-geforce-rtx-2060-6-gb-sc-gaming-video-card-06g-p4-2062-kr"
+    },
+    {
+      "item_id": "motherboard-0209c0c3167ab20845d5fbee",
+      "category": "motherboard",
+      "model": "Asus TUF GAMING Z490-PLUS (WI-FI)",
+      "amount": "242.62",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/MVRgXL/asus-tuf-gaming-z490-plus-wi-fi-atx-lga1200-motherboard-tuf-gaming-z490-plus-wi-fi"
+    },
+    {
+      "item_id": "motherboard-06b5e6987da2164c32b2849a",
+      "category": "motherboard",
+      "model": "ASRock P43DE3",
+      "amount": "92.72",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jB3RsY/asrock-motherboard-p43de3"
+    },
+    {
+      "item_id": "motherboard-0f5fc493d8ac358bbc0dc21e",
+      "category": "motherboard",
+      "model": "Intel DH61CRB3",
+      "amount": "85.09",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TzV48d/intel-motherboard-boxdh61crb3"
+    },
+    {
+      "item_id": "motherboard-1d7934b4fd37c361f1c1bf9c",
+      "category": "motherboard",
+      "model": "Asus ROG ZENITH EXTREME ALPHA",
+      "amount": "1053.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/TfQG3C/asus-rog-zenith-extreme-alpha-eatx-tr4-motherboard-rog-zenith-extreme-alpha"
+    },
+    {
+      "item_id": "motherboard-1de083c1760c2f35efd4c4a7",
+      "category": "motherboard",
+      "model": "ASRock X299 Steel Legend",
+      "amount": "167.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/kDjNnQ/asrock-x299-steel-legend-atx-lga2066-motherboard-x299-steel-legend"
+    },
+    {
+      "item_id": "motherboard-2716c8c323f0e5902e139112",
+      "category": "motherboard",
+      "model": "Gigabyte GA-Z77X-UD5H",
+      "amount": "189.99",
+      "currency": "USD",
+      "context": "historical_review",
+      "source_url": "https://www.bit-tech.net/reviews/tech/motherboards/gigabyte-ga-z77x-ud5h-review/1/",
+      "source_date": "2012-05-09"
+    },
+    {
+      "item_id": "motherboard-27aac3502d26ebda656fcd9a",
+      "category": "motherboard",
+      "model": "ASRock X58 Extreme6",
+      "amount": "259.04",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/3jV48d/asrock-motherboard-x58extreme6"
+    },
+    {
+      "item_id": "motherboard-292b97260eb5229d6c98c06c",
+      "category": "motherboard",
+      "model": "Gigabyte X670E AORUS XTREME (rev. 1.0)",
+      "amount": "856",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PkxRsY/gigabyte-x670e-aorus-xtreme-rev-10-eatx-am5-motherboard-x670e-aorus-xtreme-rev-10"
+    },
+    {
+      "item_id": "motherboard-2df16b7ad3c3112c4c05fec4",
+      "category": "motherboard",
+      "model": "Gigabyte Z790 AORUS MASTER",
+      "amount": "569",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/bQXJ7P/gigabyte-z790-aorus-master-eatx-lga1700-motherboard-z790-aorus-master"
+    },
+    {
+      "item_id": "motherboard-3254b92e872977b48d5bc7e4",
+      "category": "motherboard",
+      "model": "MSI X299 XPOWER GAMING AC",
+      "amount": "435.4",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Tswqqs/msi-x299-xpower-gaming-ac-eatx-lga2066-motherboard-x299-xpower-gaming-ac"
+    },
+    {
+      "item_id": "motherboard-36f8e70d864ea5606dc91dd8",
+      "category": "motherboard",
+      "model": "Gigabyte X670 GAMING X AX (rev. 1.0)",
+      "amount": "322",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NZ6p99/gigabyte-x670-gaming-x-ax-rev-10-atx-am5-motherboard-x670-gaming-x-ax-rev-10"
+    },
+    {
+      "item_id": "motherboard-374e7676cae6c61fcdf03788",
+      "category": "motherboard",
+      "model": "Gigabyte B760M GAMING AC DDR4",
+      "amount": "222.14",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/X2QcCJ/gigabyte-b760m-gaming-ac-ddr4-micro-atx-lga1700-motherboard-b760m-gaming-ac-ddr4"
+    },
+    {
+      "item_id": "motherboard-4245b9412a242f43268300a1",
+      "category": "motherboard",
+      "model": "ASRock X299 Extreme4",
+      "amount": "402.6",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VkTPxr/asrock-x299-extreme4-atx-lga2066-motherboard-x299-extreme4"
+    },
+    {
+      "item_id": "motherboard-45885f44806f8854fbd4fe0a",
+      "category": "motherboard",
+      "model": "Asus Pro A620M-C-CSM",
+      "amount": "128.8",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/sHWJ7P/asus-pro-a620m-c-csm-micro-atx-am5-motherboard-pro-a620m-c-csm"
+    },
+    {
+      "item_id": "motherboard-47c2a936f99c47594d10c452",
+      "category": "motherboard",
+      "model": "ASRock B760M PG Lightning/D4",
+      "amount": "143.57",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/LpKscf/asrock-b760m-pg-lightningd4-micro-atx-lga1700-motherboard-b760m-pg-lightningd4"
+    },
+    {
+      "item_id": "motherboard-4a085bcac6c12feab3773271",
+      "category": "motherboard",
+      "model": "Biostar A620MP-E PRO",
+      "amount": "110.39",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/4tpQzy/biostar-a620mp-e-pro-micro-atx-am5-motherboard-a620mp-e-pro"
+    },
+    {
+      "item_id": "motherboard-4a6527131b06870f4eec0233",
+      "category": "motherboard",
+      "model": "ASRock P45X3 Deluxe",
+      "amount": "334.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Fbg323/asrock-motherboard-p45x3deluxe"
+    },
+    {
+      "item_id": "motherboard-5073d3cc97ef1777b5826390",
+      "category": "motherboard",
+      "model": "Gigabyte GA-H170-HD3 DDR3",
+      "amount": "143.19",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/94nG3C/gigabyte-motherboard-gah170hd3ddr3"
+    },
+    {
+      "item_id": "motherboard-5afa63c193d048f3d70ed467",
+      "category": "motherboard",
+      "model": "Asus ROG STRIX B550-F GAMING WIFI II",
+      "amount": "160.38",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/K4LFf7/asus-rog-strix-b550-f-gaming-wifi-ii-atx-am4-motherboard-strix-b550-f-gaming-wifi-ii"
+    },
+    {
+      "item_id": "motherboard-5fd58e9afc32d5445351faba",
+      "category": "motherboard",
+      "model": "ASRock X670E Taichi Carrara",
+      "amount": "749.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/wHddnQ/asrock-x670e-taichi-carrara-eatx-am5-motherboard-x670e-taichi-carrara"
+    },
+    {
+      "item_id": "motherboard-67b27062e1d5c345f5c2839a",
+      "category": "motherboard",
+      "model": "Gigabyte X299 UD4 Pro",
+      "amount": "335.66",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/mLjJ7P/gigabyte-x299-ud4-pro-atx-lga2066-motherboard-x299-ud4-pro"
+    },
+    {
+      "item_id": "motherboard-6839b7edf40ad4c901b98b7b",
+      "category": "motherboard",
+      "model": "MSI B550M PRO-DASH",
+      "amount": "180.06",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/YjH7YJ/msi-b550m-pro-dash-micro-atx-am4-motherboard-b550m-pro-dash"
+    },
+    {
+      "item_id": "motherboard-6c179332416ab9e9fb98a202",
+      "category": "motherboard",
+      "model": "Asus PRIME H770-PLUS",
+      "amount": "162",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/VFXV3C/asus-prime-h770-plus-atx-lga1700-motherboard-prime-h770-plus"
+    },
+    {
+      "item_id": "motherboard-7061168d75747489310a4f6f",
+      "category": "motherboard",
+      "model": "Asus TUF GAMING B550M-PLUS (WI-FI)",
+      "amount": "169",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/HjQfrH/asus-tuf-gaming-b550m-plus-wi-fi-micro-atx-am4-motherboard-tuf-gaming-b550m-plus-wi-fi"
+    },
+    {
+      "item_id": "motherboard-76b3ab6d20243e75c78ac570",
+      "category": "motherboard",
+      "model": "Asus H81M-K",
+      "amount": "73.28",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/WMLypg/asus-motherboard-h81mk"
+    },
+    {
+      "item_id": "motherboard-773d8a656b6f4c802e1a6db0",
+      "category": "motherboard",
+      "model": "Asus ROG MAXIMUS XI HERO (WI-FI)",
+      "amount": "399",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/zvQG3C/asus-rog-maximus-xi-hero-wi-fi-atx-lga1151-motherboard-rog-maximus-xi-hero-wi-fi"
+    },
+    {
+      "item_id": "motherboard-7bb3c9d103afdcd3408b1b66",
+      "category": "motherboard",
+      "model": "Gigabyte B760M E",
+      "amount": "81.94",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xgP8TW/gigabyte-b760m-e-micro-atx-lga1700-motherboard-b760m-e"
+    },
+    {
+      "item_id": "motherboard-836bb8300b0f4ea01593d083",
+      "category": "motherboard",
+      "model": "ASRock A75 Extreme6",
+      "amount": "129.3",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/KtDwrH/asrock-motherboard-a75extreme6"
+    },
+    {
+      "item_id": "motherboard-840ace048fe53498427e2082",
+      "category": "motherboard",
+      "model": "Gigabyte GA-F2A55M-DS2",
+      "amount": "62.44",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/cgGkcf/gigabyte-motherboard-gaf2a55mds2"
+    },
+    {
+      "item_id": "motherboard-84c992ab239d7068226cf425",
+      "category": "motherboard",
+      "model": "Gigabyte Z590 AORUS TACHYON",
+      "amount": "455.31",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9ycG3C/gigabyte-z590-aorus-tachyon-eatx-lga1200-motherboard-z590-aorus-tachyon"
+    },
+    {
+      "item_id": "motherboard-93928e676834711739eb3b1f",
+      "category": "motherboard",
+      "model": "Biostar H610MH D5",
+      "amount": "58.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/jbKscf/biostar-h610mh-d5-micro-atx-lga1700-motherboard-h610mh-d5"
+    },
+    {
+      "item_id": "motherboard-9522fd3aa243d35bfbae4061",
+      "category": "motherboard",
+      "model": "MSI X299 PRO 10G",
+      "amount": "499.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/RHwkcf/msi-x299-pro-10g-atx-lga2066-motherboard-x299-pro-10g"
+    },
+    {
+      "item_id": "motherboard-9a231aa68d549c2e13809f2c",
+      "category": "motherboard",
+      "model": "Asus GRYPHON Z97",
+      "amount": "779.46",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/PkCwrH/asus-motherboard-gryphonz97"
+    },
+    {
+      "item_id": "motherboard-a384225c38fdd3f802550bee",
+      "category": "motherboard",
+      "model": "ASRock H61M-GE",
+      "amount": "267.83",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/F6W9TW/asrock-motherboard-h61mge"
+    },
+    {
+      "item_id": "motherboard-acbbeba9cd32865bc166c1f7",
+      "category": "motherboard",
+      "model": "Asus Prime X299-A II",
+      "amount": "248.8",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/9C848d/asus-prime-x299-a-ii-atx-lga2066-motherboard-x299-a-ii"
+    },
+    {
+      "item_id": "motherboard-b78d3e6ad197532ee52ab055",
+      "category": "motherboard",
+      "model": "Asus PRIME B650M-K",
+      "amount": "85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/yb26Mp/asus-prime-b650m-k-micro-atx-am5-motherboard-prime-b650m-k"
+    },
+    {
+      "item_id": "motherboard-bd943436bd122d02cfa4dfa8",
+      "category": "motherboard",
+      "model": "Asus STRIX X299-E GAMING",
+      "amount": "465.06",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/n7VBD3/asus-strix-x299-e-gaming-atx-lga2066-motherboard-strix-x299-e-gaming"
+    },
+    {
+      "item_id": "motherboard-beacbfb21293f8d6e289af4e",
+      "category": "motherboard",
+      "model": "ASRock A55 Pro3",
+      "amount": "93.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qgg323/asrock-motherboard-a55pro3"
+    },
+    {
+      "item_id": "motherboard-c5d870d2d3585a42b8e83489",
+      "category": "motherboard",
+      "model": "Asus ROG Crosshair VIII Impact",
+      "amount": "271.68",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/skLwrH/asus-rog-crosshair-viii-impact-mini-dtx-am4-motherboard-rog-crosshair-viii-impact"
+    },
+    {
+      "item_id": "motherboard-c77e984386011409258a6df6",
+      "category": "motherboard",
+      "model": "Asus Prime B760M-K",
+      "amount": "85",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/w8rqqs/asus-prime-b760m-k-micro-atx-lga1700-motherboard-prime-b760m-k"
+    },
+    {
+      "item_id": "motherboard-cbff6f0f63a6147d87347300",
+      "category": "motherboard",
+      "model": "MSI X299M GAMING PRO CARBON AC",
+      "amount": "270.76",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Zqx9TW/msi-x299m-gaming-pro-carbon-ac-micro-atx-lga2066-motherboard-x299m-gaming-pro-carbon-ac"
+    },
+    {
+      "item_id": "motherboard-d2c92445cf35ebfdce8477e9",
+      "category": "motherboard",
+      "model": "Gigabyte A520M DS3H V2",
+      "amount": "59.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/rxfxFT/gigabyte-a520m-ds3h-v2-micro-atx-am4-motherboard-a520m-ds3h-v2"
+    },
+    {
+      "item_id": "motherboard-d77385d63c4cd48b3f5dafdd",
+      "category": "motherboard",
+      "model": "ASRock X79 Extreme7",
+      "amount": "299.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/Pz3RsY/asrock-motherboard-x79extreme7"
+    },
+    {
+      "item_id": "motherboard-db52db12f4603cfba37fe57f",
+      "category": "motherboard",
+      "model": "Intel DQ45CB",
+      "amount": "36.42",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/NPqdnQ/intel-motherboard-boxdq45cb"
+    },
+    {
+      "item_id": "motherboard-df6b66434c22a32737aaca87",
+      "category": "motherboard",
+      "model": "Asus PRIME B550M-A (WI-FI)",
+      "amount": "136.99",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/WCcRsY/asus-prime-b550m-a-wi-fi-micro-atx-am4-motherboard-prime-b550m-a-wi-fi"
+    },
+    {
+      "item_id": "motherboard-e6778a772923704af20ac49b",
+      "category": "motherboard",
+      "model": "ASRock X299 Taichi CLX",
+      "amount": "205.33",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/xfdrxr/asrock-x299-taichi-clx-atx-lga2066-motherboard-x299-taichi-clx"
+    },
+    {
+      "item_id": "motherboard-f2378503f47f98382627ca9f",
+      "category": "motherboard",
+      "model": "ASRock P43DE",
+      "amount": "89.96",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/qB3RsY/asrock-motherboard-p43de"
+    },
+    {
+      "item_id": "motherboard-f3dfa7d05e9b8962b7349823",
+      "category": "motherboard",
+      "model": "Asus A55M-E",
+      "amount": "407.07",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/QdK7YJ/asus-motherboard-a55me"
+    },
+    {
+      "item_id": "motherboard-f7c829f2f5cf3b6889eddc8a",
+      "category": "motherboard",
+      "model": "MSI PRO H610M-G",
+      "amount": "76",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/KfyH99/msi-pro-h610m-g-micro-atx-lga1700-motherboard-pro-h610m-g"
+    },
+    {
+      "item_id": "motherboard-ffd62bb95df410464780f3c7",
+      "category": "motherboard",
+      "model": "Gigabyte Z590 AORUS XTREME",
+      "amount": "754.56",
+      "currency": "EUR",
+      "context": "dataset_snapshot",
+      "source_url": "https://fr.pcpartpicker.com/product/ttgFf7/gigabyte-z590-aorus-xtreme-eatx-lga1200-motherboard-z590-aorus-xtreme"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ services:
       - IMPORT_ROHIT_PATH=/app/import/pc-parts-by-type.zip
       - IMPORT_WARCODER_PATH=/app/import/warcoder-pc-parts.zip
       - IMAGE_IMPORT_MANIFEST=/app/image-import/manifest.json
+      - PRICE_IMPORT_MANIFEST=/app/price-import/manifest.json
       - REQUIRE_API_KEY
       - API_KEY
     command: ["python", "-m", "scan_hardware.bootstrap"]
@@ -16,6 +17,7 @@ services:
     volumes:
       - ./data/raw/kaggle:/app/import:ro
       - ./data/import/images:/app/image-import:ro
+      - ./data/import/prices:/app/price-import:ro
       - scanner_logs:/app/logs
       - scanner_data:/app/data
     healthcheck:
