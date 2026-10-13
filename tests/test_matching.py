@@ -260,3 +260,69 @@ def test_exact_match_does_not_include_fuzzy_suggestions() -> None:
 
     assert result.status == "matched"
     assert [match.item.id for match in result.matches] == ["gpu-4080"]
+
+
+@pytest.mark.parametrize(
+    ("observed", "expected_first"),
+    [
+        ("BS5OM-A", "prime-b550"),
+        ("PRIME BSSOM-A", "prime-b550"),
+        ("TUF GAMING BSSO", "tuf-b550"),
+    ],
+)
+def test_b550_ocr_letter_digit_confusion_stays_a_suggestion(
+    observed: str, expected_first: str
+) -> None:
+    items = [
+        Item(
+            id="prime-b550",
+            category=Category.MOTHERBOARD,
+            brand="Asus",
+            model="Asus PRIME B550M-A",
+            identifiers=["PRIME B550M-A"],
+        ),
+        Item(
+            id="tuf-b550",
+            category=Category.MOTHERBOARD,
+            brand="Asus",
+            model="Asus TUF GAMING B550-PLUS",
+            identifiers=["TUF GAMING B550-PLUS"],
+        ),
+        Item(
+            id="asrock-b550",
+            category=Category.MOTHERBOARD,
+            brand="ASRock",
+            model="ASRock B550M/ac",
+            identifiers=["B550M/ac"],
+        ),
+        Item(
+            id="tuf-b650",
+            category=Category.MOTHERBOARD,
+            brand="Asus",
+            model="Asus TUF GAMING B650-PLUS",
+            identifiers=["TUF GAMING B650-PLUS"],
+        ),
+    ]
+
+    result = match_items([observed], items)
+
+    assert result.status == "suggestions"
+    assert result.matches[0].item.id == expected_first
+    assert all(match.is_exact is False for match in result.matches)
+    assert "tuf-b650" not in [match.item.id for match in result.matches]
+    if "PRIME" in observed:
+        assert "asrock-b550" not in [match.item.id for match in result.matches]
+
+
+def test_short_ambiguous_b550_fragment_does_not_confirm_a_board() -> None:
+    item = Item(
+        id="tuf-b550",
+        category=Category.MOTHERBOARD,
+        brand="Asus",
+        model="Asus TUF GAMING B550-PLUS",
+        identifiers=["TUF GAMING B550-PLUS"],
+    )
+
+    result = match_items(["BSSO"], [item])
+
+    assert result.status == "not_found"
