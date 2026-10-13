@@ -73,7 +73,8 @@
         card.appendChild(specs);
         for (const [key, value] of Object.entries(match)) {
           if (!(key in labels)) continue;
-          line(specs, 'dt', labels[key] || key);
+          const label = key === 'color' && match.color_source === 'photo_estimate' ? 'Cor estimada pela foto' : key === 'color' && match.color_source === 'reference_estimate' ? 'Cor estimada da referência' : labels[key] || key;
+          line(specs, 'dt', label);
           const formatted = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : `${value}${units[key] ? ` ${units[key]}` : ''}`;
           line(specs, 'dd', formatted);
         }

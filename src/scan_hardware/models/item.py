@@ -130,6 +130,7 @@ class HardwareSummary(BaseModel):
     l2_cache_mb: int | None = None
     l3_cache_mb: int | None = None
     color: str | None = None
+    color_source: Literal["catalog", "photo_estimate", "reference_estimate"] | None = None
     base_clock_ghz: float | None = None
     boost_clock_ghz: float | None = None
     cores: int | None = None
@@ -149,8 +150,16 @@ class HardwareSummary(BaseModel):
     resolution_class: str | None = None
 
     @classmethod
-    def from_match(cls, match: Match) -> HardwareSummary:
-        """Keep only unambiguous, typed catalog values for a mobile client."""
+    def from_match(cls, match: Match, photo_color: str | None = None) -> HardwareSummary:
+        """Keep unambiguous catalog values and mark visual color estimates.
+
+        Args:
+            match: Matched catalog item with source-backed specifications.
+            photo_color: Broad color inferred from the uploaded photo, if any.
+
+        Returns:
+            Flat hardware response for mobile clients.
+        """
         item = match.item
         values: dict[str, object] = {
             "category": item.category,
@@ -162,6 +171,22 @@ class HardwareSummary(BaseModel):
         for key, specification in item.specifications.items():
             if specification.status != "conflict" and specification.value is not None:
                 values[key] = specification.value
+        if "color" in values:
+            values["color_source"] = "catalog"
+        elif photo_color is not None and item.category in {Category.GPU, Category.MOTHERBOARD}:
+            values["color"] = photo_color
+            values["color_source"] = "photo_estimate"
+        elif item.category in {Category.GPU, Category.MOTHERBOARD}:
+            from scan_hardware.curation import estimated_colors
+
+            estimate = estimated_colors().get(item.id)
+            if (
+                estimate is not None
+                and estimate.category is item.category
+                and estimate.model == item.model
+            ):
+                values["color"] = estimate.color
+                values["color_source"] = "reference_estimate"
         return cls.model_validate(values)
 
 
@@ -172,9 +197,17 @@ class ScanResponse(BaseModel):
     matches: list[HardwareSummary]
 
     @classmethod
-    def from_result(cls, result: ScanResult) -> ScanResponse:
-        """Present all matches without nested specification objects."""
+    def from_result(cls, result: ScanResult, photo_color: str | None = None) -> ScanResponse:
+        """Present matches and optional photo color without nested specifications.
+
+        Args:
+            result: Scanner result with candidate items.
+            photo_color: Broad visual estimate for candidates lacking catalog color.
+
+        Returns:
+            Flat scan response.
+        """
         return cls(
             status=result.status,
-            matches=[HardwareSummary.from_match(match) for match in result.matches],
+            matches=[HardwareSummary.from_match(match, photo_color) for match in result.matches],
         )

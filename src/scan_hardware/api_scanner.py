@@ -9,8 +9,9 @@ from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
 from scan_hardware.config import Settings
+from scan_hardware.core.color import estimate_photo_color
 from scan_hardware.core.matching import match_items
-from scan_hardware.models.item import ScanResponse, ScanResult
+from scan_hardware.models.item import Category, ScanResponse, ScanResult
 from scan_hardware.services.catalog import Catalog
 from scan_hardware.services.ocr import InvalidImageError, OcrScanner, validate_image
 
@@ -28,6 +29,17 @@ def _include_specifications(result: ScanResult, catalog: Catalog) -> ScanResult:
         if stored is not None:
             match.item = stored
     return result
+
+
+def _needs_photo_color(result: ScanResult) -> bool:
+    """Avoid pixel analysis when every candidate already has a catalog color."""
+    for match in result.matches:
+        if match.item.category not in {Category.GPU, Category.MOTHERBOARD}:
+            continue
+        color = match.item.specifications.get("color")
+        if color is None or color.value is None:
+            return True
+    return False
 
 
 def register_scan_routes(
@@ -62,4 +74,9 @@ def register_scan_routes(
             raise HTTPException(status_code=422, detail=str(error)) from error
         lines = await run_in_threadpool(scanner.read_text, content)
         result = _include_specifications(match_items(lines, catalog.list_items()), catalog)
-        return ScanResponse.from_result(result)
+        photo_color = (
+            await run_in_threadpool(estimate_photo_color, content)
+            if _needs_photo_color(result)
+            else None
+        )
+        return ScanResponse.from_result(result, photo_color)

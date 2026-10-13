@@ -75,7 +75,7 @@ colunas originais podem ser consultadas em `GET /items/{id}/sources`.
 O pacote inclui **6.007 associações novas de imagem** obtidas por cruzamento exato
 entre o catálogo e um [dataset público de peças](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset).
 O cruzamento exige nome original, marca e, para GPU, chipset idênticos; imagens
-genéricas e casos ambíguos são descartados. Com as URLs anteriores, 10.665 dos
+genéricas e casos ambíguos são descartados. Com as URLs anteriores e as duas ECS, 10.667 dos
 12.874 itens (82,8%) têm uma imagem de referência. O arquivo bruto não vai para o
 Git; o manifesto resultante vai em `src/scan_hardware/curation/external_images.json`.
 Para refazer a coleta com a versão fixa da fonte:
@@ -92,8 +92,9 @@ atualiza o arquivo empacotado se passar no portão de cobertura. Veja os
 Cinco itens têm fotos do Wikimedia Commons com autoria e licença revisadas em
 `image_attribution`. A GA-Z77X-UD5H usa uma imagem oficial do fabricante. As outras
 URLs são referências externas; uma URL pode deixar de funcionar ou mostrar a
-embalagem do produto. Os dois modelos ECS suplementares ainda não têm uma foto
-exata associada. A foto enviada ao scanner não é usada como imagem do catálogo.
+embalagem do produto. Os dois modelos ECS suplementares têm URLs externas
+associadas, com licença de reutilização não identificada. A foto enviada ao
+scanner não substitui a imagem de referência do catálogo.
 
 ## Testar a API
 
@@ -120,6 +121,16 @@ omite as evidências detalhadas; consulte as linhas originais
 em `GET /items/{id}/sources`. Fotos JPEG, PNG e WebP são aceitas até
 8.000.000 bytes por padrão e 20 megapixels. O contrato completo e exemplos de
 resposta estão no [guia de integração](docs/integracao.md).
+
+Quando a cor não consta no catálogo, `/scan` pode estimá-la da foto enviada.
+O resultado usa `color_source: "photo_estimate"` para distinguir esse valor de
+`color_source: "catalog"`. Uma estimativa prévia da imagem local de referência
+aparece como `reference_estimate` também em `/lookup`. A prioridade é catálogo,
+foto do scan e referência, nessa ordem. `GET /specs/{id}` continua mostrando as
+especificações cadastradas. Um cruzamento por part number com a BuildCores OpenDB
+acrescentou 1.487 cores informadas pela fonte; 1.710 modelos ainda dependem de
+fotografias confiáveis. Veja o [guia de cores](docs/color_enrichment.md), incluindo
+a atribuição e a licença dos dados adicionais.
 
 Para obter os detalhes ou atualizar um item, use `GET /specs/{id}` e `PUT /items/{id}`. Para
 associar uma imagem local, use `PUT /items/{id}/image` com o campo multipart `image`;

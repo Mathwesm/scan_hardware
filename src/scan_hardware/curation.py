@@ -10,6 +10,9 @@ from pydantic import BaseModel, Field, HttpUrl, model_validator
 
 from scan_hardware.models.item import Category, ImageAttribution, ItemInput, SpecificationEvidence
 
+# Public BuildCores Git commit, not a credential.
+BUILDCORES_REVISION = "0d3c3eaf220173aa4246916e3d7a226079e87a65"  # pragma: allowlist secret
+
 
 class VerifiedFact(BaseModel):
     """A reviewed manufacturer fact for one stable imported item ID."""
@@ -92,6 +95,49 @@ class ImageManifest(BaseModel):
     images: list[VerifiedImage]
 
 
+class EstimatedColor(BaseModel):
+    """Approximate color extracted from an exact item's local reference photo."""
+
+    item_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    category: Category
+    model: str = Field(min_length=1)
+    color: str = Field(min_length=1)
+
+
+class EstimatedColorManifest(BaseModel):
+    """Validated local-photo estimates that do not override source facts."""
+
+    colors: list[EstimatedColor]
+
+
+class ReportedColor(BaseModel):
+    """Source-reported color joined by one exact manufacturer part number."""
+
+    item_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    category: Category
+    model: str = Field(min_length=1)
+    color: str = Field(min_length=1)
+    source_id: str = Field(pattern=r"^[a-f0-9-]{36}$")
+
+    def as_evidence(self) -> SpecificationEvidence:
+        """Link the reported color to its pinned OpenDB record."""
+        folder = "GPU" if self.category is Category.GPU else "Motherboard"
+        source_url = (
+            "https://github.com/buildcores/buildcores-open-db/blob/"
+            f"{BUILDCORES_REVISION}/open-db/{folder}/{self.source_id}.json"
+        )
+        return SpecificationEvidence(
+            dataset="BuildCores OpenDB", field="color", value=self.color, source_url=source_url
+        )
+
+
+class ReportedColorManifest(BaseModel):
+    """Versioned noncommercial color data from BuildCores OpenDB."""
+
+    revision: str = Field(pattern=r"^[a-f0-9]{40}$")
+    colors: list[ReportedColor]
+
+
 class VerifiedBoardRevision(BaseModel):
     """Manufacturer-confirmed PCB revisions within one catalog model family."""
 
@@ -156,6 +202,38 @@ def verified_images() -> dict[str, VerifiedImage]:
             raise ValueError(f"Duplicate verified image: {image.item_id}")
         images[image.item_id] = image
     return images
+
+
+@lru_cache(maxsize=1)
+def estimated_colors() -> dict[str, EstimatedColor]:
+    """Load optional color estimates generated from local reference images."""
+    path = files("scan_hardware").joinpath("curation", "estimated_colors.json")
+    if not path.is_file():
+        return {}
+    manifest = EstimatedColorManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    colors: dict[str, EstimatedColor] = {}
+    for entry in manifest.colors:
+        if entry.item_id in colors:
+            raise ValueError(f"Duplicate estimated color: {entry.item_id}")
+        colors[entry.item_id] = entry
+    return colors
+
+
+@lru_cache(maxsize=1)
+def reported_colors() -> dict[str, ReportedColor]:
+    """Load exact-part-number colors from the separately licensed manifest."""
+    path = files("scan_hardware").joinpath("curation", "reported_colors.json")
+    if not path.is_file():
+        return {}
+    manifest = ReportedColorManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    if manifest.revision != BUILDCORES_REVISION:
+        raise ValueError("Reported color manifest uses an unexpected source revision")
+    colors: dict[str, ReportedColor] = {}
+    for entry in manifest.colors:
+        if entry.item_id in colors:
+            raise ValueError(f"Duplicate reported color: {entry.item_id}")
+        colors[entry.item_id] = entry
+    return colors
 
 
 @lru_cache(maxsize=1)

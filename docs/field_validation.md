@@ -62,6 +62,26 @@ Também foram associadas as duas URLs externas das ECS. A auditoria atual conta
 10.667 itens com imagem e 2.207 sem imagem; o relatório está em
 `data/audit/20261012T183834280584Z/report.json`.
 
+## Estimativa de cor durante o scan
+
+Quando não há cor utilizável no catálogo, o serviço agora analisa os pixels da
+foto enviada. O JSON marca essa saída com `color_source: "photo_estimate"`; uma
+cor já cadastrada permanece prioritária e usa `color_source: "catalog"`.
+Nos recortes enviados das ECS, a A785GM-M3 retornou `Red / Green` e a
+G41T-MR23 retornou `Gold / Red` como **estimativas da região fotografada**.
+O código não afirma que essas são as cores completas das placas: os recortes
+mostram sobretudo os slots e trechos do PCB. Uma montagem com três placas pode
+ficar sem estimativa, evitando atribuir a mesma cor a modelos diferentes.
+As oito fotos anteriores conservaram os resultados de identificação; o novo
+relatório local está em `data/validation/20261012T225708621002Z/report.json`.
+
+As duas imagens de referência já salvas localmente também foram processadas em
+lote. Em `/lookup`, `A785GM-M3` retorna `Green / Black` e `G41T-MR23` retorna
+`Green / Blue`, ambos com `color_source: "reference_estimate"`. Essas cores
+descrevem as imagens pequenas dos produtos e não são especificações do fabricante.
+O manifesto e a contagem (`selected: 2`) estão em
+`data/processed/colors/20261012T230001095587Z/`.
+
 ## Suíte anterior: CPU, GPU e placa-mãe
 
 As oito fotos do manifesto local foram repetidas com o catálogo novo em

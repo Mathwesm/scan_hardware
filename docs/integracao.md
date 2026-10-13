@@ -128,6 +128,15 @@ candidato contém campos simples: texto, número ou booleano. `socket`, `memory_
 O sufixo do nome informa a unidade, como `_ghz`, `_gb`, `_mhz`, `_mt_s`, `_mm`, `_mb` ou `_w`.
 Campo ausente significa dado indisponível ou conflitante, nunca zero. Use `status`
 para distinguir correspondência exata de sugestão. Peça uma foto por peça.
+Quando `/scan` não tem cor confiável no catálogo, ele pode preencher `color` a
+partir dos pixels da foto. Nesse caso, `color_source` vale `photo_estimate`:
+é uma aproximação visual, sujeita a fundo, iluminação, enquadramento e peças
+com várias cores. Se a cor vem do catálogo, `color_source` vale `catalog`.
+Uma estimativa previamente gerada de uma imagem local da peça usa
+`color_source: "reference_estimate"`; ela também aparece em `/lookup` quando
+ID, categoria e modelo continuam exatamente iguais. Quando não há base
+suficiente, os campos são omitidos. Estimativas não substituem cores documentadas.
+O [processamento local de fotos](color_enrichment.md) explica como ampliar a cobertura.
 Para memória de placas-mães, `max_memory_gb` é capacidade em GB;
 `max_memory_standard_mhz` e `max_memory_oc_mhz` diferenciam o limite sem e com
 overclock. `memory_slot_type` indica o encaixe físico (por exemplo, DIMM), e
@@ -145,7 +154,7 @@ especificação, licença da imagem e todas as colunas das fontes, consulte
 prioriza a imagem local; uma URL externa pode estar indisponível ou sem direitos de
 exibição comprovados. Uma URL local precisa ser resolvida pelo backend que atende
 o celular. Se não houver imagem, o campo é omitido. Na coleta de 12/10/2026,
-10.665 de 12.874 itens têm uma referência de imagem; o aplicativo ainda precisa
+10.667 de 12.874 itens têm uma referência de imagem; o aplicativo ainda precisa
 mostrar um substituto quando `image_url` estiver ausente ou o host externo falhar.
 
 ### Modelo simples em Kotlin
@@ -179,6 +188,7 @@ data class Hardware(
     val l2_cache_mb: Int? = null,
     val l3_cache_mb: Int? = null,
     val color: String? = null,
+    val color_source: String? = null,
     val base_clock_ghz: Double? = null,
     val boost_clock_ghz: Double? = null,
     val cores: Int? = null,

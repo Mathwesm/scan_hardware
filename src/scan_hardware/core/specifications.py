@@ -9,7 +9,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from scan_hardware.curation import verified_facts
+from scan_hardware.curation import reported_colors, verified_facts
 from scan_hardware.models.item import Category, Specification, SpecificationEvidence
 
 ValueKind = Literal["text", "integer", "decimal", "boolean"]
@@ -109,6 +109,13 @@ def _parse_value(raw: Any, definition: SpecDefinition, key: str) -> SpecValue | 
     return _parse_number(raw, definition.kind)
 
 
+def _comparison_value(key: str, value: SpecValue) -> SpecValue | tuple[str, ...]:
+    """Treat order-independent color lists as the same reported color."""
+    if key == "color" and isinstance(value, str):
+        return tuple(sorted(part.strip().casefold() for part in value.split("/")))
+    return value
+
+
 def build_specifications(
     category: Category, source_rows: list[dict[str, Any]], item_id: str | None = None
 ) -> dict[str, Specification]:
@@ -134,7 +141,17 @@ def build_specifications(
                         dataset=source.dataset, field=field, value=value
                     )
         fact = verified_facts().get((item_id, key)) if item_id is not None else None
+        reported = (
+            reported_colors().get(item_id) if item_id is not None and key == "color" else None
+        )
         if not evidence_map and fact is None:
+            if reported is not None and reported.category is category:
+                specifications[key] = Specification(
+                    value=reported.color,
+                    unit=definition.unit,
+                    status="reported",
+                    evidence=[reported.as_evidence()],
+                )
             continue
         evidence = [evidence_map[index] for index in sorted(evidence_map, key=str)]
         if fact is not None and fact.category is category:
@@ -145,7 +162,7 @@ def build_specifications(
                 evidence=[*evidence, fact.as_evidence()],
             )
             continue
-        values = {entry.value for entry in evidence}
+        values = {_comparison_value(key, entry.value) for entry in evidence}
         is_conflict = len(values) > 1
         specifications[key] = Specification(
             value=None if is_conflict else evidence[0].value,

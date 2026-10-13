@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from PIL import Image
+from PIL import Image, ImageDraw
 from pydantic import SecretStr
 
 from scan_hardware.api import create_app
@@ -38,6 +38,58 @@ def _png() -> bytes:
     output = BytesIO()
     image.save(output, format="PNG")
     return output.getvalue()
+
+
+def _colored_png() -> bytes:
+    """Create a visible board-like colored area for the photo estimate contract."""
+    image = Image.new("RGB", (300, 300), "white")
+    ImageDraw.Draw(image).rectangle((30, 70, 220, 250), fill="green")
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
+def test_scan_marks_photo_color_as_estimate_when_catalog_has_none(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+
+    response = client.post("/scan", files={"image": ("board.png", _colored_png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["matches"][0]["color"] == "Green"
+    assert response.json()["matches"][0]["color_source"] == "photo_estimate"
+
+
+def test_catalog_color_takes_precedence_over_photo_estimate(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=FakeScanner()))
+    client.put(
+        "/items/board-1",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "B550-F Gaming",
+            "identifiers": ["B550-F GAMING"],
+        },
+    )
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "sample", "board.csv", 1, {"color": "Black"}, "board-1"
+    )
+
+    response = client.post("/scan", files={"image": ("board.png", _colored_png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["matches"][0]["color"] == "Black"
+    assert response.json()["matches"][0]["color_source"] == "catalog"
 
 
 def test_scan_returns_matching_item_and_local_image(tmp_path: Path) -> None:
