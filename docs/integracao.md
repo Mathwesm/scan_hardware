@@ -89,6 +89,12 @@ Quando houver uma oferta recente, cada candidato de `/scan` e `/lookup`, assim c
 `price_offer_count` (lojas consideradas) e `price_observed_at` (UTC). Esses campos
 são omitidos quando não há oferta válida nos últimos 14 dias. O aplicativo deve
 apresentar `price_offer_count=1` como preço observado, pois não é média de mercado.
+`price_status` informa `observed`, `average`, `reference_only` ou `unavailable`;
+quando está `unavailable`, não há preço a mostrar para aquele modelo exato.
+Também pode valer `reference_only` quando há apenas preço histórico ou de dataset.
+Nesse caso, use `reference_price_amount` com `reference_price_currency` (USD ou EUR),
+`reference_price_context`, `reference_price_source_url` e a data opcional
+`reference_price_date`. Essa referência não representa venda atual em R$.
 Veja [importação e cálculo dos preços](precos.md).
 
 Para várias fotos da mesma peça, o aplicativo pode buscar

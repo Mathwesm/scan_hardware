@@ -15,6 +15,7 @@ from scan_hardware.curation import verified_images
 from scan_hardware.image_enrichment import image_for_item
 from scan_hardware.models.item import Category, Item, ItemInput
 from scan_hardware.models.price import PriceOffer
+from scan_hardware.reference_prices import reference_price_for
 
 MAX_PRICE_AGE = timedelta(days=14)
 
@@ -208,6 +209,7 @@ class Catalog:
         curated_image = verified_images().get(item_id)
         external_image = image_for_item(item_id, Category(row["category"]), row["model"])
         price = self.price_summary(item_id)
+        reference = reference_price_for(item_id, Category(row["category"]), row["model"])
         return Item(
             id=row["id"],
             category=Category(row["category"]),
@@ -224,6 +226,20 @@ class Catalog:
             estimated_price_brl=price[0] if price else None,
             price_offer_count=price[1] if price else None,
             price_observed_at=price[2] if price else None,
+            price_status=(
+                "average"
+                if price and price[1] > 1
+                else "observed"
+                if price
+                else "reference_only"
+                if reference
+                else "unavailable"
+            ),
+            reference_price_amount=float(reference.amount) if reference else None,
+            reference_price_currency=reference.currency if reference else None,
+            reference_price_context=reference.context if reference else None,
+            reference_price_source_url=str(reference.source_url) if reference else None,
+            reference_price_date=reference.source_date if reference else None,
             image_attribution=(
                 curated_image.attribution()
                 if curated_image and row["image_digest"] is None

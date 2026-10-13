@@ -11,6 +11,38 @@ usa a oferta mais recente de cada loja e calcula a média aritmética. Uma loja 
 peso extra por ter várias coletas. `price_offer_count` informa quantas lojas entraram;
 quando vale 1, `estimated_price_brl` é um preço observado, não uma média de mercado.
 `price_observed_at` é o horário da observação mais recente, em UTC.
+`price_status` vale `observed` para uma loja, `average` para duas ou mais,
+`reference_only` quando existe apenas uma referência histórica, ou `unavailable`
+quando não há nenhum preço. Sem oferta atual em R$, os campos numéricos
+de preço são omitidos em `/scan` e `/lookup`; em `/specs/{id}` são `null`.
+Por exemplo, a GA-Z77X-UD5H tem `price: null` na fonte
+Kaggle e não deve receber o preço da variante GA-Z77X-UD5H-WB nem de uma usada.
+
+### Referência histórica em moeda original
+
+Quando há uma fonte identificada para o **modelo exato**, o JSON também pode incluir
+`reference_price_amount`, `reference_price_currency`, `reference_price_context`,
+`reference_price_source_url` e, quando conhecida, `reference_price_date`. Esses campos
+são separados de `estimated_price_brl`. `reference_only` em `price_status` significa
+que há uma referência, mas nenhuma oferta nova recente no Brasil.
+
+A GA-Z77X-UD5H tem [preço de US$ 189,99 documentado em uma análise de 09/05/2012](https://www.bit-tech.net/reviews/tech/motherboards/gigabyte-ga-z77x-ud5h-review/1/).
+É um preço histórico nos EUA, **não** uma cotação ou preço de venda atual no Brasil.
+Além dela, o projeto associa preços em EUR do [dataset PCPartPicker Parts](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset)
+somente aos produtos previamente cruzados por identificador exato para as imagens.
+Na revisão fixada, são 428 associações em EUR e uma referência histórica em USD.
+O dataset informa que os preços podem estar ausentes ou desatualizados e não fornece
+data por oferta; por isso o contexto fica `dataset_snapshot` e a data é omitida.
+
+O manifesto é reproduzido a partir da revisão fixa do dataset com:
+
+```bash
+poetry run python -m scan_hardware.reference_prices
+```
+
+O comando usa o arquivo JSONL já baixado para as imagens e só publica registros com
+produto e URL exatos. O manifesto empacotado vai junto no Docker e no Git; nenhum
+acesso à rede é necessário na inicialização do serviço.
 
 ## Importar ofertas revisadas
 

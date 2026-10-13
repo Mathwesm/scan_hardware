@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from enum import StrEnum
 from typing import Literal
 
@@ -96,6 +96,12 @@ class Item(ItemInput):
     estimated_price_brl: float | None = None
     price_offer_count: int | None = None
     price_observed_at: datetime | None = None
+    price_status: Literal["unavailable", "observed", "average", "reference_only"] = "unavailable"
+    reference_price_amount: float | None = None
+    reference_price_currency: Literal["USD", "EUR"] | None = None
+    reference_price_context: Literal["historical_review", "dataset_snapshot"] | None = None
+    reference_price_source_url: str | None = None
+    reference_price_date: date | None = None
     image_attribution: ImageAttribution | None = None
     specifications: dict[str, Specification] = Field(
         default_factory=dict,
@@ -135,6 +141,12 @@ class HardwareSummary(BaseModel):
     estimated_price_brl: float | None = None
     price_offer_count: int | None = None
     price_observed_at: datetime | None = None
+    price_status: Literal["unavailable", "observed", "average", "reference_only"]
+    reference_price_amount: float | None = None
+    reference_price_currency: Literal["USD", "EUR"] | None = None
+    reference_price_context: Literal["historical_review", "dataset_snapshot"] | None = None
+    reference_price_source_url: str | None = None
+    reference_price_date: date | None = None
     socket: str | None = None
     form_factor: str | None = None
     max_memory_gb: int | None = None
@@ -185,7 +197,14 @@ class HardwareSummary(BaseModel):
             "model": item.model,
             "image_url": item.local_image_url or (str(item.image_url) if item.image_url else None),
             "id": item.id,
+            "price_status": item.price_status,
         }
+        if item.reference_price_amount is not None:
+            values["reference_price_amount"] = item.reference_price_amount
+            values["reference_price_currency"] = item.reference_price_currency
+            values["reference_price_context"] = item.reference_price_context
+            values["reference_price_source_url"] = item.reference_price_source_url
+            values["reference_price_date"] = item.reference_price_date
         if item.estimated_price_brl is not None:
             values["estimated_price_brl"] = item.estimated_price_brl
             values["price_offer_count"] = item.price_offer_count

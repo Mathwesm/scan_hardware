@@ -293,6 +293,7 @@ def test_scan_exposes_cpu_specs_and_source_conflict(tmp_path: Path) -> None:
         "brand": "Intel",
         "model": "Intel Core i3-7350K",
         "id": "cpu-1",
+        "price_status": "unavailable",
         "socket": "LGA1151",
         "base_clock_ghz": 4.2,
         "cores": 2,
@@ -357,6 +358,7 @@ def test_lookup_returns_flat_hardware_fields(
             "brand": item["brand"],
             "model": item["model"],
             "id": item_id,
+            "price_status": "unavailable",
             **expected_fields,
         }
     ]

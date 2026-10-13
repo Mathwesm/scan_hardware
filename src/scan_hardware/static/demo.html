@@ -105,6 +105,20 @@
           const count = match.price_offer_count || 1;
           line(card, 'p', `${count > 1 ? 'Média de preços' : 'Preço observado'}: ${amount}`);
           line(card, 'p', `${count} oferta${count > 1 ? 's' : ''} de produto novo, preço padrão sem frete. Conferido em ${new Date(match.price_observed_at).toLocaleDateString('pt-BR')}.`, 'muted');
+        } else if (match.price_status === 'unavailable') {
+          line(card, 'p', 'Preço indisponível: não há oferta recente de produto novo para este modelo exato.', 'muted');
+        }
+        if (typeof match.reference_price_amount === 'number') {
+          const amount = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: match.reference_price_currency }).format(match.reference_price_amount);
+          const label = match.reference_price_context === 'historical_review' ? `Preço histórico (${match.reference_price_date?.slice(0, 4) || 'data não informada'})` : 'Preço de referência do dataset (data da oferta não informada)';
+          line(card, 'p', `${label}: ${amount}`);
+          const source = line(card, 'p', 'Referência em moeda original; não representa preço atual no Brasil. Fonte: ', 'muted');
+          const link = document.createElement('a');
+          link.href = match.reference_price_source_url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'consultar';
+          source.appendChild(link);
         }
         await renderImages(card, match);
         const specs = document.createElement('dl');
