@@ -144,6 +144,12 @@ versão do catálogo. `category` é `motherboard`, `gpu` ou `cpu`.
 | `suggestions` | Há candidatos parecidos, sem confirmação exata. | Mostrar como sugestões e pedir confirmação humana. Nunca chamar de identificação confirmada. |
 | `not_found` | Nenhum candidato suficiente. | Permitir corrigir o código ou tirar outra foto. |
 
+Quando o OCR troca `5` por `S` ou `0` por `O` em códigos `B550`, o serviço
+considera a leitura corrigida na busca aproximada. Exemplos como `BS5OM-A` e
+`PRIME BSSOM-A` podem gerar `suggestions`; a correção nunca transforma a leitura
+em `matched`. Em textos incompletos como `TUF GAMING BSSO`, peça confirmação do
+modelo completo antes de mostrar uma peça como identificada.
+
 `matches` é sempre uma lista, vazia em `not_found`, com até cinco candidatos. Cada
 candidato contém campos simples: texto, número ou booleano. `socket`, `memory_slots`,
 `cores`, `threads` e outros campos só aparecem quando há um valor sem conflito.

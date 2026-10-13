@@ -11,6 +11,8 @@ from scan_hardware.curation import verified_board_revisions
 from scan_hardware.models.item import Category, Item, Match, ScanResult
 
 _WORD_PATTERN = re.compile(r"[A-Z0-9]+")
+_B550_OCR_PATTERN = re.compile(r"B[S5]{2}[O0]")
+_BOARD_FAMILY_WORDS = ("PRIME", "TUF", "GAMING")
 _MIN_FUZZY_SCORE = 0.80
 _MAX_MATCHES = 5
 _MIN_REVISION_PREFIX_LENGTH = 8
@@ -141,20 +143,48 @@ def _verified_revision_matches(observations: list[str], items: list[Item]) -> li
     return matches
 
 
-def _model_fragments(observations: list[str]) -> dict[str, str]:
-    """Keep distinct code-like OCR spans and their shortest source observation."""
-    fragments: dict[str, str] = {}
+def _model_fragments(observations: list[str]) -> dict[str, tuple[str, bool]]:
+    """Keep code-like OCR spans and track corrected B550 readings."""
+    fragments: dict[str, tuple[str, bool]] = {}
     for observed in observations:
-        for fragment in _candidate_fragments(observed):
-            if (
-                _MIN_FUZZY_FRAGMENT_LENGTH <= len(fragment) <= _MAX_FUZZY_FRAGMENT_LENGTH
-                and sum(character.isdigit() for character in fragment) >= _MIN_MODEL_DIGITS
-                and any(character.isalpha() for character in fragment)
-            ):
-                previous = fragments.get(fragment)
-                if previous is None or len(observed) < len(previous):
-                    fragments[fragment] = observed
+        for raw in _candidate_fragments(observed):
+            corrected = _B550_OCR_PATTERN.sub("B550", raw)
+            for fragment, was_corrected in {(raw, False), (corrected, corrected != raw)}:
+                if (
+                    _MIN_FUZZY_FRAGMENT_LENGTH <= len(fragment) <= _MAX_FUZZY_FRAGMENT_LENGTH
+                    and sum(character.isdigit() for character in fragment) >= _MIN_MODEL_DIGITS
+                    and any(character.isalpha() for character in fragment)
+                ):
+                    previous = fragments.get(fragment)
+                    if previous is None or (was_corrected, len(observed)) < (
+                        previous[1],
+                        len(previous[0]),
+                    ):
+                        fragments[fragment] = (observed, was_corrected)
     return fragments
+
+
+def _fuzzy_aliases(item: Item, identifier: str) -> set[str]:
+    """Include the board code alone for fuzzy suggestions without confirming it."""
+    aliases = _identifier_aliases(item, identifier)
+    if item.category is Category.MOTHERBOARD:
+        for alias in tuple(aliases):
+            position = alias.find("B550")
+            if position > 0 and len(alias) - position >= _MIN_FUZZY_FRAGMENT_LENGTH:
+                aliases.add(alias[position:])
+    return aliases
+
+
+def _available_fuzzy_choices(choices: list[str], observed: str, was_corrected: bool) -> list[str]:
+    """Restrict OCR-corrected B550 codes to the observed motherboard family."""
+    if not was_corrected:
+        return choices
+    family_words = [word for word in _BOARD_FAMILY_WORDS if word in observed.upper()]
+    return [
+        choice
+        for choice in choices
+        if "B550" in choice and all(word in choice for word in family_words)
+    ]
 
 
 def _fuzzy_matches(observations: list[str], items: list[Item]) -> list[Match]:
@@ -167,22 +197,27 @@ def _fuzzy_matches(observations: list[str], items: list[Item]) -> list[Match]:
         if has_gpu_label and item.category is not Category.GPU:
             continue
         for identifier in item.identifiers:
-            for alias in _identifier_aliases(item, identifier):
+            for alias in _fuzzy_aliases(item, identifier):
                 aliases.setdefault(alias, []).append((item, identifier))
     if not aliases:
         return []
     choices = list(aliases)
     best_matches: dict[str, Match] = {}
-    for fragment, observed in _model_fragments(observations).items():
+    for fragment, (observed, was_corrected) in _model_fragments(observations).items():
+        available = _available_fuzzy_choices(choices, observed, was_corrected)
         candidates = process.extract(
             fragment,
-            choices,
+            available,
             scorer=fuzz.ratio,
             score_cutoff=_MIN_FUZZY_SCORE * 100,
             limit=_FUZZY_CANDIDATES_PER_FRAGMENT,
         )
         for target, similarity, _ in candidates:
-            score = _score_fragment(target, fragment, similarity)
+            score = (
+                min(_score_fragment(target, fragment, similarity), 0.93)
+                if was_corrected
+                else _score_fragment(target, fragment, similarity)
+            )
             for item, identifier in aliases[target]:
                 candidate = Match(
                     item=item,
