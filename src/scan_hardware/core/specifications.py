@@ -9,7 +9,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from scan_hardware.curation import reported_colors, verified_facts
+from scan_hardware.curation import reported_colors, reported_specs, verified_facts
 from scan_hardware.models.item import Category, Specification, SpecificationEvidence
 
 ValueKind = Literal["text", "integer", "decimal", "boolean"]
@@ -46,8 +46,8 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
         "smt": SpecDefinition(("smt",), "boolean"),
         "memory_type": SpecDefinition((), "text"),
         "memory_speed_mt_s": SpecDefinition((), "integer", "MT/s"),
-        "l2_cache_mb": SpecDefinition((), "integer", "MB"),
-        "l3_cache_mb": SpecDefinition((), "integer", "MB"),
+        "l2_cache_mb": SpecDefinition((), "decimal", "MB"),
+        "l3_cache_mb": SpecDefinition((), "decimal", "MB"),
     },
     Category.GPU: {
         "chipset": SpecDefinition(("chipset",), "text"),
@@ -144,6 +144,7 @@ def build_specifications(
         reported = (
             reported_colors().get(item_id) if item_id is not None and key == "color" else None
         )
+        reported_spec = reported_specs().get((item_id, key)) if item_id is not None else None
         if not evidence_map and fact is None:
             if reported is not None and reported.category is category:
                 specifications[key] = Specification(
@@ -151,6 +152,13 @@ def build_specifications(
                     unit=definition.unit,
                     status="reported",
                     evidence=[reported.as_evidence()],
+                )
+            elif reported_spec is not None and reported_spec.category is category:
+                specifications[key] = Specification(
+                    value=reported_spec.value,
+                    unit=definition.unit,
+                    status="reported",
+                    evidence=[reported_spec.as_evidence()],
                 )
             continue
         evidence = [evidence_map[index] for index in sorted(evidence_map, key=str)]

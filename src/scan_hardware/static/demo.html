@@ -17,7 +17,10 @@
     .muted { color: #526170; }
     .warning { color: #8a4b00; }
     .error { color: #a42323; }
-    img { max-width: 100%; max-height: 260px; object-fit: contain; }
+    .product-image { display: block; width: 100%; max-height: 420px; object-fit: contain; }
+    .image-views { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .image-views button { padding: 8px 12px; }
+    .image-views button[aria-pressed=true] { background: #173951; }
     dl { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr; gap: 8px; }
     dt { font-weight: 600; }
     dd { margin: 0; overflow-wrap: anywhere; }
@@ -48,7 +51,46 @@
       parent.appendChild(node);
       return node;
     }
-    function render(data) {
+    const viewLabels = { front: 'Frente', side: 'Lado', back: 'Verso', detail: 'Detalhe', other: 'Referência' };
+    async function renderImages(card, match) {
+      let images = [];
+      try {
+        const response = await fetch(`/items/${encodeURIComponent(match.id)}/images`);
+        if (response.ok) images = await response.json();
+      } catch (_) {
+        // Keep the scan result visible when the optional gallery is unavailable.
+      }
+      if (!images.length && match.image_url) images = [{ url: match.image_url, view: 'other', source: 'external' }];
+      if (!images.length) {
+        line(card, 'p', 'Imagem de referência ainda não cadastrada.', 'muted');
+        return;
+      }
+      const primary = images.find(image => image.is_primary) || images[0];
+      const photo = document.createElement('img');
+      photo.className = 'product-image';
+      photo.loading = 'lazy';
+      photo.onerror = () => { photo.remove(); line(card, 'p', 'Imagem de referência indisponível.', 'muted'); };
+      card.appendChild(photo);
+      const views = document.createElement('div');
+      views.className = 'image-views';
+      card.appendChild(views);
+      function selectImage(image) {
+        photo.src = image.url;
+        photo.alt = `${viewLabels[image.view] || 'Imagem'} de ${match.model}`;
+        for (const button of views.children) button.setAttribute('aria-pressed', String(button.dataset.url === image.url));
+      }
+      for (const image of images) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.url = image.url;
+        button.textContent = viewLabels[image.view] || 'Imagem';
+        button.addEventListener('click', () => selectImage(image));
+        views.appendChild(button);
+      }
+      selectImage(primary);
+      if (primary.source === 'external') line(card, 'p', 'Imagem externa de referência; enquadramento não revisado.', 'muted');
+    }
+    async function render(data) {
       results.replaceChildren();
       const title = data.status === 'matched' ? 'Modelo identificado' : data.status === 'suggestions' ? 'Possíveis modelos — confirme a revisão' : 'Nenhum modelo encontrado';
       line(results, 'h2', title);
@@ -58,17 +100,7 @@
         const modelName = match.model.toLowerCase().startsWith(`${match.brand.toLowerCase()} `) ? match.model : `${match.brand} ${match.model}`;
         line(card, 'h3', modelName);
         if (data.status === 'suggestions') line(card, 'p', 'Confirme o modelo antes de usar.', 'warning');
-        const imageUrl = match.image_url;
-        if (imageUrl) {
-          const img = document.createElement('img');
-          img.src = imageUrl;
-          img.alt = `Imagem de referência para ${match.model}`;
-          img.loading = 'lazy';
-          img.onerror = () => { img.remove(); line(card, 'p', 'Imagem de referência indisponível.', 'muted'); };
-          card.appendChild(img);
-        } else {
-          line(card, 'p', 'Imagem de referência ainda não cadastrada.', 'muted');
-        }
+        await renderImages(card, match);
         const specs = document.createElement('dl');
         card.appendChild(specs);
         for (const [key, value] of Object.entries(match)) {
@@ -89,7 +121,7 @@
         const response = await fetch(url, body);
         const data = await response.json();
         if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
-        render(data);
+        await render(data);
       } catch (error) {
         results.replaceChildren();
         line(results, 'p', `Falha: ${error.message}`, 'error');

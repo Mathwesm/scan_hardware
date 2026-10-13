@@ -75,6 +75,17 @@ class ImageAttribution(BaseModel):
     license_url: str
 
 
+class GalleryImage(BaseModel):
+    """One local product view or an unreviewed external reference."""
+
+    url: str
+    view: Literal["front", "side", "back", "detail", "other"]
+    is_primary: bool
+    source: Literal["local", "external"]
+    width: int | None = None
+    height: int | None = None
+
+
 class Item(ItemInput):
     """Catalog item with a stable external identifier and image endpoint."""
 
@@ -127,8 +138,8 @@ class HardwareSummary(BaseModel):
     max_memory_standard_mhz: int | None = None
     max_memory_oc_mhz: int | None = None
     memory_speed_mt_s: int | None = None
-    l2_cache_mb: int | None = None
-    l3_cache_mb: int | None = None
+    l2_cache_mb: float | None = None
+    l3_cache_mb: float | None = None
     color: str | None = None
     color_source: Literal["catalog", "photo_estimate", "reference_estimate"] | None = None
     base_clock_ghz: float | None = None

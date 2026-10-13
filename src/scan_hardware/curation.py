@@ -138,6 +138,63 @@ class ReportedColorManifest(BaseModel):
     colors: list[ReportedColor]
 
 
+class ReportedSpec(BaseModel):
+    """Source-reported specification joined by exact manufacturer part number."""
+
+    item_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    category: Category
+    model: str = Field(min_length=1)
+    field: str
+    value: str | int | float | bool
+    unit: str | None = None
+    source_id: str = Field(pattern=r"^[a-f0-9-]{36}$")
+
+    @model_validator(mode="after")
+    def validate_specification(self) -> ReportedSpec:
+        """Require a supported field, value type, and unit."""
+        from scan_hardware.core.specifications import SPEC_DEFINITIONS
+
+        definition = SPEC_DEFINITIONS[self.category].get(self.field)
+        if definition is None or definition.unit != self.unit:
+            raise ValueError("Reported specification field or unit is invalid")
+        if isinstance(self.value, bool):
+            valid = definition.kind == "boolean"
+        elif isinstance(self.value, str):
+            valid = definition.kind == "text" and bool(self.value.strip())
+        elif isinstance(self.value, int):
+            valid = definition.kind in {"integer", "decimal"} and self.value >= 0
+        else:
+            valid = definition.kind == "decimal" and self.value >= 0
+        if not valid:
+            raise ValueError("Reported specification value has the wrong type")
+        return self
+
+    def as_evidence(self) -> SpecificationEvidence:
+        """Link the value to the pinned OpenDB source record."""
+        folder = {
+            Category.CPU: "CPU",
+            Category.GPU: "GPU",
+            Category.MOTHERBOARD: "Motherboard",
+        }[self.category]
+        source_url = (
+            "https://github.com/buildcores/buildcores-open-db/blob/"
+            f"{BUILDCORES_REVISION}/open-db/{folder}/{self.source_id}.json"
+        )
+        return SpecificationEvidence(
+            dataset="BuildCores OpenDB",
+            field=self.field,
+            value=self.value,
+            source_url=source_url,
+        )
+
+
+class ReportedSpecManifest(BaseModel):
+    """Versioned noncommercial specification data from BuildCores OpenDB."""
+
+    revision: str = Field(pattern=r"^[a-f0-9]{40}$")
+    specs: list[ReportedSpec]
+
+
 class VerifiedBoardRevision(BaseModel):
     """Manufacturer-confirmed PCB revisions within one catalog model family."""
 
@@ -234,6 +291,24 @@ def reported_colors() -> dict[str, ReportedColor]:
             raise ValueError(f"Duplicate reported color: {entry.item_id}")
         colors[entry.item_id] = entry
     return colors
+
+
+@lru_cache(maxsize=1)
+def reported_specs() -> dict[tuple[str, str], ReportedSpec]:
+    """Load exact-part-number specifications from the pinned OpenDB revision."""
+    path = files("scan_hardware").joinpath("curation", "reported_specs.json")
+    if not path.is_file():
+        return {}
+    manifest = ReportedSpecManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    if manifest.revision != BUILDCORES_REVISION:
+        raise ValueError("Reported specification manifest uses an unexpected source revision")
+    specs: dict[tuple[str, str], ReportedSpec] = {}
+    for entry in manifest.specs:
+        key = (entry.item_id, entry.field)
+        if key in specs:
+            raise ValueError(f"Duplicate reported specification: {key}")
+        specs[key] = entry
+    return specs
 
 
 @lru_cache(maxsize=1)

@@ -2,49 +2,20 @@
 
 from __future__ import annotations
 
-import hashlib
-from io import BytesIO
-from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi import Path as ApiPath
 from fastapi.responses import FileResponse
-from PIL import Image
 
 from scan_hardware.config import Settings
-from scan_hardware.models.item import Item, ItemInput
+from scan_hardware.models.item import GalleryImage, Item, ItemInput
 from scan_hardware.services.catalog import Catalog, IdentifierConflictError
-from scan_hardware.services.ocr import InvalidImageError, validate_image
+from scan_hardware.services.image_store import ImageView, store_image
+from scan_hardware.services.ocr import InvalidImageError
 
 ItemId = Annotated[str, ApiPath(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
-
-
-def _image_extension(content: bytes) -> str:
-    """Choose a safe extension from validated image bytes."""
-    with Image.open(BytesIO(content)) as image:
-        image_format = image.format
-    if image_format is None:
-        raise InvalidImageError("Image format could not be detected")
-    return {"JPEG": "jpg", "PNG": "png", "WEBP": "webp"}[image_format]
-
-
-def _store_image(content: bytes, image_dir: Path, catalog: Catalog, item_id: str) -> Item:
-    """Write content-addressed image bytes and update the catalog pointer."""
-    digest = hashlib.sha256(content).hexdigest()
-    filename = f"{digest}.{_image_extension(content)}"
-    destination = image_dir / filename
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with destination.open("xb") as output:
-            output.write(content)
-    except FileExistsError:
-        pass  # Identical image bytes are already stored under their SHA-256 name.
-    catalog.set_image_digest(item_id, filename)
-    item = catalog.get_item(item_id)
-    if item is None:
-        raise RuntimeError("Stored item could not be read")
-    return item
+ImageName = Annotated[str, ApiPath(pattern=r"^[a-f0-9]{64}\.(jpg|png|webp)$")]
 
 
 def register_catalog_routes(app: FastAPI, catalog: Catalog, config: Settings) -> None:
@@ -87,10 +58,18 @@ def register_image_routes(app: FastAPI, catalog: Catalog, config: Settings) -> N
         content = await image.read(config.max_upload_bytes + 1)
         await image.close()
         try:
-            validate_image(content, config.max_upload_bytes)
+            return store_image(
+                content,
+                config.image_dir,
+                catalog,
+                item_id,
+                "front",
+                True,
+                config.max_upload_bytes,
+                enforce_primary_quality=False,
+            )
         except InvalidImageError as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
-        return _store_image(content, config.image_dir, catalog, item_id)
 
     @app.get("/items/{item_id}/image", response_class=FileResponse)
     def get_image(item_id: ItemId) -> FileResponse:
@@ -99,6 +78,83 @@ def register_image_routes(app: FastAPI, catalog: Catalog, config: Settings) -> N
         if digest is None:
             raise HTTPException(status_code=404, detail="Image not found")
         path = config.image_dir / digest
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="Image file not found")
+        return FileResponse(path)
+
+    register_gallery_routes(app, catalog, config)
+
+
+def register_gallery_routes(app: FastAPI, catalog: Catalog, config: Settings) -> None:
+    """Attach endpoints for multiple local views of the same product."""
+
+    @app.put("/items/{item_id}/images/{view}", response_model=Item)
+    async def put_gallery_image(
+        item_id: ItemId,
+        view: ImageView,
+        image: Annotated[UploadFile, File()],
+        primary: Annotated[bool | None, Query()] = None,
+    ) -> Item:
+        """Attach a product view; a front view becomes primary by default."""
+        if catalog.get_item(item_id) is None:
+            raise HTTPException(status_code=404, detail="Item not found")
+        content = await image.read(config.max_upload_bytes + 1)
+        await image.close()
+        try:
+            return store_image(
+                content,
+                config.image_dir,
+                catalog,
+                item_id,
+                view,
+                view == "front" if primary is None else primary,
+                config.max_upload_bytes,
+            )
+        except InvalidImageError as error:
+            raise HTTPException(status_code=422, detail=str(error)) from error
+
+    @app.get("/items/{item_id}/images", response_model=list[GalleryImage])
+    def get_gallery(item_id: ItemId) -> list[GalleryImage]:
+        """List local product angles, or the current external reference."""
+        item = catalog.get_item(item_id)
+        if item is None:
+            raise HTTPException(status_code=404, detail="Item not found")
+        images = [
+            GalleryImage(
+                url=f"/items/{item_id}/images/{entry['file_name']}",
+                view=entry["view"],
+                is_primary=bool(entry["is_primary"]),
+                source="local",
+                width=entry["width"],
+                height=entry["height"],
+            )
+            for entry in catalog.list_images(item_id)
+        ]
+        if item.image_url and not any(image.is_primary for image in images):
+            images.insert(
+                0,
+                GalleryImage(
+                    url=str(item.image_url), view="other", is_primary=True, source="external"
+                ),
+            )
+        return images
+
+    register_gallery_download_route(app, catalog, config)
+
+
+def register_gallery_download_route(app: FastAPI, catalog: Catalog, config: Settings) -> None:
+    """Expose immutable local gallery bytes with item ownership checks."""
+
+    @app.get("/items/{item_id}/images/{file_name}", response_class=FileResponse)
+    def get_gallery_image(item_id: ItemId, file_name: ImageName) -> FileResponse:
+        """Serve one image only when it belongs to the requested product."""
+        try:
+            belongs_to_item = catalog.has_image(item_id, file_name)
+        except KeyError:
+            belongs_to_item = False
+        if not belongs_to_item:
+            raise HTTPException(status_code=404, detail="Image not found")
+        path = config.image_dir / file_name
         if not path.is_file():
             raise HTTPException(status_code=404, detail="Image file not found")
         return FileResponse(path)

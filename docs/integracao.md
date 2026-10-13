@@ -72,14 +72,23 @@ segredos da implantação.
 | `GET /specs/{id}` | ID recebido na resposta | Detalhes e especificações do produto. |
 | `GET /items/{id}/sources` | ID recebido na resposta | Linhas originais das fontes, com todas as colunas importadas. |
 | `GET /items/{id}/image` | ID com imagem local | Arquivo da imagem de referência. |
+| `GET /items/{id}/images` | ID recebido na resposta | Galeria com frente, lado, verso e detalhes disponíveis. |
+| `GET /items/{id}/images/{arquivo}` | `url` retornada pela galeria | Arquivo de uma foto local. |
 | `PUT /items/{id}` | JSON do produto | Cria ou substitui um item do catálogo. |
 | `PUT /items/{id}/image` | `multipart/form-data`, campo `image` | Associa uma imagem local a um item existente. |
+| `PUT /items/{id}/images/{view}` | `multipart/form-data`, campo `image` | Adiciona uma foto local; `view` aceita `front`, `side`, `back`, `detail`, `other`. |
 
 `/scan` e `/lookup` devolvem o mesmo formato. Em produção, as rotas `PUT` devem ser
 usadas apenas por processos administrativos autorizados. Os IDs em `/{id}` aceitam
 letras, dígitos, `_` e `-`, de 1 a 64 caracteres. O upload aceita JPEG, PNG ou WebP,
 com até **8.000.000 bytes** por padrão e **20 megapixels**. O limite de bytes pode ser
 alterado por `MAX_UPLOAD_BYTES`.
+
+Para várias fotos da mesma peça, o aplicativo pode buscar
+`GET /items/{id}/images` e mostrar a entrada `is_primary=true` primeiro.
+As demais podem ser apresentadas como miniaturas. `source=external` identifica
+uma URL de referência anterior, sem revisão de enquadramento local. Consulte o
+[guia de imagens locais](imagens_locais.md) para o manifesto usado pelo Docker.
 
 Exemplos, com a autenticação desligada no teste local:
 

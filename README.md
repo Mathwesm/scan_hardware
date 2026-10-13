@@ -89,6 +89,19 @@ grava manifesto e relatório versionados em `data/processed/images/` e só entã
 atualiza o arquivo empacotado se passar no portão de cobertura. Veja os
 [critérios e limites da coleta](docs/image_enrichment.md).
 
+Também há uma [galeria local por peça](docs/imagens_locais.md), com frente, lado,
+verso e detalhe. O Docker Compose guarda catálogo e fotos no volume persistente
+`scanner_data`; no início, importa as fotos declaradas em
+`data/import/images/manifest.json` e registra o progresso. A galeria é consultada
+por `GET /items/{id}/images`. Fotos externas anteriores continuam como referência
+quando não há uma foto principal local revisada.
+
+As [especificações complementares](docs/especificacoes_complementares.md) usam
+associação exata de fabricante e part number com uma revisão fixa do BuildCores
+OpenDB. Isso acrescentou 7.025 valores sem substituir fatos já presentes no
+catálogo. A cobertura dos campos principais ainda varia bastante por categoria;
+campos sem fonte permanecem vazios.
+
 Cinco itens têm fotos do Wikimedia Commons com autoria e licença revisadas em
 `image_attribution`. A GA-Z77X-UD5H usa uma imagem oficial do fabricante. As outras
 URLs são referências externas; uma URL pode deixar de funcionar ou mostrar a

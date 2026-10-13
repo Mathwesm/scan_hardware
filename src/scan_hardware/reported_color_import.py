@@ -92,12 +92,13 @@ class SourceProduct(BaseModel):
 
 def _source_products(
     source_root: Path,
+    folders: dict[Category, str] | None = None,
 ) -> tuple[dict[str, SourceProduct], dict[tuple[Category, str], set[str]], Counter[str]]:
     """Read local OpenDB records and index only exact manufacturer part numbers."""
     products: dict[str, SourceProduct] = {}
     index: dict[tuple[Category, str], set[str]] = defaultdict(set)
     counts: Counter[str] = Counter()
-    for category, folder in SOURCE_FOLDERS.items():
+    for category, folder in (SOURCE_FOLDERS if folders is None else folders).items():
         paths = (source_root / "open-db" / folder).glob("*.json")
         for path in paths:
             try:
