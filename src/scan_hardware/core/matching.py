@@ -13,6 +13,11 @@ from scan_hardware.models.item import Category, Item, Match, ScanResult
 _WORD_PATTERN = re.compile(r"[A-Z0-9]+")
 _B550_OCR_PATTERN = re.compile(r"B[S5]{2}[O0]")
 _B550_SEARCH_PATTERN = re.compile(r"B[S5]{2}[O0]{1,2}")
+_CPU_CORE_PATTERN = re.compile(r"\b(I[3579])[-\s]*(\d{4,5}[A-Z]{0,3})\b")
+_CPU_RYZEN_PATTERN = re.compile(r"\bRYZEN\s+[3579]\s+(\d{4,5}[A-Z0-9]{0,3})\b")
+_GPU_FAMILY_PATTERN = re.compile(
+    r"\b(?:RTX|GTX)\s*-?\s*\d{3,4}(?:\s*(?:TI|SUPER))?\b" r"|\bRX\s*-?\s*\d{4}(?:\s*XT)?\b"
+)
 _BOARD_FAMILY_WORDS = ("PRIME", "TUF", "GAMING")
 _MIN_FUZZY_SCORE = 0.80
 _MIN_SEARCH_SIMILARITY = 0.75
@@ -47,6 +52,13 @@ def _identifier_aliases(item: Item, identifier: str) -> set[str]:
     brand = normalize_identifier(item.brand)
     if normalized.startswith(brand) and len(normalized) - len(brand) >= MIN_IDENTIFIER_LENGTH:
         aliases.add(normalized[len(brand) :])
+    if item.category is Category.CPU:
+        core = _CPU_CORE_PATTERN.search(identifier.upper())
+        ryzen = _CPU_RYZEN_PATTERN.search(identifier.upper())
+        if core is not None and normalized.endswith(normalize_identifier(core.group())):
+            aliases.add(normalize_identifier(core.group()))
+        if ryzen is not None and normalized.endswith(normalize_identifier(ryzen.group(1))):
+            aliases.add(normalize_identifier(ryzen.group(1)))
     return aliases
 
 
@@ -175,6 +187,10 @@ def _fuzzy_aliases(item: Item, identifier: str) -> set[str]:
             position = alias.find("B550")
             if position > 0 and len(alias) - position >= _MIN_FUZZY_FRAGMENT_LENGTH:
                 aliases.add(alias[position:])
+    if item.category is Category.CPU:
+        core = _CPU_CORE_PATTERN.search(identifier.upper())
+        if core is not None:
+            aliases.add(normalize_identifier(core.group(2)))
     return aliases
 
 
@@ -275,14 +291,28 @@ def _search_score(query: str, alias: str) -> float:
     return similarity * 0.85 if similarity >= _MIN_SEARCH_SIMILARITY else 0.0
 
 
-def _rank_search_item(query: str, item: Item, corrected_b550: bool) -> Match | None:
+def _gpu_family(item: Item) -> str | None:
+    """Extract the graphics chipset family from a catalog model."""
+    match = _GPU_FAMILY_PATTERN.search(item.model.upper())
+    return normalize_identifier(match.group()) if match is not None else None
+
+
+def _rank_search_item(
+    query: str, item: Item, corrected_b550: bool, gpu_family: str | None
+) -> Match | None:
     """Choose the strongest alias for one hardware item."""
     best: Match | None = None
     for identifier in item.identifiers:
-        for alias in _fuzzy_aliases(item, identifier):
+        aliases = _fuzzy_aliases(item, identifier)
+        if gpu_family is not None:
+            aliases.add(gpu_family)
+        exact_aliases = _identifier_aliases(item, identifier)
+        for alias in aliases:
             if corrected_b550 and "B550" not in alias:
                 continue
             score = _search_score(query, alias)
+            if alias not in exact_aliases and alias == query:
+                score = min(score, 0.95)
             if corrected_b550:
                 score = min(score, 0.93)
             if score < _MIN_SEARCH_SCORE or (best is not None and score <= best.score):
@@ -315,14 +345,18 @@ def search_items(query: str, items: list[Item]) -> ScanResult:
         return ScanResult(status="matched", detected_text=[query], matches=exact)
     corrected_b550 = bool(_B550_SEARCH_PATTERN.fullmatch(normalized))
     target = "B550" if corrected_b550 else normalized
-    gpu_only = bool(re.match(r"(?:GEFORCE|RADEON|GTX|RTX)", target))
+    gpu_only = bool(re.match(r"(?:GEFORCE|RADEON|GTX|RTX|RX)", target))
+    gpu_family_query = bool(_GPU_FAMILY_PATTERN.fullmatch(target))
     ranked: list[Match] = []
     for item in items:
         if corrected_b550 and item.category is not Category.MOTHERBOARD:
             continue
         if gpu_only and item.category is not Category.GPU:
             continue
-        candidate = _rank_search_item(target, item, corrected_b550)
+        family = _gpu_family(item) if gpu_family_query else None
+        if gpu_family_query and (family is None or not family.startswith(target)):
+            continue
+        candidate = _rank_search_item(target, item, corrected_b550, family)
         if candidate is not None:
             ranked.append(candidate)
     matches = sorted(

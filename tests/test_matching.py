@@ -386,3 +386,70 @@ def test_full_code_search_keeps_exact_model_ahead_of_related_models() -> None:
 
     assert result.status == "matched"
     assert [match.item.id for match in result.matches] == ["board-z77x"]
+
+
+def test_cpu_family_prefix_is_removed_for_exact_i7_model_code() -> None:
+    cpu = Item(
+        id="cpu-8700k",
+        category=Category.CPU,
+        brand="Intel",
+        model="Intel Core i7-8700K",
+        identifiers=["Intel Core i7-8700K"],
+    )
+
+    result = search_items("i7-8700K", [cpu])
+
+    assert result.status == "matched"
+    assert result.matches[0].item.id == "cpu-8700k"
+
+
+def test_ryzen_5600x_exact_code_does_not_mix_with_radeon_5600_xt() -> None:
+    cpu = Item(
+        id="cpu-5600x",
+        category=Category.CPU,
+        brand="AMD",
+        model="AMD Ryzen 5 5600X",
+        identifiers=["AMD Ryzen 5 5600X"],
+    )
+    gpu = Item(
+        id="gpu-5600xt",
+        category=Category.GPU,
+        brand="ASRock",
+        model="ASRock Radeon RX 5600 XT",
+        identifiers=["RX5600XT CLD 6GO"],
+    )
+
+    result = search_items("5600X", [gpu, cpu])
+
+    assert result.status == "matched"
+    assert [match.item.id for match in result.matches] == ["cpu-5600x"]
+
+
+def test_plain_rtx_3060_ranks_above_3060_ti_for_partial_chipset_code() -> None:
+    plain = Item(
+        id="gpu-3060",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GeForce RTX 3060 12GB",
+        identifiers=["MSI GeForce RTX 3060 GAMING 12G"],
+    )
+    ti = Item(
+        id="gpu-3060ti",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GeForce RTX 3060 Ti 8GB",
+        identifiers=["MSI GeForce RTX 3060 Ti GAMING X"],
+    )
+    unrelated = Item(
+        id="gpu-3070",
+        category=Category.GPU,
+        brand="MSI",
+        model="MSI GeForce RTX 3070 8GB",
+        identifiers=["MSI GeForce RTX 3070 GAMING X"],
+    )
+
+    result = search_items("RTX3060", [unrelated, ti, plain])
+
+    assert result.status == "suggestions"
+    assert [match.item.id for match in result.matches] == ["gpu-3060", "gpu-3060ti"]
+    assert result.matches[0].score > result.matches[1].score
