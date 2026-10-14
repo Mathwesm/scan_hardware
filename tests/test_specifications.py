@@ -83,6 +83,44 @@ def test_gpu_and_motherboard_fields_keep_category_specific_meaning() -> None:
     assert board["memory_slots"].value == 4
 
 
+def test_board_form_factor_uses_explicit_descriptor_instead_of_coarse_size() -> None:
+    """A generic ATX size must not obscure a documented Micro ATX board."""
+    rows = [
+        {
+            "dataset": "warcoder/pc-parts",
+            "data": {"name": "Asus PRIME B450M-A", "form_factor": "Micro ATX"},
+        },
+        {
+            "dataset": "rohitmit98/pc-parts-by-type",
+            "data": {
+                "name": "Asus PRIME B450M-A Micro ATX AM4 Motherboard (PRIME B450M-A)",
+                "size": "ATX",
+            },
+        },
+    ]
+
+    result = build_specifications(Category.MOTHERBOARD, rows)
+
+    assert result["form_factor"].value == "Micro ATX"
+    assert result["form_factor"].status == "reported"
+    assert {entry.field for entry in result["form_factor"].evidence} == {
+        "form_factor",
+        "name",
+    }
+
+
+def test_board_form_factor_can_use_unambiguous_name_without_structured_field() -> None:
+    """An explicit Mini ITX name fills a gap without guessing from the model code."""
+    rows = [
+        {
+            "dataset": "rohitmit98/pc-parts-by-type",
+            "data": {"name": "Example Mini ITX AM4 Motherboard (X1)", "size": "ITX"},
+        }
+    ]
+
+    assert build_specifications(Category.MOTHERBOARD, rows)["form_factor"].value == "Mini ITX"
+
+
 def test_color_order_does_not_create_false_conflict() -> None:
     rows = [
         {"dataset": "source-a", "data": {"color": "Black / Silver"}},

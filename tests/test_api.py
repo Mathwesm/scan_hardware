@@ -471,7 +471,7 @@ def test_scan_exposes_cpu_specs_and_source_conflict(tmp_path: Path) -> None:
                 "model": "Gigabyte GA-Z170X-UD5 TH",
                 "identifiers": ["GA-Z170X-UD5 TH"],
             },
-            {"socket": "LGA1151", "size": "ATX", "max_memory": 64, "memory_slots": 4},
+            {"socket": "LGA1151", "form_factor": "ATX", "max_memory": 64, "memory_slots": 4},
             {"socket": "LGA1151", "form_factor": "ATX", "max_memory_gb": 64, "memory_slots": 4},
         ),
         (

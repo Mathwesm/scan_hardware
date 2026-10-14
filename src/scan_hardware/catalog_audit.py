@@ -13,7 +13,7 @@ from typing import Any
 from loguru import logger
 
 from scan_hardware.config import settings
-from scan_hardware.core.specifications import build_specifications
+from scan_hardware.core.specifications import SPEC_DEFINITIONS, build_specifications
 from scan_hardware.curation import verified_images
 from scan_hardware.image_enrichment import image_for_item
 from scan_hardware.models.item import Category
@@ -70,9 +70,22 @@ def audit_catalog(catalog_path: Path) -> dict[str, Any]:
                 conflicts[category_name][field] += 1
             if spec.status == "verified":
                 verified[category_name][field] += 1
+    field_summary = {
+        category_name: {
+            field: {
+                "total": total,
+                "usable": coverage[category_name][field] - conflicts[category_name][field],
+                "missing": total - coverage[category_name][field],
+                "conflict": conflicts[category_name][field],
+            }
+            for field in SPEC_DEFINITIONS[Category(category_name)]
+        }
+        for category_name, total in items_by_category.items()
+    }
     return {
         "items": dict(items_by_category),
         "coverage": {key: dict(value) for key, value in coverage.items()},
+        "field_summary": field_summary,
         "conflicts": {key: dict(value) for key, value in conflicts.items()},
         "verified": {key: dict(value) for key, value in verified.items()},
         "images": dict(image_counts),

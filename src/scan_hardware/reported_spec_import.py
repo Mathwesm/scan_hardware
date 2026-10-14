@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -16,8 +17,12 @@ from scan_hardware.config import settings
 from scan_hardware.core.matching import normalize_identifier
 from scan_hardware.core.specifications import SPEC_DEFINITIONS
 from scan_hardware.curation import BUILDCORES_REVISION, ReportedSpec, ReportedSpecManifest
-from scan_hardware.models.item import Category
-from scan_hardware.reported_color_import import _source_products, _verify_source_revision
+from scan_hardware.models.item import Category, Item
+from scan_hardware.reported_color_import import (
+    SourceProduct,
+    _source_products,
+    _verify_source_revision,
+)
 from scan_hardware.services.catalog import Catalog
 
 SOURCE_FOLDERS = {
@@ -45,6 +50,7 @@ def write_package_manifest(manifest: ReportedSpecManifest, path: Path) -> None:
 class CpuCores(BaseModel):
     """Thread count from one OpenDB CPU."""
 
+    total: int | None = Field(default=None, ge=0)
     threads: int | None = Field(default=None, ge=0)
 
 
@@ -166,6 +172,56 @@ def _values(category: Category, payload: dict[str, Any]) -> dict[str, str | int 
     return {key: value for key, value in values.items() if value is not None}
 
 
+def _cpu_name_index(
+    source_root: Path, products: dict[str, SourceProduct]
+) -> dict[tuple[str, str], set[str]]:
+    """Index unique CPU model names separately from manufacturer part numbers."""
+    source_ids = {path.stem for path in (source_root / "open-db" / "CPU").glob("*.json")}
+    names: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for source_id in source_ids & products.keys():
+        metadata = products[source_id].metadata
+        key = (normalize_identifier(metadata.manufacturer), normalize_identifier(metadata.name))
+        if key[1]:
+            names[key].add(source_id)
+    return names
+
+
+def _source_candidates(
+    item: Item,
+    index: dict[tuple[Category, str], set[str]],
+    products: dict[str, SourceProduct],
+    cpu_names: dict[tuple[str, str], set[str]],
+    catalog_cpu_names: Counter[tuple[str, str]],
+) -> tuple[set[str], bool]:
+    """Prefer exact part numbers; allow an independently checked unique CPU name."""
+    candidates = {
+        source_id
+        for identifier in item.identifiers
+        for source_id in index.get((item.category, normalize_identifier(identifier)), set())
+        if normalize_identifier(products[source_id].metadata.manufacturer)
+        == normalize_identifier(item.brand)
+    }
+    if candidates or item.category is not Category.CPU:
+        return candidates, False
+    name_key = (normalize_identifier(item.brand), normalize_identifier(item.model))
+    if catalog_cpu_names[name_key] != 1:
+        return set(), False
+    matches = cpu_names.get(name_key, set())
+    return matches, bool(matches)
+
+
+def _cpu_cores_agree(payload: dict[str, Any], detail: Item) -> bool:
+    """Reject a same-name record when independent core counts disagree."""
+    source_cores = CpuProduct.model_validate(payload).cores.total
+    catalog_cores = detail.specifications.get("cores")
+    return (
+        source_cores is not None
+        and source_cores > 0
+        and catalog_cores is not None
+        and catalog_cores.value == source_cores
+    )
+
+
 def build_reported_specs(
     source_root: Path, catalog_path: Path
 ) -> tuple[ReportedSpecManifest, dict[str, int]]:
@@ -173,6 +229,12 @@ def build_reported_specs(
     products, index, counts = _source_products(source_root, SOURCE_FOLDERS)
     catalog = Catalog(catalog_path)
     items = catalog.list_items()
+    catalog_cpu_names = Counter(
+        (normalize_identifier(item.brand), normalize_identifier(item.model))
+        for item in items
+        if item.category is Category.CPU
+    )
+    cpu_names = _cpu_name_index(source_root, products)
     selected: list[ReportedSpec] = []
     for position, item in enumerate(items, start=1):
         if position % 500 == 0 or position == len(items):
@@ -184,13 +246,9 @@ def build_reported_specs(
                 position,
                 len(items),
             )
-        candidates = {
-            source_id
-            for identifier in item.identifiers
-            for source_id in index.get((item.category, normalize_identifier(identifier)), set())
-            if normalize_identifier(products[source_id].metadata.manufacturer)
-            == normalize_identifier(item.brand)
-        }
+        candidates, matched_by_name = _source_candidates(
+            item, index, products, cpu_names, catalog_cpu_names
+        )
         if len(candidates) != 1:
             counts["ambiguous" if candidates else "no_exact_part_number"] += 1
             continue
@@ -205,6 +263,11 @@ def build_reported_specs(
         detail = catalog.get_item(item.id)
         if detail is None:
             raise RuntimeError(f"Catalog item disappeared during import: {item.id}")
+        if matched_by_name:
+            if not _cpu_cores_agree(payload, detail):
+                counts["cpu_name_core_mismatch"] += 1
+                continue
+            counts["matched_cpu_name_and_cores"] += 1
         for field, value in values.items():
             existing = detail.specifications.get(field)
             is_previous_import = (
