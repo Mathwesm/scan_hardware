@@ -73,6 +73,23 @@ def test_catalog_audit_counts_verified_and_unreviewed_images(tmp_path: Path) -> 
     assert report["images"] == {"reviewed": 1, "unreviewed_url": 2}
 
 
+def test_catalog_audit_separates_usable_missing_and_conflicting_specs(tmp_path: Path) -> None:
+    """A conflict returned as null by the API is not counted as usable coverage."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    for item_id in ("cpu-one", "cpu-two", "cpu-three"):
+        catalog.put_item(
+            item_id,
+            ItemInput(category=Category.CPU, brand="Demo", model=item_id, identifiers=[item_id]),
+        )
+    catalog.put_source_record("source-a", "cpu.json", 1, {"core_count": 4}, "cpu-one")
+    catalog.put_source_record("source-b", "cpu.json", 2, {"core_count": 6}, "cpu-one")
+    catalog.put_source_record("source-a", "cpu.json", 3, {"core_count": 8}, "cpu-two")
+
+    result = audit_catalog(catalog.path)["field_summary"]["cpu"]["cores"]
+
+    assert result == {"total": 3, "usable": 1, "missing": 1, "conflict": 1}
+
+
 def test_exact_psu_has_a_credited_reference_image(tmp_path: Path) -> None:
     """Keep the photographed PSU from appearing without an image after import."""
     catalog = Catalog(tmp_path / "catalog.sqlite3")

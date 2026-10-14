@@ -85,7 +85,7 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
     },
     Category.MOTHERBOARD: {
         "socket": SpecDefinition(("socket",), "text"),
-        "form_factor": SpecDefinition(("size", "form_factor"), "text"),
+        "form_factor": SpecDefinition(("form_factor", "name"), "text"),
         "max_memory_gb": SpecDefinition(("max_memory",), "integer", "GB"),
         "memory_slots": SpecDefinition(("memory_slots",), "integer"),
         "memory_type": SpecDefinition((), "text"),
@@ -105,6 +105,10 @@ _PSU_EFFICIENCY = re.compile(
 )
 _PSU_MODULARITY = re.compile(r"\b(Fully Modular|Semi[- ]Modular|Non[- ]Modular)\b", re.IGNORECASE)
 _STORAGE_CAPACITY = re.compile(r"\b(\d+(?:\.\d+)?)\s*(TB|GB)\b", re.IGNORECASE)
+_BOARD_FORM_FACTOR = re.compile(
+    r"\b(Thin Mini ITX|Mini DTX|Micro ATX|MicroATX|Mini ITX|Mini-ITX|" r"EATX|E-ATX|XL ATX|ATX)\b",
+    re.IGNORECASE,
+)
 
 
 def _parse_psu_name_value(raw: Any, key: str) -> str | None:
@@ -129,6 +133,27 @@ def _parse_storage_capacity(raw: Any) -> int | None:
         return None
     amount = float(match.group(1)) * (1000 if match.group(2).upper() == "TB" else 1)
     return int(amount) if amount.is_integer() else None
+
+
+def _parse_board_form_factor(raw: Any) -> str | None:
+    """Use only a form factor explicitly printed in a motherboard product name."""
+    if not isinstance(raw, str) or "motherboard" not in raw.casefold():
+        return None
+    match = _BOARD_FORM_FACTOR.search(raw)
+    if match is None:
+        return None
+    normalized = match.group(1).upper().replace("-", " ")
+    return {
+        "MICROATX": "Micro ATX",
+        "MICRO ATX": "Micro ATX",
+        "MINI ITX": "Mini ITX",
+        "THIN MINI ITX": "Thin Mini ITX",
+        "MINI DTX": "Mini DTX",
+        "EATX": "EATX",
+        "E ATX": "EATX",
+        "XL ATX": "XL ATX",
+        "ATX": "ATX",
+    }[normalized]
 
 
 def _parse_ram_name_value(raw: Any, key: str) -> int | None:
@@ -203,7 +228,9 @@ def build_specifications(
         for source in sources:
             for field in definition.fields:
                 value = (
-                    _parse_ram_name_value(source.data.get(field), key)
+                    _parse_board_form_factor(source.data.get(field))
+                    if category is Category.MOTHERBOARD and key == "form_factor" and field == "name"
+                    else _parse_ram_name_value(source.data.get(field), key)
                     if category is Category.RAM and field == "name"
                     else (
                         _parse_psu_name_value(source.data.get(field), key)
