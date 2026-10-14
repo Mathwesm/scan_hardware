@@ -44,6 +44,13 @@ os ZIPs Kaggle e a pasta `data/import/images/`; faça backup do volume Docker
 depois da importação. Se o manifesto não estiver presente, o serviço continua
 com as URLs externas já cadastradas.
 
+Para a fonte `MPE-6501-AFAAG`, a foto principal verificada mostra a
+[etiqueta com o modelo](https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg);
+a [vista lateral](https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_side_view.jpg)
+é secundária. Ambas foram cadastradas no manifesto local da máquina de teste.
+O catálogo versionado também aponta para a foto principal caso essas cópias
+locais ainda não tenham sido importadas no servidor.
+
 ## Enviar fotos pela API
 
 ```bash

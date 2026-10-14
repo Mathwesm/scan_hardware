@@ -73,6 +73,29 @@ def test_catalog_audit_counts_verified_and_unreviewed_images(tmp_path: Path) -> 
     assert report["images"] == {"reviewed": 1, "unreviewed_url": 2}
 
 
+def test_exact_psu_has_a_credited_reference_image(tmp_path: Path) -> None:
+    """Keep the photographed PSU from appearing without an image after import."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    item_id = "psu-fbb922946103cbae772d2c0b"
+    catalog.put_item(
+        item_id,
+        ItemInput(
+            category=Category.PSU,
+            brand="Cooler Master",
+            model="MWE Gold 650 V2",
+            identifiers=["MPE-6501-AFAAG"],
+        ),
+    )
+
+    item = catalog.get_item(item_id)
+
+    assert item is not None
+    assert item.image_url is not None
+    assert "MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg" in str(item.image_url)
+    assert item.image_attribution is not None
+    assert item.image_attribution.license_name == "CC BY-SA 4.0"
+
+
 def test_supplemental_boards_match_printed_codes_without_nearby_model_confusion(
     tmp_path: Path,
 ) -> None:
