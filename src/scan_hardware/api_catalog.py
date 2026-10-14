@@ -7,15 +7,37 @@ from typing import Annotated, Any
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi import Path as ApiPath
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
 from scan_hardware.config import Settings
-from scan_hardware.models.item import GalleryImage, Item, ItemInput
+from scan_hardware.models.item import Category, GalleryImage, Item, ItemInput
 from scan_hardware.services.catalog import Catalog, IdentifierConflictError
 from scan_hardware.services.image_store import ImageView, store_image
 from scan_hardware.services.ocr import InvalidImageError
 
 ItemId = Annotated[str, ApiPath(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
 ImageName = Annotated[str, ApiPath(pattern=r"^[a-f0-9]{64}\.(jpg|png|webp)$")]
+
+
+class SocketRelatedItem(BaseModel):
+    """Compact hardware candidate sharing a reported socket."""
+
+    id: str
+    category: Category
+    brand: str
+    model: str
+    image_url: str | None
+    socket: str
+
+
+class SocketRelatedResponse(BaseModel):
+    """Paginated socket association, without a compatibility guarantee."""
+
+    socket: str | None
+    relation: str = "same_socket"
+    total: int
+    matches: list[SocketRelatedItem]
+    note: str = "Same socket does not confirm chipset, BIOS, or generation support."
 
 
 def register_catalog_routes(app: FastAPI, catalog: Catalog, config: Settings) -> None:
@@ -44,7 +66,47 @@ def register_catalog_routes(app: FastAPI, catalog: Catalog, config: Settings) ->
             raise HTTPException(status_code=404, detail="Item not found")
         return catalog.get_source_records(item_id)
 
+    register_socket_routes(app, catalog)
     register_image_routes(app, catalog, config)
+
+
+def register_socket_routes(app: FastAPI, catalog: Catalog) -> None:
+    """Attach the bidirectional CPU and motherboard socket association."""
+
+    @app.get("/specs/{item_id}/socket-related", response_model=SocketRelatedResponse)
+    def get_socket_related(
+        item_id: ItemId,
+        limit: Annotated[int, Query(ge=1, le=100)] = 20,
+        offset: Annotated[int, Query(ge=0)] = 0,
+    ) -> SocketRelatedResponse:
+        """List CPUs or motherboards sharing the item's reported socket."""
+        item = catalog.get_item(item_id)
+        if item is None:
+            raise HTTPException(status_code=404, detail="Item not found")
+        if item.category not in {Category.CPU, Category.MOTHERBOARD}:
+            raise HTTPException(status_code=422, detail="Item has no CPU socket relationship")
+        specification = item.specifications.get("socket")
+        socket = specification.value if specification is not None else None
+        if not isinstance(socket, str):
+            return SocketRelatedResponse(socket=None, total=0, matches=[])
+        target = Category.CPU if item.category is Category.MOTHERBOARD else Category.MOTHERBOARD
+        total, matches = catalog.list_socket_related(socket, target, limit=limit, offset=offset)
+        return SocketRelatedResponse(
+            socket=socket,
+            total=total,
+            matches=[
+                SocketRelatedItem(
+                    id=candidate.id,
+                    category=candidate.category,
+                    brand=candidate.brand,
+                    model=candidate.model,
+                    image_url=candidate.local_image_url
+                    or (str(candidate.image_url) if candidate.image_url else None),
+                    socket=socket,
+                )
+                for candidate in matches
+            ],
+        )
 
 
 def register_image_routes(app: FastAPI, catalog: Catalog, config: Settings) -> None:

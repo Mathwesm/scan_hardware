@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from datetime import UTC, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
@@ -350,6 +351,57 @@ class Catalog:
             )
             for row in rows
         ]
+
+    def list_socket_related(
+        self, socket: str, category: Category, *, limit: int = 20, offset: int = 0
+    ) -> tuple[int, list[Item]]:
+        """Find catalog records with the same unambiguous reported socket.
+
+        Args:
+            socket: Normalized socket of the source hardware.
+            category: Opposite hardware category to search.
+            limit: Maximum number of records returned.
+            offset: Position in the stable, alphabetic result order.
+
+        Returns:
+            Total matches and the requested page of complete catalog items.
+        """
+        if category not in {Category.CPU, Category.MOTHERBOARD}:
+            raise ValueError("Socket relationships require a CPU or motherboard category")
+        with self._connect() as connection:
+            rows = connection.execute(
+                "SELECT id, brand, model FROM items WHERE category = ? ORDER BY brand, model, id",
+                (category.value,),
+            ).fetchall()
+            source_rows = connection.execute(
+                """SELECT source_records.item_id, dataset, file_name, row_number, payload_json
+                FROM source_records JOIN items ON items.id = source_records.item_id
+                WHERE items.category = ? ORDER BY dataset, file_name, row_number""",
+                (category.value,),
+            ).fetchall()
+        sources: dict[str, list[dict[str, Any]]] = {}
+        for row in source_rows:
+            sources.setdefault(row["item_id"], []).append(
+                {"dataset": row["dataset"], "data": json.loads(row["payload_json"])}
+            )
+        matching_ids: list[str] = []
+        for row in rows:
+            specification = build_specifications(
+                category, sources.get(row["id"], []), row["id"]
+            ).get("socket")
+            if (
+                specification is not None
+                and isinstance(specification.value, str)
+                and re.sub(r"\s+", "", specification.value).upper()
+                == re.sub(r"\s+", "", socket).upper()
+            ):
+                matching_ids.append(row["id"])
+        page: list[Item] = []
+        for item_id in matching_ids[offset : offset + limit]:
+            item = self.get_item(item_id)
+            if item is not None:
+                page.append(item)
+        return len(matching_ids), page
 
     def put_source_record(
         self,
