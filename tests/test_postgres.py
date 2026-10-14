@@ -75,12 +75,45 @@ def test_migration_preserves_records_and_supports_runtime_queries(tmp_path: Path
     assert client.get(f"/specs/{item.id}").json()["id"] == item.id
     assert client.post("/lookup", json={"text": "B550-F"}).json()["matches"][0]["id"] == item.id
 
+    source.put_item(
+        "ram-test-1",
+        ItemInput(
+            category=Category.RAM,
+            brand="Demo",
+            model="Demo 16 GB (2 x 8 GB) DDR4-3200 CL16 Memory",
+            identifiers=["RAM-KIT-16"],
+        ),
+    )
+    source.put_source_record(
+        "test",
+        "Memory.csv",
+        1,
+        {"name": "Demo 16 GB (2 x 8 GB) DDR4-3200 CL16 Memory", "size": "16", "type": "DDR4"},
+        "ram-test-1",
+    )
+    upgraded = migrate_catalog(source_path, secret_url)
+    ram = destination.get_item("ram-test-1")
+    assert ram is not None
+    assert ram.specifications["capacity_gb"].value == 16
+    assert upgraded == {
+        "items": 2,
+        "identifiers": 2,
+        "source_records": 3,
+        "item_images": 1,
+        "price_observations": 1,
+    }
+    original_board = destination.get_item(item.id)
+    assert original_board is not None
+    assert original_board.estimated_price_brl == 499.9
+    assert destination.list_images(item.id)[0]["view"] == "front"
+    assert client.post("/lookup", json={"text": "RAM-KIT-16"}).json()["matches"][0]["id"] == ram.id
+
     destination.put_item(
         "cpu-test-1",
         ItemInput(category=Category.CPU, brand="Demo", model="Demo CPU", identifiers=["CPU-X"]),
     )
     assert destination.get_item("cpu-test-1") is not None
-    assert migrate_catalog(source_path, secret_url) == first
+    assert migrate_catalog(source_path, secret_url) == upgraded
     source.put_source_record("test", "boards.csv", 3, {"model": "new"}, None, "unknown")
     with pytest.raises(RuntimeError, match="another SQLite version"):
         migrate_catalog(source_path, secret_url)

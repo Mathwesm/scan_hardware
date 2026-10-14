@@ -121,3 +121,25 @@ def test_exact_part_number_color_fills_only_missing_catalog_value(
     assert missing["color"].status == "reported"
     assert missing["color"].evidence[0].dataset == "BuildCores OpenDB"
     assert existing["color"].value == "White"
+
+
+def test_ram_name_with_missing_layout_does_not_invent_module_count() -> None:
+    specs = build_specifications(
+        Category.RAM,
+        [
+            {
+                "dataset": "rohitmit98/pc-parts-by-type",
+                "data": {
+                    "name": "Example Memory DDR4-3200",
+                    "type": "DDR4",
+                    "size": "16",
+                },
+            }
+        ],
+    )
+
+    assert specs["capacity_gb"].value == 16
+    assert specs["memory_speed_mt_s"].value == 3200
+    assert "module_count" not in specs
+    assert "module_capacity_gb" not in specs
+    assert "cas_latency" not in specs

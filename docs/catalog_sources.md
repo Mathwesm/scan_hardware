@@ -1,15 +1,15 @@
 # Fontes e limites do catálogo de hardware
 
 Avaliação iniciada em 07/10/2026; imagens e auditoria atualizadas em 12/10/2026.
-Escopo: placas-mães, placas de vídeo e processadores identificados pelo modelo ou
+Escopo: placas-mães, placas de vídeo, processadores e memórias RAM identificados pelo modelo ou
 part number impresso.
 
 ## Fontes usadas pelo microserviço
 
 | Fonte | Conteúdo útil | Uso atual e limite |
 | --- | --- | --- |
-| [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | 458 CPUs, 2.515 GPUs e 2.422 placas-mães; alguns códigos de produto, especificações e URLs de imagem. | Arquivo completo importado. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
-| [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo e 4.249 de placas-mães, com outras especificações. | Arquivo completo importado. Licença listada como desconhecida. Não traz fotos nessas três categorias. |
+| [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | 458 CPUs, 2.515 GPUs, 2.422 placas-mães e 1.707 linhas de RAM; alguns códigos de produto, especificações e URLs de imagem. | As quatro categorias são importadas. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
+| [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo, 4.249 de placas-mães e 11.323 linhas de memória, com outras especificações. | CPU, GPU e placa-mãe são importadas. As linhas de RAM não entram como identidade exata: 9.205 delas compartilham o nome com outro registro e não têm part number nem foto. Licença listada como desconhecida. |
 | Manuais da ECS para [A785GM-M3](https://www.scribd.com/document/442253904/A785GM-M3-manual) e [G41T-MR23](https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html) | Identificadores e características de duas placas ausentes no Kaggle. | Dois itens suplementares, com sete especificações conferidas. São manuais do fabricante publicados em acervos externos; nenhum arquivo ou foto desses sites é redistribuído. |
 | Páginas dos fabricantes | Valores específicos usados para resolver conflitos ou preencher lacunas, como socket, TDP, VRAM, tipo e velocidade de memória. | Vinte e nove valores conferidos, incluindo as placas ECS, a GA-Z77X-UD5H, a ASRock A320M-DVS R4.0, o Ryzen 5 5600X e a MSI GTX 1050 Ti 4GT OC. As evidências ficam na curadoria interna; as linhas importadas podem ser consultadas em `GET /items/{id}/sources`. |
 | Wikimedia Commons | Fotos de cinco produtos exatos com autoria e licença identificadas. | Referências externas com `image_attribution`. A licença deve ser exibida pelo consumidor. |
@@ -26,6 +26,13 @@ Uma URL de imagem entra apenas se parece ser uma foto de produto e não um place
 Isso **não** confirma que ela funciona hoje ou que pode ser republicada.
 
 ## Estado da importação validada
+
+Na importação de 13/10/2026, entraram 1.707 memórias RAM adicionais de `Memory.csv`,
+com part number; 1.685 têm URL de imagem aproveitável. O catálogo passou a ter 14.581 itens e 18.363 linhas
+de origem importadas, sem rejeições. As 11.323 linhas de `dataset/memory.json`
+permanecem fora da identificação exata porque seus nomes não distinguem os kits.
+
+### Base anterior (11/10/2026)
 
 | Categoria | Produtos distintos |
 | --- | ---: |

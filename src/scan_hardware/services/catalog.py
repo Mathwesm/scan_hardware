@@ -207,6 +207,14 @@ class Catalog:
             row = connection.execute("SELECT COUNT(*) AS total FROM items").fetchone()
         return int(row["total"])
 
+    def count_category(self, category: Category) -> int:
+        """Count one hardware category without loading the whole catalog."""
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT COUNT(*) AS total FROM items WHERE category = ?", (category.value,)
+            ).fetchone()
+        return int(row["total"])
+
     def put_item(self, item_id: str, item: ItemInput) -> Item:
         """Create or replace one item atomically.
 

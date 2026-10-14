@@ -37,6 +37,67 @@ TABLE_COLUMNS = {
     ),
 }
 
+_NON_RAM_QUERIES = (
+    "SELECT id, category, brand, model, image_url FROM items "
+    "WHERE category <> 'ram' ORDER BY id",
+    "SELECT identifiers.normalized, identifiers.display, identifiers.item_id "
+    "FROM identifiers JOIN items ON items.id = identifiers.item_id "
+    "WHERE items.category <> 'ram' ORDER BY identifiers.normalized",
+    "SELECT dataset, file_name, row_number, payload_json, item_id, status, reason "
+    "FROM source_records WHERE file_name <> 'Memory.csv' "
+    "ORDER BY dataset, file_name, row_number",
+)
+_RAM_QUERIES = {
+    "items": "SELECT id, category, brand, model, image_url, image_digest "
+    "FROM items WHERE category = 'ram' ORDER BY id",
+    "identifiers": "SELECT identifiers.normalized, identifiers.display, identifiers.item_id "
+    "FROM identifiers JOIN items ON items.id = identifiers.item_id "
+    "WHERE items.category = 'ram' ORDER BY identifiers.normalized",
+    "source_records": "SELECT dataset, file_name, row_number, payload_json, "
+    "item_id, status, reason "
+    "FROM source_records WHERE file_name = 'Memory.csv' "
+    "ORDER BY dataset, file_name, row_number",
+    "item_images": "SELECT item_images.item_id, file_name, view, width, height, is_primary "
+    "FROM item_images JOIN items ON items.id = item_images.item_id "
+    "WHERE items.category = 'ram' ORDER BY item_images.item_id, file_name",
+    "price_observations": "SELECT price_observations.item_id, retailer, source_url, identifier, "
+    "price_cents, observed_at FROM price_observations "
+    "JOIN items ON items.id = price_observations.item_id "
+    "WHERE items.category = 'ram' ORDER BY price_observations.item_id, source_url, observed_at",
+}
+
+
+def _rows(connection: Any, query: str) -> list[tuple[Any, ...]]:
+    """Read ordered rows from a fixed migration query."""
+    return [tuple(row) for row in connection.execute(query).fetchall()]
+
+
+def _extend_ram_catalog(source: Any, destination: Any, previous: str, current: str) -> None:
+    """Append RAM to an older PostgreSQL catalog while preserving existing data."""
+    for query in _NON_RAM_QUERIES:
+        if _rows(source, query) != _rows(destination, query):
+            raise RuntimeError("PostgreSQL catalog was imported from another SQLite version")
+    if not _rows(source, _RAM_QUERIES["items"]):
+        raise RuntimeError("PostgreSQL catalog was imported from another SQLite version")
+    for table, query in _RAM_QUERIES.items():
+        rows = _rows(source, query)
+        if rows:
+            columns = TABLE_COLUMNS[table]
+            placeholders = ", ".join(["%s"] * len(columns))
+            statement = (
+                f"INSERT INTO {table} ({', '.join(columns)}) "  # noqa: S608
+                f"VALUES ({placeholders}) ON CONFLICT DO NOTHING"
+            )
+            with destination.cursor() as target:
+                target.executemany(statement, rows)
+        if rows != _rows(destination, query):
+            raise RuntimeError(f"PostgreSQL RAM extension differs from SQLite in {table}")
+    destination.execute(
+        "UPDATE catalog_imports SET source_digest = %s WHERE source_digest = %s",
+        (current, previous),
+    )
+    logger.info("RAM catalog extension verified rows={}", len(_rows(source, _RAM_QUERIES["items"])))
+
 
 def _signature(connection: Any, table: str, columns: tuple[str, ...]) -> tuple[int, str]:
     """Count and hash all rows in primary-key order for exact migration validation."""
@@ -96,9 +157,7 @@ def migrate_catalog(sqlite_path: Path, database_url: SecretStr) -> dict[str, int
             prior = destination.execute("SELECT source_digest FROM catalog_imports").fetchone()
             if prior is not None:
                 if prior[0] != manifest_digest:
-                    raise RuntimeError(
-                        "PostgreSQL catalog was imported from another SQLite version"
-                    )
+                    _extend_ram_catalog(source, destination, prior[0], manifest_digest)
                 return {table: signature[0] for table, signature in signatures.items()}
             for table, columns in TABLE_COLUMNS.items():
                 source_count, source_digest = signatures[table]

@@ -1,7 +1,7 @@
 # Scanner de hardware
 
 Microserviço independente em Python para reconhecer o **modelo ou part number impresso**
-em placas-mães, placas de vídeo e processadores. Recebe uma foto, executa OCR local e
+em placas-mães, placas de vídeo, processadores e memórias RAM. Recebe uma foto, executa OCR local e
 procura o identificador em um catálogo PostgreSQL no Docker. O SQLite permanece como
 formato de importação local e opção para testes sem Docker. Retorna o item, especificações com fontes
 e uma imagem de referência quando existe uma referência adequada. Também aceita busca
@@ -57,6 +57,9 @@ No PowerShell, use uma linha só ou a continuação de linha própria dele. O im
 mantém todas as colunas originais em SQLite e registra rejeições com o motivo. Une
 registros apenas quando o nome ou código normalizado permite associação segura;
 placas de vídeo com o mesmo nome e chipsets diferentes permanecem separadas.
+Para RAM, o importador usa `Memory.csv`, que contém part numbers e imagens; códigos
+impressos permitem identificação exata. O arquivo `dataset/memory.json` tem muitos
+nomes repetidos sem part number, por isso não é usado para confirmar um kit específico.
 Descarta URLs de imagem que são placeholders. Dois modelos ECS ausentes dos arquivos
 Kaggle são acrescentados por `src/scan_hardware/curation/supplemental_items.json`,
 com fonte registrada:
@@ -64,9 +67,10 @@ com fonte registrada:
 
 Cada importação cria um banco em `data/processed/<run-id>/`. O ponteiro `data/latest.json`
 só muda após os controles de quantidade, rejeição e referências de imagem passarem.
-O banco anterior permanece disponível. Na importação validada em 11/10/2026, o
-catálogo ficou com **12.874 itens**: 899 CPUs, 7.549 GPUs e 4.426 placas-mães.
-Os números podem mudar após novas importações.
+O banco anterior permanece disponível. Na importação validada em 13/10/2026, o
+catálogo ficou com **14.581 itens**: 899 CPUs, 7.549 GPUs, 4.426 placas-mães e
+1.707 memórias RAM. Os números podem mudar após novas importações. A inclusão de RAM exige uma nova
+importação: o banco publicado anteriormente não ganha essa categoria automaticamente.
 
 ### Especificações e imagens
 
@@ -80,8 +84,9 @@ colunas originais podem ser consultadas em `GET /items/{id}/sources`.
 O pacote inclui **6.007 associações novas de imagem** obtidas por cruzamento exato
 entre o catálogo e um [dataset público de peças](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset).
 O cruzamento exige nome original, marca e, para GPU, chipset idênticos; imagens
-genéricas e casos ambíguos são descartados. Com as URLs anteriores e as duas ECS, 10.667 dos
-12.874 itens (82,8%) têm uma imagem de referência. O arquivo bruto não vai para o
+genéricas e casos ambíguos são descartados. Com as URLs anteriores, as duas ECS e as
+1.685 referências de RAM aprovadas, 12.352 dos 14.581 itens (84,7%) têm uma imagem de referência.
+O arquivo bruto não vai para o
 Git; o manifesto resultante vai em `src/scan_hardware/curation/external_images.json`.
 Para refazer a coleta com a versão fixa da fonte:
 
@@ -106,6 +111,13 @@ associação exata de fabricante e part number com uma revisão fixa do BuildCor
 OpenDB. Isso acrescentou 7.025 valores sem substituir fatos já presentes no
 catálogo. A cobertura dos campos principais ainda varia bastante por categoria;
 campos sem fonte permanecem vazios.
+
+Para RAM, os campos planos são `capacity_gb` (capacidade total), `module_count`,
+`module_capacity_gb`, `memory_type`, `memory_speed_mt_s` e `cas_latency`. Contagem e
+capacidade por módulo, velocidade e latência são extraídas do nome original quando
+ele explicita esses valores; campos ausentes ficam vazios. As imagens de RAM vêm
+como referências externas do dataset e podem não mostrar o rótulo legível. Vinte e
+dois kits não têm uma URL de imagem aproveitável após a filtragem de placeholders.
 
 Cinco itens têm fotos do Wikimedia Commons com autoria e licença revisadas em
 `image_attribution`. A GA-Z77X-UD5H usa uma imagem oficial do fabricante. As outras

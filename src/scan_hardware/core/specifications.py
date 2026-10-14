@@ -35,6 +35,14 @@ class SpecDefinition:
 
 
 SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
+    Category.RAM: {
+        "capacity_gb": SpecDefinition(("size",), "integer", "GB"),
+        "module_count": SpecDefinition(("name",), "integer"),
+        "module_capacity_gb": SpecDefinition(("name",), "integer", "GB"),
+        "memory_type": SpecDefinition(("type",), "text"),
+        "memory_speed_mt_s": SpecDefinition(("name",), "integer", "MT/s"),
+        "cas_latency": SpecDefinition(("name",), "integer"),
+    },
     Category.CPU: {
         "socket": SpecDefinition(("socket",), "text"),
         "base_clock_ghz": SpecDefinition(("speed", "core_clock"), "decimal", "GHz"),
@@ -76,6 +84,24 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
         "color": SpecDefinition(("color",), "text"),
     },
 }
+
+_RAM_MODULES = re.compile(r"\b(\d+)\s*[xX]\s*(\d+)\s*GB\b", re.IGNORECASE)
+_RAM_SPEED = re.compile(r"\bDDR[345]\s*[- ]\s*(\d{3,5})\b", re.IGNORECASE)
+_RAM_CAS = re.compile(r"\bCL\s*(\d{1,3})\b", re.IGNORECASE)
+
+
+def _parse_ram_name_value(raw: Any, key: str) -> int | None:
+    """Extract kit layout, transfer rate, and CAS latency from a RAM product name."""
+    if not isinstance(raw, str):
+        return None
+    if key in {"module_count", "module_capacity_gb"}:
+        match = _RAM_MODULES.search(raw)
+        if match is None:
+            return None
+        return int(match.group(1 if key == "module_count" else 2))
+    pattern = _RAM_SPEED if key == "memory_speed_mt_s" else _RAM_CAS
+    match = pattern.search(raw)
+    return int(match.group(1)) if match is not None else None
 
 
 def _parse_number(raw: Any, kind: ValueKind) -> int | float | None:
@@ -135,7 +161,11 @@ def build_specifications(
         evidence_map: dict[tuple[str, str, SpecValue], SpecificationEvidence] = {}
         for source in sources:
             for field in definition.fields:
-                value = _parse_value(source.data.get(field), definition, key)
+                value = (
+                    _parse_ram_name_value(source.data.get(field), key)
+                    if category is Category.RAM and field == "name"
+                    else _parse_value(source.data.get(field), definition, key)
+                )
                 if value is not None:
                     evidence_map[(source.dataset, field, value)] = SpecificationEvidence(
                         dataset=source.dataset, field=field, value=value
