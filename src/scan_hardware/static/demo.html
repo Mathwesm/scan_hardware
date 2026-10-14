@@ -91,6 +91,46 @@
       selectImage(primary);
       if (primary.source === 'external') line(card, 'p', 'Imagem externa de referência; enquadramento não revisado.', 'muted');
     }
+    function renderSocketRelated(card, match) {
+      if (!['cpu', 'motherboard'].includes(match.category) || !match.socket) return;
+      const target = match.category === 'motherboard' ? 'processadores' : 'placas-mãe';
+      const button = line(card, 'button', `Ver ${target} com o mesmo socket`);
+      button.type = 'button';
+      const container = document.createElement('div');
+      card.appendChild(container);
+      let offset = 0;
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        try {
+          const response = await fetch(`/specs/${encodeURIComponent(match.id)}/socket-related?limit=20&offset=${offset}`);
+          const page = await response.json();
+          if (!response.ok) throw new Error(page.detail || `HTTP ${response.status}`);
+          if (offset === 0) {
+            line(container, 'p', `${page.total} ${target} com socket ${page.socket}. Confirme chipset, geração e BIOS no site do fabricante antes de instalar.`, 'muted');
+          }
+          const list = container.querySelector('ul') || document.createElement('ul');
+          if (!list.parentNode) container.appendChild(list);
+          for (const candidate of page.matches) {
+            const entry = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `/specs/${encodeURIComponent(candidate.id)}`;
+            link.textContent = candidate.model;
+            entry.appendChild(link);
+            list.appendChild(entry);
+          }
+          offset += page.matches.length;
+          if (offset < page.total) {
+            button.textContent = `Carregar mais ${target} (${offset} de ${page.total})`;
+            button.disabled = false;
+          } else {
+            button.remove();
+          }
+        } catch (error) {
+          line(container, 'p', `Falha ao buscar peças pelo socket: ${error.message}`, 'error');
+          button.disabled = false;
+        }
+      });
+    }
     async function render(data, append = false) {
       if (!append) {
         results.replaceChildren();
@@ -137,6 +177,7 @@
           const formatted = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : `${value}${units[key] ? ` ${units[key]}` : ''}`;
           line(specs, 'dd', formatted);
         }
+        renderSocketRelated(card, match);
       }
       const shown = previousCount + (data.matches || []).length;
       if (lookupText && typeof data.total_matches === 'number' && shown < data.total_matches) {

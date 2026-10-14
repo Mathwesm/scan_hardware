@@ -33,6 +33,24 @@ separados das ofertas atuais em reais.
 `GET /health` verifica o processo; `GET /ready` responde HTTP 200 com a contagem de
 itens quando o catálogo pode ser pesquisado e HTTP 503 quando está vazio.
 
+### Peças com o mesmo socket
+
+Depois de identificar uma placa-mãe ou CPU, consulte
+`GET /specs/{id}/socket-related?limit=20&offset=0`. A resposta traz `socket`,
+`relation: "same_socket"`, `total` e `matches` com `id`, categoria, marca, modelo,
+imagem e socket de cada peça. A busca funciona nos dois sentidos: placa-mãe → CPUs
+e CPU → placas-mãe. A página `/demo` oferece o botão **Ver peças com o mesmo socket**
+no resultado do scan ou da busca por código. `limit` aceita 1–100; `offset` começa
+em zero. Se o socket estiver ausente ou em conflito entre fontes, a lista vem vazia.
+
+Este vínculo indica **apenas igualdade de socket**. A compatibilidade real também
+depende de chipset, geração, BIOS e lista de CPUs suportadas pelo fabricante da
+placa-mãe. Consulte essa lista antes de instalar ou comprar uma peça. O catálogo
+não afirma compatibilidade onde ainda não existe uma fonte por par CPU/placa-mãe.
+Veja as orientações de compatibilidade da
+[Intel](https://www.intel.com/content/www/us/en/support/articles/000005682/processors.html)
+e da [AMD](https://www.amd.com/pt/products/processors/chipsets/am4.html).
+
 Sem importação, o banco padrão é `data/catalog.sqlite3`. Depois de uma importação
 validada, o serviço lê `data/latest.json` e usa o banco versionado indicado ali.
 `CATALOG_PATH` pode substituir esse caminho. Consulte `.env.example` para as demais
