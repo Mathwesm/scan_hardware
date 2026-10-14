@@ -91,9 +91,10 @@
       selectImage(primary);
       if (primary.source === 'external') line(card, 'p', 'Imagem externa de referência; enquadramento não revisado.', 'muted');
     }
-    function renderSocketRelated(card, match) {
+    function renderSocketRelated(card, match, showAutomatically) {
       if (!['cpu', 'motherboard'].includes(match.category) || !match.socket) return;
       const target = match.category === 'motherboard' ? 'processadores' : 'placas-mãe';
+      line(card, 'h4', `${target === 'processadores' ? 'Processadores' : 'Placas-mãe'} com o mesmo socket`);
       const button = line(card, 'button', `Ver ${target} com o mesmo socket`);
       button.type = 'button';
       const container = document.createElement('div');
@@ -101,6 +102,7 @@
       let offset = 0;
       button.addEventListener('click', async () => {
         button.disabled = true;
+        button.textContent = 'Carregando…';
         try {
           const response = await fetch(`/specs/${encodeURIComponent(match.id)}/socket-related?limit=20&offset=${offset}`);
           const page = await response.json();
@@ -127,9 +129,11 @@
           }
         } catch (error) {
           line(container, 'p', `Falha ao buscar peças pelo socket: ${error.message}`, 'error');
+          button.textContent = `Tentar buscar ${target} novamente`;
           button.disabled = false;
         }
       });
+      if (showAutomatically) button.click();
     }
     async function render(data, append = false) {
       if (!append) {
@@ -177,7 +181,7 @@
           const formatted = typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : `${value}${units[key] ? ` ${units[key]}` : ''}`;
           line(specs, 'dd', formatted);
         }
-        renderSocketRelated(card, match);
+        renderSocketRelated(card, match, data.status === 'matched');
       }
       const shown = previousCount + (data.matches || []).length;
       if (lookupText && typeof data.total_matches === 'number' && shown < data.total_matches) {
