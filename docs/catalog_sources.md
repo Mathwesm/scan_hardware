@@ -1,15 +1,16 @@
 # Fontes e limites do catálogo de hardware
 
 Avaliação iniciada em 07/10/2026; imagens e auditoria atualizadas em 12/10/2026.
-Escopo: placas-mães, placas de vídeo, processadores e memórias RAM identificados pelo modelo ou
+Escopo: placas-mães, placas de vídeo, processadores, memórias RAM, fontes, gabinetes,
+coolers de CPU e armazenamento identificados pelo modelo ou
 part number impresso.
 
 ## Fontes usadas pelo microserviço
 
 | Fonte | Conteúdo útil | Uso atual e limite |
 | --- | --- | --- |
-| [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | 458 CPUs, 2.515 GPUs, 2.422 placas-mães e 1.707 linhas de RAM; alguns códigos de produto, especificações e URLs de imagem. | As quatro categorias são importadas. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
-| [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo, 4.249 de placas-mães e 11.323 linhas de memória, com outras especificações. | CPU, GPU e placa-mãe são importadas. As linhas de RAM não entram como identidade exata: 9.205 delas compartilham o nome com outro registro e não têm part number nem foto. Licença listada como desconhecida. |
+| [Kaggle: PC Parts by Type](https://www.kaggle.com/datasets/rohitmit98/pc-parts-by-type) | CPUs, GPUs, placas-mães, 1.707 linhas de RAM, 2.314 fontes, 1.571 gabinetes, 872 coolers e 2.172 unidades de armazenamento; códigos, especificações e URLs de imagem. | As oito categorias são importadas. A licença declarada CC0 para os dados não comprova direitos sobre fotos hospedadas por terceiros. |
+| [Kaggle: PC Parts](https://www.kaggle.com/datasets/warcoder/pc-parts) | 1.341 linhas de CPU, 5.669 de placas de vídeo, 4.249 de placas-mães e 11.323 linhas de memória, além de fontes, gabinetes, coolers e discos sem código de peça. | CPU, GPU e placa-mãe são importadas. As outras categorias só usam o CSV com part number para identificação exata; as 9.205 linhas de RAM com nome repetido não distinguem kits. Licença listada como desconhecida. |
 | Manuais da ECS para [A785GM-M3](https://www.scribd.com/document/442253904/A785GM-M3-manual) e [G41T-MR23](https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html) | Identificadores e características de duas placas ausentes no Kaggle. | Dois itens suplementares, com sete especificações conferidas. São manuais do fabricante publicados em acervos externos; nenhum arquivo ou foto desses sites é redistribuído. |
 | Páginas dos fabricantes | Valores específicos usados para resolver conflitos ou preencher lacunas, como socket, TDP, VRAM, tipo e velocidade de memória. | Vinte e nove valores conferidos, incluindo as placas ECS, a GA-Z77X-UD5H, a ASRock A320M-DVS R4.0, o Ryzen 5 5600X e a MSI GTX 1050 Ti 4GT OC. As evidências ficam na curadoria interna; as linhas importadas podem ser consultadas em `GET /items/{id}/sources`. |
 | Wikimedia Commons | Fotos de cinco produtos exatos com autoria e licença identificadas. | Referências externas com `image_attribution`. A licença deve ser exibida pelo consumidor. |
@@ -27,10 +28,16 @@ Isso **não** confirma que ela funciona hoje ou que pode ser republicada.
 
 ## Estado da importação validada
 
-Na importação de 13/10/2026, entraram 1.707 memórias RAM adicionais de `Memory.csv`,
-com part number; 1.685 têm URL de imagem aproveitável. O catálogo passou a ter 14.581 itens e 18.363 linhas
-de origem importadas, sem rejeições. As 11.323 linhas de `dataset/memory.json`
-permanecem fora da identificação exata porque seus nomes não distinguem os kits.
+Na importação de 14/10/2026, o catálogo validado contém **21.509 itens** e 25.291
+linhas de origem importadas: 899 CPUs, 7.549 GPUs, 4.426 placas-mães, 1.707 RAM,
+2.313 fontes, 1.571 gabinetes, 872 coolers e 2.172 unidades de armazenamento.
+Há **12.673 URLs de imagem** diretamente nos CSVs. Das categorias novas, 2.066 fontes,
+1.489 gabinetes, 857 coolers e 1.921 unidades de armazenamento têm URL aproveitável.
+Uma linha de fonte com gabinete integrado foi rejeitada porque o mesmo código já
+identifica o gabinete; as demais 25.291 linhas passaram. As 11.323 linhas de
+`dataset/memory.json` permanecem fora da identificação exata porque seus nomes
+não distinguem os kits. Os JSONs de fontes, gabinetes, coolers e discos também não
+têm part number nem foto para confirmar um SKU.
 
 ### Base anterior (11/10/2026)
 

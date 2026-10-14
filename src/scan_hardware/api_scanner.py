@@ -11,9 +11,14 @@ from pydantic import BaseModel, Field
 from scan_hardware.config import Settings
 from scan_hardware.core.color import estimate_photo_color
 from scan_hardware.core.matching import match_items, search_items
-from scan_hardware.models.item import Category, ScanResponse, ScanResult
+from scan_hardware.models.item import Category, Item, ScanResponse, ScanResult
 from scan_hardware.services.catalog import Catalog
-from scan_hardware.services.ocr import InvalidImageError, OcrScanner, validate_image
+from scan_hardware.services.ocr import (
+    InvalidImageError,
+    OcrScanner,
+    retry_image_variants,
+    validate_image,
+)
 
 
 class LookupRequest(BaseModel):
@@ -42,6 +47,18 @@ def _needs_photo_color(result: ScanResult) -> bool:
         if color is None or color.value is None:
             return True
     return False
+
+
+def _scan_with_retries(content: bytes, scanner: OcrScanner, items: list[Item]) -> ScanResult:
+    """Retry low-light and rotated photos when the first reading is inconclusive."""
+    result = match_items(scanner.read_text(content), items)
+    if result.status == "matched":
+        return result
+    for variant in retry_image_variants(content):
+        retry = match_items(scanner.read_text(variant), items)
+        if retry.status == "matched":
+            return retry
+    return result
 
 
 def register_scan_routes(
@@ -78,8 +95,10 @@ def register_scan_routes(
             validate_image(content, config.max_upload_bytes)
         except InvalidImageError as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
-        lines = await run_in_threadpool(scanner.read_text, content)
-        result = _include_specifications(match_items(lines, catalog.list_items()), catalog)
+        result = _include_specifications(
+            await run_in_threadpool(_scan_with_retries, content, scanner, catalog.list_items()),
+            catalog,
+        )
         photo_color = (
             await run_in_threadpool(estimate_photo_color, content)
             if _needs_photo_color(result)

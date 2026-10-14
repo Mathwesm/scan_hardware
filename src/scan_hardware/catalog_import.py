@@ -30,6 +30,10 @@ ROHIT_FILES = {
     "GPU.csv": Category.GPU,
     "Motherboard.csv": Category.MOTHERBOARD,
     "Memory.csv": Category.RAM,
+    "PSU.csv": Category.PSU,
+    "Case.csv": Category.CASE,
+    "Cooler.csv": Category.COOLER,
+    "Storage.csv": Category.STORAGE,
 }
 WARCODER_FILES = {
     "dataset/cpu.json": Category.CPU,
@@ -291,6 +295,10 @@ def _publish(catalog_path: Path, pointer: Path, counts: dict[str, int]) -> None:
         "gpu": 2000,
         "motherboard": 2000,
         "ram": 1500,
+        "psu": 2000,
+        "case": 1400,
+        "cooler": 800,
+        "storage": 2000,
         "items_with_image_url": 4000,
     }
     failures = [

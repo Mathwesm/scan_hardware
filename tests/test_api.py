@@ -40,6 +40,20 @@ class RamScanner(OcrScanner):
         return ["CMZ16GX3M2A1600C10"]
 
 
+class RetryScanner(OcrScanner):
+    """Simulate a code becoming readable after image preprocessing."""
+
+    def __init__(self) -> None:
+        """Count model calls to verify the fallback is actually used."""
+        super().__init__()
+        self.calls = 0
+
+    def read_text(self, _content: bytes) -> list[str]:
+        """Return a valid code on the second OCR attempt."""
+        self.calls += 1
+        return ["SST-SX500-LG"] if self.calls == 2 else []
+
+
 def _png() -> bytes:
     """Create a valid small image for upload validation."""
     image = Image.new("RGB", (128, 64), "white")
@@ -183,6 +197,67 @@ def test_ram_lookup_and_scan_return_flat_kit_specs(tmp_path: Path) -> None:
         assert result["matches"][0]["memory_speed_mt_s"] == 1600
         assert result["matches"][0]["image_url"] == "https://example.com/ram.jpg"
         assert "specs" not in result["matches"][0]
+
+
+def test_psu_lookup_returns_flat_power_specs(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3")
+    client = TestClient(create_app(config=config))
+    item_id = "psu-silverstone-500"
+    response = client.put(
+        f"/items/{item_id}",
+        json={
+            "category": "psu",
+            "brand": "Silverstone",
+            "model": "Silverstone SFX 500 W 80+ Gold Fully Modular Power Supply",
+            "identifiers": ["SST-SX500-LG"],
+            "image_url": "https://example.com/psu.jpg",
+        },
+    )
+    assert response.status_code == 200
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "rohitmit98/pc-parts-by-type",
+        "PSU.csv",
+        1,
+        {
+            "name": "Silverstone SFX 500 W 80+ Gold Fully Modular Power Supply",
+            "power": "500",
+            "size": "SFX",
+        },
+        item_id,
+    )
+
+    lookup = client.post("/lookup", json={"text": "SST-SX500-LG"})
+
+    assert lookup.status_code == 200
+    match = lookup.json()["matches"][0]
+    assert match["category"] == "psu"
+    assert match["wattage_w"] == 500
+    assert match["form_factor"] == "SFX"
+    assert match["efficiency_rating"] == "80+ Gold"
+    assert match["modularity"] == "Fully Modular"
+    assert match["image_url"] == "https://example.com/psu.jpg"
+
+
+def test_scan_recovers_code_after_inconclusive_first_photo_read(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3")
+    scanner = RetryScanner()
+    client = TestClient(create_app(config=config, scanner=scanner))
+    client.put(
+        "/items/psu-1",
+        json={
+            "category": "psu",
+            "brand": "Silverstone",
+            "model": "Silverstone SFX 500 W Power Supply",
+            "identifiers": ["SST-SX500-LG"],
+        },
+    )
+
+    response = client.post("/scan", files={"image": ("label.png", _png(), "image/png")})
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "matched"
+    assert response.json()["matches"][0]["id"] == "psu-1"
+    assert scanner.calls == 2
 
 
 def test_gallery_keeps_front_primary_and_side_as_secondary(tmp_path: Path) -> None:

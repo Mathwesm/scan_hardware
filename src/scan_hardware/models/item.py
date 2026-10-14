@@ -16,6 +16,10 @@ class Category(StrEnum):
     GPU = "gpu"
     CPU = "cpu"
     RAM = "ram"
+    PSU = "psu"
+    CASE = "case"
+    COOLER = "cooler"
+    STORAGE = "storage"
 
 
 class ItemInput(BaseModel):
@@ -184,6 +188,12 @@ class HardwareSummary(BaseModel):
     board_power_w: int | None = None
     length_mm: int | None = None
     resolution_class: str | None = None
+    wattage_w: int | None = None
+    efficiency_rating: str | None = None
+    modularity: str | None = None
+    cooling_type: str | None = None
+    storage_type: str | None = None
+    storage_capacity_gb: int | None = None
 
     @classmethod
     def from_match(cls, match: Match, photo_color: str | None = None) -> HardwareSummary:

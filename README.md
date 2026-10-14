@@ -1,7 +1,8 @@
 # Scanner de hardware
 
 Microserviço independente em Python para reconhecer o **modelo ou part number impresso**
-em placas-mães, placas de vídeo, processadores e memórias RAM. Recebe uma foto, executa OCR local e
+em placas-mães, placas de vídeo, processadores, memórias RAM, fontes, gabinetes, coolers
+de CPU e unidades de armazenamento. Recebe uma foto, executa OCR local e
 procura o identificador em um catálogo PostgreSQL no Docker. O SQLite permanece como
 formato de importação local e opção para testes sem Docker. Retorna o item, especificações com fontes
 e uma imagem de referência quando existe uma referência adequada. Também aceita busca
@@ -60,6 +61,11 @@ placas de vídeo com o mesmo nome e chipsets diferentes permanecem separadas.
 Para RAM, o importador usa `Memory.csv`, que contém part numbers e imagens; códigos
 impressos permitem identificação exata. O arquivo `dataset/memory.json` tem muitos
 nomes repetidos sem part number, por isso não é usado para confirmar um kit específico.
+Fontes, gabinetes, coolers e armazenamento vêm dos respectivos `PSU.csv`, `Case.csv`,
+`Cooler.csv` e `Storage.csv`, todos com códigos entre parênteses e referências de imagem.
+Os arquivos JSON equivalentes não entram como identificação exata porque não trazem
+part numbers nem fotos. A capacidade de armazenamento é lida do nome (GB ou TB), pois
+o campo `space` do CSV trunca alguns valores grandes.
 Descarta URLs de imagem que são placeholders. Dois modelos ECS ausentes dos arquivos
 Kaggle são acrescentados por `src/scan_hardware/curation/supplemental_items.json`,
 com fonte registrada:
@@ -67,10 +73,13 @@ com fonte registrada:
 
 Cada importação cria um banco em `data/processed/<run-id>/`. O ponteiro `data/latest.json`
 só muda após os controles de quantidade, rejeição e referências de imagem passarem.
-O banco anterior permanece disponível. Na importação validada em 13/10/2026, o
-catálogo ficou com **14.581 itens**: 899 CPUs, 7.549 GPUs, 4.426 placas-mães e
-1.707 memórias RAM. Os números podem mudar após novas importações. A inclusão de RAM exige uma nova
-importação: o banco publicado anteriormente não ganha essa categoria automaticamente.
+O banco anterior permanece disponível. Na importação validada em 14/10/2026, o
+catálogo ficou com **21.509 itens**: 899 CPUs, 7.549 GPUs, 4.426 placas-mães,
+1.707 memórias RAM, 2.313 fontes, 1.571 gabinetes, 872 coolers e 2.172 unidades
+de armazenamento. Uma fonte com gabinete integrado compartilha o código da entrada
+de gabinete e foi rejeitada para manter o identificador único. Os números podem mudar
+após novas importações. Com os ZIPs configurados, o bootstrap reconstrói um catálogo
+antigo que não tenha uma das categorias novas, preservando a versão anterior.
 
 ### Especificações e imagens
 
@@ -84,8 +93,8 @@ colunas originais podem ser consultadas em `GET /items/{id}/sources`.
 O pacote inclui **6.007 associações novas de imagem** obtidas por cruzamento exato
 entre o catálogo e um [dataset público de peças](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset).
 O cruzamento exige nome original, marca e, para GPU, chipset idênticos; imagens
-genéricas e casos ambíguos são descartados. Com as URLs anteriores, as duas ECS e as
-1.685 referências de RAM aprovadas, 12.352 dos 14.581 itens (84,7%) têm uma imagem de referência.
+genéricas e casos ambíguos são descartados. Na importação atual, 12.673 itens têm
+URL de imagem diretamente dos CSVs; parte dos demais recebe referência pelo cruzamento.
 O arquivo bruto não vai para o
 Git; o manifesto resultante vai em `src/scan_hardware/curation/external_images.json`.
 Para refazer a coleta com a versão fixa da fonte:

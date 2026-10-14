@@ -35,6 +35,18 @@ class SpecDefinition:
 
 
 SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
+    Category.CASE: {"form_factor": SpecDefinition(("size",), "text")},
+    Category.COOLER: {"cooling_type": SpecDefinition(("type",), "text")},
+    Category.STORAGE: {
+        "storage_type": SpecDefinition(("type",), "text"),
+        "storage_capacity_gb": SpecDefinition(("name",), "integer", "GB"),
+    },
+    Category.PSU: {
+        "wattage_w": SpecDefinition(("power",), "integer", "W"),
+        "form_factor": SpecDefinition(("size",), "text"),
+        "efficiency_rating": SpecDefinition(("name",), "text"),
+        "modularity": SpecDefinition(("name",), "text"),
+    },
     Category.RAM: {
         "capacity_gb": SpecDefinition(("size",), "integer", "GB"),
         "module_count": SpecDefinition(("name",), "integer"),
@@ -88,6 +100,35 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
 _RAM_MODULES = re.compile(r"\b(\d+)\s*[xX]\s*(\d+)\s*GB\b", re.IGNORECASE)
 _RAM_SPEED = re.compile(r"\bDDR[345]\s*[- ]\s*(\d{3,5})\b", re.IGNORECASE)
 _RAM_CAS = re.compile(r"\bCL\s*(\d{1,3})\b", re.IGNORECASE)
+_PSU_EFFICIENCY = re.compile(
+    r"\b80\s*\+\s*(Titanium|Platinum|Gold|Silver|Bronze|White)\b", re.IGNORECASE
+)
+_PSU_MODULARITY = re.compile(r"\b(Fully Modular|Semi[- ]Modular|Non[- ]Modular)\b", re.IGNORECASE)
+_STORAGE_CAPACITY = re.compile(r"\b(\d+(?:\.\d+)?)\s*(TB|GB)\b", re.IGNORECASE)
+
+
+def _parse_psu_name_value(raw: Any, key: str) -> str | None:
+    """Extract explicitly printed PSU efficiency and cabling type."""
+    if not isinstance(raw, str):
+        return None
+    pattern = _PSU_EFFICIENCY if key == "efficiency_rating" else _PSU_MODULARITY
+    match = pattern.search(raw)
+    if match is None:
+        return None
+    if key == "efficiency_rating":
+        return f"80+ {match.group(1).title()}"
+    return match.group(1).replace("-", " ").title()
+
+
+def _parse_storage_capacity(raw: Any) -> int | None:
+    """Read stated GB or TB capacity; the source's `space` column is truncated."""
+    if not isinstance(raw, str):
+        return None
+    match = _STORAGE_CAPACITY.search(raw)
+    if match is None:
+        return None
+    amount = float(match.group(1)) * (1000 if match.group(2).upper() == "TB" else 1)
+    return int(amount) if amount.is_integer() else None
 
 
 def _parse_ram_name_value(raw: Any, key: str) -> int | None:
@@ -164,7 +205,15 @@ def build_specifications(
                 value = (
                     _parse_ram_name_value(source.data.get(field), key)
                     if category is Category.RAM and field == "name"
-                    else _parse_value(source.data.get(field), definition, key)
+                    else (
+                        _parse_psu_name_value(source.data.get(field), key)
+                        if category is Category.PSU and field == "name"
+                        else (
+                            _parse_storage_capacity(source.data.get(field))
+                            if category is Category.STORAGE and field == "name"
+                            else _parse_value(source.data.get(field), definition, key)
+                        )
+                    )
                 )
                 if value is not None:
                     evidence_map[(source.dataset, field, value)] = SpecificationEvidence(

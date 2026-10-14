@@ -19,6 +19,26 @@ from scan_hardware.models.price import PriceOffer
 from scan_hardware.services.catalog import Catalog
 
 
+def _add_psu_source(source: Catalog) -> None:
+    """Stage a new PSU category for the migration regression case."""
+    source.put_item(
+        "psu-test-1",
+        ItemInput(
+            category=Category.PSU,
+            brand="Demo",
+            model="Demo 750 W 80+ Gold Fully Modular Power Supply",
+            identifiers=["DEMO-PSU-750"],
+        ),
+    )
+    source.put_source_record(
+        "test",
+        "PSU.csv",
+        1,
+        {"name": "Demo 750 W 80+ Gold Fully Modular Power Supply", "power": "750"},
+        "psu-test-1",
+    )
+
+
 def test_migration_preserves_records_and_supports_runtime_queries(tmp_path: Path) -> None:
     database_url = os.environ.get("TEST_DATABASE_URL")
     if not database_url:
@@ -108,12 +128,22 @@ def test_migration_preserves_records_and_supports_runtime_queries(tmp_path: Path
     assert destination.list_images(item.id)[0]["view"] == "front"
     assert client.post("/lookup", json={"text": "RAM-KIT-16"}).json()["matches"][0]["id"] == ram.id
 
+    _add_psu_source(source)
+    with_psu = migrate_catalog(source_path, secret_url)
+    psu = destination.get_item("psu-test-1")
+    assert psu is not None
+    assert psu.specifications["wattage_w"].value == 750
+    assert with_psu["items"] == 3
+    assert (
+        client.post("/lookup", json={"text": "DEMO-PSU-750"}).json()["matches"][0]["id"] == psu.id
+    )
+
     destination.put_item(
         "cpu-test-1",
         ItemInput(category=Category.CPU, brand="Demo", model="Demo CPU", identifiers=["CPU-X"]),
     )
     assert destination.get_item("cpu-test-1") is not None
-    assert migrate_catalog(source_path, secret_url) == upgraded
+    assert migrate_catalog(source_path, secret_url) == with_psu
     source.put_source_record("test", "boards.csv", 3, {"model": "new"}, None, "unknown")
     with pytest.raises(RuntimeError, match="another SQLite version"):
         migrate_catalog(source_path, secret_url)

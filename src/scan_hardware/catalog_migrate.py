@@ -37,33 +37,12 @@ TABLE_COLUMNS = {
     ),
 }
 
-_NON_RAM_QUERIES = (
-    "SELECT id, category, brand, model, image_url FROM items "
-    "WHERE category <> 'ram' ORDER BY id",
-    "SELECT identifiers.normalized, identifiers.display, identifiers.item_id "
-    "FROM identifiers JOIN items ON items.id = identifiers.item_id "
-    "WHERE items.category <> 'ram' ORDER BY identifiers.normalized",
-    "SELECT dataset, file_name, row_number, payload_json, item_id, status, reason "
-    "FROM source_records WHERE file_name <> 'Memory.csv' "
-    "ORDER BY dataset, file_name, row_number",
-)
-_RAM_QUERIES = {
-    "items": "SELECT id, category, brand, model, image_url, image_digest "
-    "FROM items WHERE category = 'ram' ORDER BY id",
-    "identifiers": "SELECT identifiers.normalized, identifiers.display, identifiers.item_id "
-    "FROM identifiers JOIN items ON items.id = identifiers.item_id "
-    "WHERE items.category = 'ram' ORDER BY identifiers.normalized",
-    "source_records": "SELECT dataset, file_name, row_number, payload_json, "
-    "item_id, status, reason "
-    "FROM source_records WHERE file_name = 'Memory.csv' "
-    "ORDER BY dataset, file_name, row_number",
-    "item_images": "SELECT item_images.item_id, file_name, view, width, height, is_primary "
-    "FROM item_images JOIN items ON items.id = item_images.item_id "
-    "WHERE items.category = 'ram' ORDER BY item_images.item_id, file_name",
-    "price_observations": "SELECT price_observations.item_id, retailer, source_url, identifier, "
-    "price_cents, observed_at FROM price_observations "
-    "JOIN items ON items.id = price_observations.item_id "
-    "WHERE items.category = 'ram' ORDER BY price_observations.item_id, source_url, observed_at",
+_CATEGORY_SOURCE_FILE = {
+    "ram": "Memory.csv",
+    "psu": "PSU.csv",
+    "case": "Case.csv",
+    "cooler": "Cooler.csv",
+    "storage": "Storage.csv",
 }
 
 
@@ -72,31 +51,95 @@ def _rows(connection: Any, query: str) -> list[tuple[Any, ...]]:
     return [tuple(row) for row in connection.execute(query).fetchall()]
 
 
-def _extend_ram_catalog(source: Any, destination: Any, previous: str, current: str) -> None:
-    """Append RAM to an older PostgreSQL catalog while preserving existing data."""
-    for query in _NON_RAM_QUERIES:
-        if _rows(source, query) != _rows(destination, query):
-            raise RuntimeError("PostgreSQL catalog was imported from another SQLite version")
-    if not _rows(source, _RAM_QUERIES["items"]):
+def _category_rows(
+    connection: Any, table: str, category: str, source_file: str
+) -> list[tuple[Any, ...]]:
+    """Read one category's transfer rows in stable order."""
+    columns = ", ".join(f"{table}.{column}" for column in TABLE_COLUMNS[table])
+    if table == "source_records":
+        query = f"SELECT {columns} FROM {table} WHERE file_name = %s ORDER BY row_number"  # noqa: S608
+        statement = (
+            query.replace("%s", "?") if isinstance(connection, sqlite3.Connection) else query
+        )
+        return [tuple(row) for row in connection.execute(statement, (source_file,)).fetchall()]
+    if table == "items":
+        query = f"SELECT {columns} FROM items WHERE category = %s ORDER BY id"  # noqa: S608
+    else:
+        query = (
+            f"SELECT {columns} FROM {table} JOIN items ON items.id = {table}.item_id "  # noqa: S608
+            f"WHERE items.category = %s ORDER BY {table}.{TABLE_COLUMNS[table][0]}"
+        )
+    statement = query.replace("%s", "?") if isinstance(connection, sqlite3.Connection) else query
+    return [tuple(row) for row in connection.execute(statement, (category,)).fetchall()]
+
+
+def _extend_catalog(source: Any, destination: Any, previous: str, current: str) -> None:
+    """Append entirely new categories without replacing existing PostgreSQL records."""
+    source_categories = {row[0] for row in _rows(source, "SELECT DISTINCT category FROM items")}
+    destination_categories = {
+        row[0] for row in _rows(destination, "SELECT DISTINCT category FROM items")
+    }
+    added = source_categories - destination_categories
+    if not added or not added.issubset(_CATEGORY_SOURCE_FILE):
         raise RuntimeError("PostgreSQL catalog was imported from another SQLite version")
-    for table, query in _RAM_QUERIES.items():
-        rows = _rows(source, query)
-        if rows:
-            columns = TABLE_COLUMNS[table]
-            placeholders = ", ".join(["%s"] * len(columns))
-            statement = (
-                f"INSERT INTO {table} ({', '.join(columns)}) "  # noqa: S608
-                f"VALUES ({placeholders}) ON CONFLICT DO NOTHING"
+    for table in ("items", "identifiers", "source_records"):
+        if table == "source_records":
+            files = tuple(_CATEGORY_SOURCE_FILE[category] for category in sorted(added))
+            placeholders = ", ".join(["%s"] * len(files))
+            query = (
+                "SELECT dataset, file_name, row_number, payload_json, item_id, status, reason "  # noqa: S608
+                f"FROM source_records WHERE file_name NOT IN ({placeholders}) "
+                "ORDER BY dataset, file_name, row_number"
             )
-            with destination.cursor() as target:
-                target.executemany(statement, rows)
-        if rows != _rows(destination, query):
-            raise RuntimeError(f"PostgreSQL RAM extension differs from SQLite in {table}")
+            old_source = [
+                tuple(row) for row in source.execute(query.replace("%s", "?"), files).fetchall()
+            ]
+            old_destination = [tuple(row) for row in destination.execute(query, files).fetchall()]
+        else:
+            if table == "items":
+                columns = "items.id, items.category, items.brand, items.model, items.image_url"
+                query = f"SELECT {columns} FROM items WHERE category = %s ORDER BY id"  # noqa: S608
+            else:
+                columns = ", ".join(f"{table}.{column}" for column in TABLE_COLUMNS[table])
+                query = (
+                    f"SELECT {columns} FROM identifiers "  # noqa: S608
+                    "JOIN items ON items.id = identifiers.item_id "
+                    "WHERE items.category = %s ORDER BY identifiers.normalized"
+                )
+            old_source = [
+                tuple(row)
+                for category in sorted(destination_categories)
+                for row in source.execute(query.replace("%s", "?"), (category,)).fetchall()
+            ]
+            old_destination = [
+                tuple(row)
+                for category in sorted(destination_categories)
+                for row in destination.execute(query, (category,)).fetchall()
+            ]
+        if old_source != old_destination:
+            raise RuntimeError("PostgreSQL catalog was imported from another SQLite version")
+    for category in sorted(added):
+        for table, column_names in TABLE_COLUMNS.items():
+            rows = _category_rows(source, table, category, _CATEGORY_SOURCE_FILE[category])
+            if rows:
+                placeholders = ", ".join(["%s"] * len(column_names))
+                statement = (
+                    f"INSERT INTO {table} ({', '.join(column_names)}) "  # noqa: S608
+                    f"VALUES ({placeholders}) ON CONFLICT DO NOTHING"
+                )
+                with destination.cursor() as target:
+                    target.executemany(statement, rows)
+            if rows != _category_rows(
+                destination, table, category, _CATEGORY_SOURCE_FILE[category]
+            ):
+                raise RuntimeError(
+                    f"PostgreSQL {category} extension differs from SQLite in {table}"
+                )
     destination.execute(
         "UPDATE catalog_imports SET source_digest = %s WHERE source_digest = %s",
         (current, previous),
     )
-    logger.info("RAM catalog extension verified rows={}", len(_rows(source, _RAM_QUERIES["items"])))
+    logger.info("Catalog extension verified categories={}", sorted(added))
 
 
 def _signature(connection: Any, table: str, columns: tuple[str, ...]) -> tuple[int, str]:
@@ -157,7 +200,7 @@ def migrate_catalog(sqlite_path: Path, database_url: SecretStr) -> dict[str, int
             prior = destination.execute("SELECT source_digest FROM catalog_imports").fetchone()
             if prior is not None:
                 if prior[0] != manifest_digest:
-                    _extend_ram_catalog(source, destination, prior[0], manifest_digest)
+                    _extend_catalog(source, destination, prior[0], manifest_digest)
                 return {table: signature[0] for table, signature in signatures.items()}
             for table, columns in TABLE_COLUMNS.items():
                 source_count, source_digest = signatures[table]

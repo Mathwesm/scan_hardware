@@ -23,7 +23,7 @@ class PhotoCase(BaseModel):
 
     name: str = Field(min_length=1)
     image: Path
-    category: Literal["cpu", "gpu", "motherboard"]
+    category: Literal["cpu", "gpu", "motherboard", "ram", "psu", "case", "cooler", "storage"]
     expected_status: Literal["matched", "suggestions", "not_found"]
     expected_item_id: str | None = None
     source_url: str | None = None
@@ -67,9 +67,10 @@ def evaluate_case(
         Comparison with a Boolean pass decision.
     """
     top_id = result.matches[0].id if result.matches else None
-    passed = result.status == case.expected_status and (
-        case.expected_item_id is None or top_id == case.expected_item_id
+    status_passed = result.status == case.expected_status or (
+        case.expected_status == "suggestions" and result.status == "matched"
     )
+    passed = status_passed and (case.expected_item_id is None or top_id == case.expected_item_id)
     return CaseResult(
         name=case.name,
         category=case.category,

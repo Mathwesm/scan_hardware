@@ -107,3 +107,23 @@ def test_photo_evaluation_does_not_promote_suggestion_to_exact() -> None:
     )
 
     assert not evaluate_case(case, ScanResponse.from_result(result), 1.2, "test-digest").passed
+
+
+def test_photo_evaluation_accepts_exact_upgrade_of_expected_suggestion() -> None:
+    item = Item(
+        id="cpu-1", category=Category.CPU, brand="Intel", model="E8400", identifiers=["E8400"]
+    )
+    result = ScanResult(
+        status="matched",
+        detected_text=["E8400"],
+        matches=[Match(item=item, matched_identifier="E8400", score=1, is_exact=True)],
+    )
+    case = PhotoCase(
+        name="clearer CPU photo",
+        image=Path("cpu.jpg"),
+        category="cpu",
+        expected_status="suggestions",
+        expected_item_id="cpu-1",
+    )
+
+    assert evaluate_case(case, ScanResponse.from_result(result), 1.2, "test-digest").passed

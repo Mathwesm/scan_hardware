@@ -1,9 +1,41 @@
 # Validação de campo do scanner
 
-Resultados locais em 08, 11 e 12/10/2026. As fotos, manifestos e respostas completas
+Resultados locais em 08, 11, 12 e 14/10/2026. As fotos, manifestos e respostas completas
 ficam sob `data/validation/`, fora do Git. Os testes enviaram bytes reais de JPEG
-ou PNG para `POST /scan`; não simularam a saída do OCR. Recortes da mesma imagem
+PNG ou WebP para `POST /scan`; não simularam a saída do OCR. Recortes da mesma imagem
 são testes de enquadramento, não peças adicionais.
+
+## Fontes e memória RAM: fotos externas
+
+Em 14/10, baixamos quatro fotografias identificadas na Wikimedia Commons e
+enviamos os arquivos reais para `POST /scan`. As duas fotos com etiqueta legível
+retornaram o modelo exato do catálogo; as duas sem part number visível retornaram
+`not_found`, sem atribuir um modelo só pela aparência.
+
+| Foto | Código visível | Resultado | Tempo |
+| --- | --- | --- | ---: |
+| [Cooler Master, face com etiqueta](https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg) | `MPE-6501-AFAAG` | `matched`, fonte exata | 4,4 s |
+| [Samsung DDR4, etiqueta](https://commons.wikimedia.org/wiki/File:Samsung_DDR4-RAM_20210612_001.png) | `M378A2K43CB1-CTD` | `matched`, RAM exata | 2,6 s |
+| [Cooler Master, lado sem código](https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_side_view.jpg) | Não | `not_found` | 20,6 s |
+| [Corsair Vengeance, frente sem código](https://commons.wikimedia.org/wiki/File:Corsair_Vengeance_16GB_(2x8GB)_DDR3_1600_MHz_(PC3_12800)_Desktop_Memory_(CMZ16GX3M2A1600C10).jpg) | Não | `not_found` | 30,5 s |
+
+Os autores e licenças estão nas páginas ligadas e no manifesto local
+`data/validation/internet/manifest.json`. O relatório é
+`data/validation/internet/reports/20261014T030650097646Z/report.json`.
+A foto da Samsung usou a miniatura oficial de 3.840 pixels (5,0 MB), pois o
+arquivo original excede o limite de upload de 8 MB da API.
+Fotos sem código ainda levam 20–31 segundos porque o OCR tenta contraste e
+rotações; essa latência precisa ser reduzida antes de um aplicativo móvel.
+
+Uma segunda bateria usou três fotografias reais distintas (placa-mãe, CPU e GPU),
+cada uma original, invertida e escurecida, e cinco etiquetas **sintéticas** de
+RAM, fonte, gabinete, cooler e armazenamento nas mesmas três condições.
+Os 24 envios encontraram o item esperado (9 variantes de fotos reais e 15
+etiquetas sintéticas). Relatório:
+`data/validation/stress/reports/20261014T030403570865Z/report.json`.
+Essas variantes não são 24 peças diferentes e **não comprovam 95% de acerto
+geral**. Para medir essa meta, ainda é necessária uma amostra independente e
+representativa de fotos feitas por usuários em diferentes celulares.
 
 ## Foto enviada pelo usuário: Gigabyte GA-Z77X-UD5H
 

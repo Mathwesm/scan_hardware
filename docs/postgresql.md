@@ -20,9 +20,10 @@ em uma transação, `items`, `identifiers`, `source_records`, `item_images` e
 criados antes da cópia. A migração compara a quantidade e um SHA-256 dos registros
 ordenados em cada tabela. Se divergir, a transação é revertida e o scanner não sobe.
 Ela registra a versão importada em `catalog_imports`; reinícios com a mesma versão
-não duplicam registros. Ao atualizar uma instalação antiga sem RAM, o scanner
-recria um SQLite versionado a partir dos ZIPs, compara os registros anteriores
-de CPU, GPU e placa-mãe e acrescenta apenas RAM ao PostgreSQL em uma transação.
+não duplicam registros. Ao atualizar uma instalação antiga sem RAM, fontes,
+gabinetes, coolers ou armazenamento, o scanner recria um SQLite versionado a partir
+dos ZIPs, compara os registros das categorias já existentes e acrescenta apenas
+as categorias ausentes ao PostgreSQL em uma transação.
 Fotos e preços já gravados permanecem. Qualquer alteração nos registros anteriores
 interrompe a atualização sem trocar o banco; outras versões diferentes exigem
 revisão manual. O SQLite anterior continua no volume para comparação ou retorno.
