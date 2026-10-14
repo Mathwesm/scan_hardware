@@ -39,8 +39,9 @@ Depois de identificar uma placa-mãe ou CPU, consulte
 `GET /specs/{id}/socket-related?limit=20&offset=0`. A resposta traz `socket`,
 `relation: "same_socket"`, `total` e `matches` com `id`, categoria, marca, modelo,
 imagem e socket de cada peça. A busca funciona nos dois sentidos: placa-mãe → CPUs
-e CPU → placas-mãe. A página `/demo` oferece o botão **Ver peças com o mesmo socket**
-no resultado do scan ou da busca por código. `limit` aceita 1–100; `offset` começa
+e CPU → placas-mãe. A página `/demo` mostra a primeira página dessa lista
+automaticamente quando o código da peça é identificado com exatidão; para
+sugestões de modelo, a lista só abre ao tocar no botão. `limit` aceita 1–100; `offset` começa
 em zero. Se o socket estiver ausente ou em conflito entre fontes, a lista vem vazia.
 
 Este vínculo indica **apenas igualdade de socket**. A compatibilidade real também
