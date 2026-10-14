@@ -55,6 +55,14 @@
       "source_url": "https://mobilespecs.net/motherboard/ECS/ECS_G41T-MR23_V1-0.html",
       "license_name": null,
       "license_url": null
+    },
+    {
+      "item_id": "psu-fbb922946103cbae772d2c0b",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg",
+      "creator": "ITEagle Europe - Sebastiaan Broekhoven",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg",
+      "license_name": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/"
     }
   ]
 }
