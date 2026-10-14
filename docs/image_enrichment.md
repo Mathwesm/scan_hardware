@@ -37,9 +37,11 @@ O cruzamento usa primeiro o **identificador do anúncio** presente nas duas font
 além da categoria e da marca. Isso inclui RAM, fontes, gabinetes, coolers e
 armazenamento, mesmo quando os nomes descritivos são diferentes. Na falta desse
 identificador, CPU, GPU e placa-mãe usam o **nome original** da linha importada e a
-**marca**; para GPU, também exigem igualdade do **chipset**. Só é publicado o
-produto com uma única URL de imagem possível. URLs `no-image`, placeholders,
-registros inválidos e casos com URLs diferentes para a mesma chave são rejeitados.
+**marca**; para GPU, também exigem igualdade do **chipset**. Para CPU com mais de
+um anúncio do mesmo modelo, a única foto marcada `oemtray` pode ser escolhida
+como referência do processador sem caixa. Duas fotos tray continuam ambíguas.
+URLs `no-image`, placeholders, registros inválidos e demais casos com URLs
+diferentes para a mesma chave são rejeitados.
 O manifesto guarda ID, categoria e modelo do nosso catálogo; se alguém substituir
 o item mantendo o ID, a URL externa deixa de ser aplicada.
 
@@ -47,10 +49,25 @@ A prioridade da API é: imagem revisada manualmente, imagem cadastrada no catál
 imagem do export exato. Uma imagem local enviada por `PUT /items/{id}/image`
 continua prevalecendo no campo `image_url` de `/scan` e `/lookup`.
 
-## Auditoria de 14/10/2026
+## Pesquisa complementar de CPUs em 14/10/2026
 
-O novo cruzamento encontrou **140 URLs adicionais** sem retirar ou trocar nenhuma
-das 6.007 associações existentes. A cobertura atual inclui todas as oito categorias:
+Dos 258 processadores sem imagem, 106 tinham várias fotos associadas ao nome
+exato no export já utilizado. A seleção restrita de um único anúncio tray
+recuperou 31 imagens. Uma foto adicional do [Ryzen 5 3600 no Wikimedia Commons](https://commons.wikimedia.org/wiki/File:AMD@7nm(12nmIO)@Zen2@Matisse@Ryzen_5_3600@100-000000031_BF_1923SUT_9HM6935R90062_DSCx1.jpg)
+foi vinculada manualmente ao modelo exato, com autor e licença no manifesto.
+O catálogo passou a ter **673 de 899 CPUs com imagem**; **226 continuam sem**.
+O export não traz correspondência exata para a maioria das restantes, e os
+casos com múltiplas fotos tray permanecem pendentes de revisão visual.
+
+As URLs do export são imagens de referência, não uma validação visual individual
+de todos os processadores. O campo pode mostrar o chip ou a embalagem,
+dependendo do anúncio. O arquivo revisado manualmente tem precedência.
+
+## Auditoria de 14/10/2026 antes da pesquisa complementar
+
+O cruzamento daquela etapa encontrou **140 URLs adicionais** sem retirar ou trocar
+nenhuma das 6.007 associações existentes. A cobertura naquele momento incluía
+todas as oito categorias:
 
 | Categoria | Com imagem | Sem imagem |
 | --- | ---: | ---: |

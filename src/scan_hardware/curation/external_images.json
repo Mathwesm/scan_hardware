@@ -99,6 +99,14 @@
       "source_id": "440673"
     },
     {
+      "item_id": "cpu-0140310e0df23957497410b6",
+      "category": "cpu",
+      "model": "AMD Ryzen 5 3600X",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/fd7b679a51670fc1161384cf95ba464f.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/FCprxr/amd-ryzen-5-3600x-38-thz-6-core-oemtray-processor-100-000000022",
+      "source_id": "244372"
+    },
+    {
       "item_id": "cpu-01e79dfb7e6caeb2353a1ad4",
       "category": "cpu",
       "model": "Intel Pentium G2120",
@@ -203,6 +211,22 @@
       "source_id": "32878"
     },
     {
+      "item_id": "cpu-066e43227c28c0543f3ca500",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1230 V6",
+      "image_url": "https://m.media-amazon.com/images/I/41DCChaz-mL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/pncMnQ/intel-xeon-e3-1230-v6-35ghz-quad-core-oemtray-processor-cm8067702870650",
+      "source_id": "127806"
+    },
+    {
+      "item_id": "cpu-0859ae7b635532d0ff9e8514",
+      "category": "cpu",
+      "model": "Intel Celeron G3950",
+      "image_url": "https://images-eu.ssl-images-amazon.com/images/I/51SIxouYoCL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/Ytqbt6/intel-celeron-g3950-30ghz-dual-core-oemtray-processor-cm8067703015716",
+      "source_id": "87882"
+    },
+    {
       "item_id": "cpu-087d484b8fb43f5fa38a43da",
       "category": "cpu",
       "model": "Intel Core i5-3550",
@@ -291,6 +315,14 @@
       "source_id": "42225"
     },
     {
+      "item_id": "cpu-0ea8aaf48579854abe157bd4",
+      "category": "cpu",
+      "model": "Intel Xeon E5-1620 V4",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/dc56d2a380288a2495a1b9abfc15fb65.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/9t7CmG/intel-xeon-e5-1620-v4-35ghz-quad-core-oemtray-processor-cm8066002044103",
+      "source_id": "54260"
+    },
+    {
       "item_id": "cpu-0eb12d97b54de572bd4f4a3f",
       "category": "cpu",
       "model": "Intel Core i7-4960X Extreme Edition",
@@ -369,6 +401,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51JoxobFKIL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/HscMnQ/amd-cpu-ad785bxbi44ja",
       "source_id": "39257"
+    },
+    {
+      "item_id": "cpu-13a8a3133a6a3be7d187b2a3",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1270 V6",
+      "image_url": "https://m.media-amazon.com/images/I/514qJRME6AL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/KLtWGX/intel-xeon-e3-1270-v6-38ghz-quad-core-oemtray-processor-cm8067702870648",
+      "source_id": "127810"
     },
     {
       "item_id": "cpu-143e53efcefbcd205d375b12",
@@ -499,6 +539,14 @@
       "source_id": "19936"
     },
     {
+      "item_id": "cpu-20e04802dc841c57553f9906",
+      "category": "cpu",
+      "model": "AMD Athlon 3000G (14nm)",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/888490b03ca5aedfcd98c2f7363d2ed9.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/GdFKHx/amd-athlon-3000g-35-ghz-dual-core-oemtray-processor-yd3000c6m2ofh",
+      "source_id": "268744"
+    },
+    {
       "item_id": "cpu-20f6b6beb02d885d02b9e5b5",
       "category": "cpu",
       "model": "Intel Pentium G3250",
@@ -571,12 +619,28 @@
       "source_id": "9464"
     },
     {
+      "item_id": "cpu-259744e3e47af9945e1f0b7c",
+      "category": "cpu",
+      "model": "Intel Core i7-4790",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/87e7981e09217ef72534460e0cf767b8.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/94MTwP/intel-core-i7-4790-36-ghz-quad-core-oemtray-processor-cm8064601560113",
+      "source_id": "263081"
+    },
+    {
       "item_id": "cpu-26f0df00d608a7036df472dd",
       "category": "cpu",
       "model": "Intel Core i3-2125",
       "image_url": "https://images-na.ssl-images-amazon.com/images/I/51-6mwSNpvL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/HtGkcf/intel-cpu-bx80623i32125",
       "source_id": "8613"
+    },
+    {
+      "item_id": "cpu-28f1f79e9d57f5cc5a77b27a",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1240 V6",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/2be1f13408e22ee3994b0ad7ece20b2d.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/PDBrxr/intel-xeon-e3-1240-v6-37ghz-quad-core-oemtray-processor-cm8067702870649",
+      "source_id": "127800"
     },
     {
       "item_id": "cpu-299c50218126f526c64607c7",
@@ -731,6 +795,14 @@
       "source_id": "3132"
     },
     {
+      "item_id": "cpu-358c079dc22ad04f271965cd",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1220 V6",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/50f8ba1bfc679fa124102fc246db40d3.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/vFzZxr/intel-xeon-e3-1220-v6-30ghz-quad-core-oemtray-processor-cm8067702870812",
+      "source_id": "127802"
+    },
+    {
       "item_id": "cpu-35c37f6e03d1a41a3bbe3793",
       "category": "cpu",
       "model": "Intel Core i5-3450",
@@ -761,6 +833,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51rLr1NagHL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/rMnG3C/intel-cpu-bx80644e52660v3",
       "source_id": "38616"
+    },
+    {
+      "item_id": "cpu-387ccfd2210eb024e02f5178",
+      "category": "cpu",
+      "model": "Intel Pentium G4620",
+      "image_url": "https://m.media-amazon.com/images/I/51ycqO0kOvL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/rjs8TW/intel-pentium-g4620-37ghz-dual-core-oemtray-processor-cm8067703015524",
+      "source_id": "81668"
     },
     {
       "item_id": "cpu-387f0d8c9673f22d1067ff64",
@@ -825,6 +905,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51IO3YbkNpL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/XQ8Zxr/intel-cpu-bx80646e31276v3",
       "source_id": "30842"
+    },
+    {
+      "item_id": "cpu-3db615682c8dc1f363d6a8ac",
+      "category": "cpu",
+      "model": "AMD Ryzen 7 3700X",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/e729f016407018e8894b7db7eac671e8.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/KsHRsY/amd-ryzen-7-3700x-36-ghz-8-core-oemtray-processor-100-000000071",
+      "source_id": "244370"
     },
     {
       "item_id": "cpu-3e257cfe6e99bf4231c5ca5f",
@@ -985,6 +1073,14 @@
       "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/2a632529a950e5b3707bc97f75ca14a9.256p.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/ZYgPxr/intel-cpu-bx80662e31275v5",
       "source_id": "50845"
+    },
+    {
+      "item_id": "cpu-4902e3343be298824d1582ef",
+      "category": "cpu",
+      "model": "Intel Xeon E-2134",
+      "image_url": "https://m.media-amazon.com/images/I/41gKojt3OHL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/fHGnTW/intel-xeon-e-2134-35-thz-quad-core-oemtray-processor-cm8068403654319",
+      "source_id": "261502"
     },
     {
       "item_id": "cpu-490a9b4c7682471965090668",
@@ -1459,12 +1555,28 @@
       "source_id": "19508"
     },
     {
+      "item_id": "cpu-757aad7fdea5c52fb1890967",
+      "category": "cpu",
+      "model": "Intel Xeon E-2136",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/bdebd1b3f1514e9d09a5308cd6d2232d.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/cw22FT/intel-xeon-e-2136-33-thz-6-core-oemtray-processor-cm8068403654318",
+      "source_id": "212208"
+    },
+    {
       "item_id": "cpu-75f54ecbaabae9f88abe1f78",
       "category": "cpu",
       "model": "Intel Xeon E5-1660 V3",
       "image_url": "https://m.media-amazon.com/images/I/51RRp6gKSyL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/DjZ2FT/intel-cpu-cm8064401909200",
       "source_id": "51889"
+    },
+    {
+      "item_id": "cpu-7602a4bad23639efbe2baa8c",
+      "category": "cpu",
+      "model": "Intel Xeon E5-2665",
+      "image_url": "https://m.media-amazon.com/images/I/41j9y0rL2SL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/CHm323/intel-xeon-e5-2665-24-ghz-8-core-oemtray-processor-cm8062101143101",
+      "source_id": "214463"
     },
     {
       "item_id": "cpu-76e7f4ae4e02ecfd4fb17b6f",
@@ -1481,6 +1593,14 @@
       "image_url": "https://m.media-amazon.com/images/I/41ND+OuTN0L.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/LVzv6h/intel-cpu-bx80571e6800",
       "source_id": "2817"
+    },
+    {
+      "item_id": "cpu-79e943bb5d1b279dd7b3eceb",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G5500",
+      "image_url": "https://m.media-amazon.com/images/I/41xTL30cFlL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/nFKcCJ/intel-pentium-gold-g5500-38ghz-dual-core-oemtray-processor-cm8068403377611",
+      "source_id": "169618"
     },
     {
       "item_id": "cpu-7ac6ab901e6581fcb852bd7d",
@@ -1643,6 +1763,14 @@
       "source_id": "183"
     },
     {
+      "item_id": "cpu-8530605542f9e180bc3ab85d",
+      "category": "cpu",
+      "model": "Intel Pentium G4560",
+      "image_url": "https://m.media-amazon.com/images/I/51ycqO0kOvL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/mTVBD3/intel-pentium-g4560-35ghz-dual-core-oemtray-processor-cm8067702867064",
+      "source_id": "81664"
+    },
+    {
       "item_id": "cpu-8562eba1bfbb980bd012c7c1",
       "category": "cpu",
       "model": "Intel Core i7-4930K",
@@ -1665,6 +1793,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51K3vDvNiHL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/nDtCmG/amd-cpu-ad6500okhlbox",
       "source_id": "19923"
+    },
+    {
+      "item_id": "cpu-8692fd64a3055855ff09cd88",
+      "category": "cpu",
+      "model": "Intel Xeon E-2176G",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/16c5639a1b2ee40e36e80bfb3a2035a6.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/DYF48d/intel-xeon-e-2176g-37-thz-6-core-oemtray-processor-cm8068403380018",
+      "source_id": "212206"
     },
     {
       "item_id": "cpu-87bc6b3e152490a5c04ed279",
@@ -1817,6 +1953,22 @@
       "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/804af63db07f9e7824da7f7fe6e92734.256p.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/3WMFf7/intel-cpu-cm8063501287602",
       "source_id": "32309"
+    },
+    {
+      "item_id": "cpu-956f20a459799f7230a8cd12",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G6600",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/f0759a4959e5c1e33d989ec46262c6b6.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/sX9tt6/intel-pentium-gold-g6600-42-ghz-dual-core-oemtray-processor-cm8070104291510",
+      "source_id": "345548"
+    },
+    {
+      "item_id": "cpu-962347823d734b42e6706b64",
+      "category": "cpu",
+      "model": "Intel Celeron G4900",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/67d6c57eae5170d56282ab69bf97d70b.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/bWBTwP/intel-celeron-g4900-31ghz-dual-core-oemtray-processor-cm8068403378112",
+      "source_id": "170500"
     },
     {
       "item_id": "cpu-9632917d8a8cb9e64b8c852d",
@@ -2067,6 +2219,14 @@
       "source_id": "10092"
     },
     {
+      "item_id": "cpu-a6c4977d2ec62972391b0c65",
+      "category": "cpu",
+      "model": "AMD Ryzen 9 3950X",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/5b4809210442c8dc43c9f1f5c14370ea.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/zsxbt6/amd-ryzen-9-3950x-35-ghz-16-core-oemtray-processor-100-000000051",
+      "source_id": "293315"
+    },
+    {
       "item_id": "cpu-a82353ceb2d9be4f163cf8ec",
       "category": "cpu",
       "model": "AMD A10-9700E",
@@ -2129,6 +2289,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51D1YDrqunL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/X8ckcf/intel-cpu-bx80570e8200",
       "source_id": "151"
+    },
+    {
+      "item_id": "cpu-af89e2525397052af9fee026",
+      "category": "cpu",
+      "model": "Intel Xeon E-2124G",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/d6c36622be6a53891293f2d835048b5f.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/ZBKcCJ/intel-xeon-e-2124g-34-thz-quad-core-oemtray-processor-cm8068403654114",
+      "source_id": "219340"
     },
     {
       "item_id": "cpu-b2df76b7863c7abe7a8bff38",
@@ -2315,6 +2483,14 @@
       "source_id": "39356"
     },
     {
+      "item_id": "cpu-c080d9dfbaf44db7c613a07e",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G5400",
+      "image_url": "https://m.media-amazon.com/images/I/51CNDDg0VaL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/6Tzkcf/intel-pentium-gold-g5400-37ghz-dual-core-oemtray-processor-cm8068403360112",
+      "source_id": "170502"
+    },
+    {
       "item_id": "cpu-c0dcca99bd03bc5736ed2cb6",
       "category": "cpu",
       "model": "Intel Core i5-3340S",
@@ -2435,6 +2611,22 @@
       "source_id": "261506"
     },
     {
+      "item_id": "cpu-cc3533e60f25181882d619e7",
+      "category": "cpu",
+      "model": "AMD Athlon 200GE",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/34a0c81b9caf1c467170ccffe1418812.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/yxm323/amd-athlon-200ge-32ghz-dual-core-oemtray-processor-yd200gc6m2ofb",
+      "source_id": "197781"
+    },
+    {
+      "item_id": "cpu-cd449501159aaa9afb2783bf",
+      "category": "cpu",
+      "model": "Intel Xeon E-2236",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/04f08a1dee17429cdf0a6021ebe5351d.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/YTYQzy/intel-xeon-e-2236-34-thz-6-core-oemtray-processor-cm8068404174603",
+      "source_id": "261500"
+    },
+    {
       "item_id": "cpu-cd8153de30dcae1d35a78a58",
       "category": "cpu",
       "model": "Intel Xeon E5-2603 V4",
@@ -2515,6 +2707,14 @@
       "source_id": "13451"
     },
     {
+      "item_id": "cpu-d7617b19eaabe0d131819551",
+      "category": "cpu",
+      "model": "Intel Xeon E-2124",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/fe315107693b7379271b92c9e14e3824.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/2kQG3C/intel-xeon-e-2124-33-thz-quad-core-oemtray-processor-cm8068403654414",
+      "source_id": "213175"
+    },
+    {
       "item_id": "cpu-d88b31bd4c2d489897347d35",
       "category": "cpu",
       "model": "Intel Xeon E5-2620",
@@ -2545,6 +2745,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51SBn4O7H5L.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/ZxJwrH/intel-cpu-bx80571e5500",
       "source_id": "2905"
+    },
+    {
+      "item_id": "cpu-d9b583651c13be3b9a1bf92d",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1225 V6",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/fa3cfa8408aca56a083f09d198f03e4d.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/hrTrxr/intel-xeon-e3-1225-v6-33ghz-quad-core-oemtray-processor-cm8067702871024",
+      "source_id": "127804"
     },
     {
       "item_id": "cpu-ddf3c51c974c2228e6992342",
@@ -2707,6 +2915,14 @@
       "source_id": "125455"
     },
     {
+      "item_id": "cpu-e9fa87ea1df26c14eb94fd08",
+      "category": "cpu",
+      "model": "Intel Pentium Gold G5600",
+      "image_url": "https://m.media-amazon.com/images/I/41gKojt3OHL.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/9PgzK8/intel-pentium-gold-g5600-39ghz-dual-core-oemtray-processor-cm8068403377513",
+      "source_id": "169598"
+    },
+    {
       "item_id": "cpu-ea1bafb8dc2843b6912eb75d",
       "category": "cpu",
       "model": "Intel Pentium Gold G5400T",
@@ -2723,12 +2939,28 @@
       "source_id": "32086"
     },
     {
+      "item_id": "cpu-eb7187168d22c9a0db021ea4",
+      "category": "cpu",
+      "model": "Intel Celeron G5925",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/4e74ee4ede2abc74ce883111381c4462.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/Z2Dkcf/intel-celeron-g5925-36-ghz-dual-core-oemtray-processor-cm8070104292013",
+      "source_id": "310426"
+    },
+    {
       "item_id": "cpu-ebb1af210c241aee9ef2ca6a",
       "category": "cpu",
       "model": "Intel Celeron G5900",
       "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/6be6a2a6df1721fef27435a91c501521.256p.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/37gQzy/intel-celeron-g5900-34-ghz-dual-core-processor-bx80701g5900",
       "source_id": "296167"
+    },
+    {
+      "item_id": "cpu-ebe3d85a332262a3715db44b",
+      "category": "cpu",
+      "model": "AMD Ryzen 7 3800X",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/1c98c8fccc44a3696129e74df5243312.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/gryV3C/amd-ryzen-7-3800x-39-ghz-8-core-oemtray-processor-100-000000025",
+      "source_id": "244368"
     },
     {
       "item_id": "cpu-eddd4104a5d3b76070c1541a",
@@ -2769,6 +3001,14 @@
       "image_url": "https://images-na.ssl-images-amazon.com/images/I/51bCM4jw7oL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/LTckcf/intel-cpu-bx80623i72600k",
       "source_id": "4321"
+    },
+    {
+      "item_id": "cpu-f2b1d48e177156d81730ee5c",
+      "category": "cpu",
+      "model": "Intel Xeon E3-1245 V6",
+      "image_url": "https://m.media-amazon.com/images/I/41NEM6g9ryS.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/gxX2FT/intel-xeon-e3-1245-v6-37ghz-quad-core-oemtray-processor-cm8067702870932",
+      "source_id": "127808"
     },
     {
       "item_id": "cpu-f382f0e959fb925c71c32b15",
@@ -2881,6 +3121,14 @@
       "image_url": "https://m.media-amazon.com/images/I/51O3T1mHxtL.jpg",
       "source_url": "https://fr.pcpartpicker.com/product/pYjG3C/intel-cpu-bx80623i32120t",
       "source_id": "8614"
+    },
+    {
+      "item_id": "cpu-ff6e802bfa401ee27651903a",
+      "category": "cpu",
+      "model": "AMD Ryzen 9 3900X",
+      "image_url": "https://cdna.pcpartpicker.com/static/forever/images/product/24ff507103b5ff52377621b24930dddd.256p.jpg",
+      "source_url": "https://fr.pcpartpicker.com/product/pQ3H99/amd-ryzen-9-3900x-36-ghz-12-core-oemtray-processor-100-000000023",
+      "source_id": "244366"
     },
     {
       "item_id": "cpu-ff7e2c22f808b671c891d98c",

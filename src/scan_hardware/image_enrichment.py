@@ -240,6 +240,36 @@ def _catalog_records(path: Path) -> tuple[list[sqlite3.Row], dict[str, list[dict
     return items, by_item
 
 
+def _prefer_unique_cpu_tray(candidates: dict[str, FeedProduct]) -> dict[str, FeedProduct]:
+    """Choose a processor photo only if exactly one tray listing is available."""
+    tray_candidates = {
+        url: product
+        for url, product in candidates.items()
+        if "oemtray" in urlsplit(str(product.url)).path.lower()
+    }
+    return tray_candidates if len(tray_candidates) == 1 else candidates
+
+
+def _image_candidates_for_item(
+    category: Category,
+    item: sqlite3.Row,
+    source_rows: list[dict[str, Any]],
+    index: dict[ProductKey, list[FeedProduct]],
+    by_tag: dict[TagKey, list[FeedProduct]],
+) -> dict[str, FeedProduct]:
+    """Find exact listing or source-name images for one catalog item."""
+    candidates: dict[str, FeedProduct] = {}
+    for raw in source_rows:
+        tag = _product_tag(raw.get("url", "")) if isinstance(raw.get("url"), str) else None
+        if tag:
+            for product in by_tag.get((category, tag), []):
+                if normalize_identifier(product.brand) == normalize_identifier(item["brand"]):
+                    candidates[str(product.image_url)] = product
+    if not candidates and category in {Category.CPU, Category.GPU, Category.MOTHERBOARD}:
+        candidates = _name_candidates(category, item, source_rows, index)
+    return _prefer_unique_cpu_tray(candidates) if category is Category.CPU else candidates
+
+
 def build_manifest(
     feed_path: Path,
     catalog_path: Path,
@@ -269,15 +299,7 @@ def build_manifest(
         if item["image_url"] or item["id"] in curated:
             counts[f"existing_{category.value}"] += 1
             continue
-        candidates: dict[str, FeedProduct] = {}
-        for raw in sources[item["id"]]:
-            tag = _product_tag(raw.get("url", "")) if isinstance(raw.get("url"), str) else None
-            if tag:
-                for product in by_tag.get((category, tag), []):
-                    if normalize_identifier(product.brand) == normalize_identifier(item["brand"]):
-                        candidates[str(product.image_url)] = product
-        if not candidates and category in {Category.CPU, Category.GPU, Category.MOTHERBOARD}:
-            candidates = _name_candidates(category, item, sources[item["id"]], index)
+        candidates = _image_candidates_for_item(category, item, sources[item["id"]], index, by_tag)
         if len(candidates) == 1:
             product = next(iter(candidates.values()))
             selected.append(

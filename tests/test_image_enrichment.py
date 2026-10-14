@@ -112,6 +112,62 @@ def test_image_feed_coverage_gate_rejects_incomplete_catalog(tmp_path: Path) -> 
         build_manifest(source, catalog.path)
 
 
+def test_cpu_with_boxed_and_single_tray_photo_uses_exact_tray_listing(tmp_path: Path) -> None:
+    """A boxed image must not make an exact CPU tray photo ambiguous."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        "cpu-3600",
+        ItemInput(
+            category=Category.CPU,
+            brand="AMD",
+            model="AMD Ryzen 5 3600",
+            identifiers=["RYZEN-3600"],
+        ),
+    )
+    catalog.put_source_record("fixture", "parts.json", 1, {"name": "AMD Ryzen 5 3600"}, "cpu-3600")
+    boxed = _feed_row("cpu", "AMD Ryzen 5 3600", "AMD", "https://img.test/box.jpg", "BOX")
+    tray = _feed_row("cpu", "AMD Ryzen 5 3600", "AMD", "https://img.test/tray.jpg", "TRAY")
+    tray["url"] = "https://shop.test/product/TRAY/amd-ryzen-5-3600-oemtray-processor"
+    source = tmp_path / "source.jsonl"
+    source.write_text("\n".join(json.dumps(row) for row in [boxed, tray]), encoding="utf-8")
+
+    manifest, report = build_manifest(source, catalog.path, minimums={})
+
+    assert [(image.item_id, str(image.image_url)) for image in manifest.images] == [
+        ("cpu-3600", "https://img.test/tray.jpg")
+    ]
+    assert report["catalog"]["added_cpu"] == 1
+
+
+def test_cpu_with_two_tray_photos_remains_ambiguous(tmp_path: Path) -> None:
+    """Two tray listings still need a model-specific manual image review."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        "cpu-3600",
+        ItemInput(
+            category=Category.CPU,
+            brand="AMD",
+            model="AMD Ryzen 5 3600",
+            identifiers=["RYZEN-3600"],
+        ),
+    )
+    catalog.put_source_record("fixture", "parts.json", 1, {"name": "AMD Ryzen 5 3600"}, "cpu-3600")
+    rows = []
+    for source_id in ("TRAY1", "TRAY2"):
+        row = _feed_row(
+            "cpu", "AMD Ryzen 5 3600", "AMD", f"https://img.test/{source_id}.jpg", source_id
+        )
+        row["url"] = f"https://shop.test/product/{source_id}/amd-ryzen-5-3600-oemtray"
+        rows.append(row)
+    source = tmp_path / "source.jsonl"
+    source.write_text("\n".join(json.dumps(row) for row in rows), encoding="utf-8")
+
+    manifest, report = build_manifest(source, catalog.path, minimums={})
+
+    assert manifest.images == []
+    assert report["catalog"]["ambiguous_cpu"] == 1
+
+
 @pytest.mark.parametrize(
     ("category", "source_category"),
     [
