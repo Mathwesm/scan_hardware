@@ -26,6 +26,9 @@ poetry run python -m scan_hardware
 
 Abra [http://127.0.0.1:8000/demo](http://127.0.0.1:8000/demo) para enviar uma foto
 ou digitar um código. A documentação interativa da API fica em `/docs`.
+Na página de teste, as peças relacionadas abrem em `/demo?item={id}` com foto,
+especificações e outras peças de mesmo socket. `GET /specs/{id}` continua sendo
+o endpoint JSON para aplicativos e integrações.
 Os [preços em R$](docs/precos.md) podem ser importados de ofertas revisadas e recentes;
 o JSON inclui valor, quantidade de lojas e data quando há dados suficientes.
 O mesmo guia explica os preços de referência em USD/EUR para alguns modelos antigos,
