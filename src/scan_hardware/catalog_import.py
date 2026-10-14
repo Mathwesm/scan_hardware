@@ -29,6 +29,7 @@ ROHIT_FILES = {
     "CPU.csv": Category.CPU,
     "GPU.csv": Category.GPU,
     "Motherboard.csv": Category.MOTHERBOARD,
+    "Memory.csv": Category.RAM,
 }
 WARCODER_FILES = {
     "dataset/cpu.json": Category.CPU,
@@ -285,7 +286,13 @@ def _import_supplemental_items(catalog: Catalog) -> dict[str, int]:
 
 def _publish(catalog_path: Path, pointer: Path, counts: dict[str, int]) -> None:
     """Publish only a catalog that passes minimum count and image checks."""
-    minimums = {"cpu": 500, "gpu": 2000, "motherboard": 2000, "items_with_image_url": 4000}
+    minimums = {
+        "cpu": 500,
+        "gpu": 2000,
+        "motherboard": 2000,
+        "ram": 1500,
+        "items_with_image_url": 4000,
+    }
     failures = [
         f"{key}={counts.get(key, 0)} < {minimum}"
         for key, minimum in minimums.items()

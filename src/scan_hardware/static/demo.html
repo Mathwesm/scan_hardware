@@ -30,7 +30,7 @@
   <h1>Teste do scanner</h1>
   <p>Fotografe de perto o código impresso na peça ou escolha uma imagem. O resultado só identifica o modelo quando o texto é legível.</p>
   <form id="photo-form">
-    <label for="photo">Foto do processador, placa de vídeo ou placa-mãe</label>
+    <label for="photo">Foto do processador, placa de vídeo, placa-mãe ou memória RAM</label>
     <input id="photo" name="image" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" required>
     <button type="submit">Escanear foto</button>
   </form>
@@ -43,8 +43,8 @@
   <script>
     const results = document.getElementById('results');
     let lookupText = null;
-    const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', memory_type: 'Tipo de memória', memory_slot_type: 'Tipo de slot', memory_channels: 'Canais de memória', memory_speed_mt_s: 'Memória suportada até', memory_speed_mhz: 'Velocidade da VRAM', memory_bus_bits: 'Barramento da VRAM', shader_units: 'Unidades de processamento', l2_cache_mb: 'Cache L2', l3_cache_mb: 'Cache L3', max_memory_standard_mhz: 'RAM até (sem OC)', max_memory_oc_mhz: 'RAM até (com OC)', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
-    const units = { max_memory_gb: 'GB', vram_gb: 'GB', base_clock_ghz: 'GHz', boost_clock_ghz: 'GHz', tdp_w: 'W', core_clock_mhz: 'MHz', boost_clock_mhz: 'MHz', board_power_w: 'W', length_mm: 'mm', max_memory_standard_mhz: 'MHz', max_memory_oc_mhz: 'MHz', memory_speed_mt_s: 'MT/s', memory_speed_mhz: 'MHz', memory_bus_bits: 'bits', l2_cache_mb: 'MB', l3_cache_mb: 'MB' };
+    const labels = { socket: 'Socket', cores: 'Núcleos', threads: 'Threads', base_clock_ghz: 'Clock base', boost_clock_ghz: 'Clock turbo', tdp_w: 'TDP', integrated_graphics: 'Vídeo integrado', smt: 'SMT', chipset: 'Chipset', vram_gb: 'Memória de vídeo', core_clock_mhz: 'Clock da GPU', boost_clock_mhz: 'Clock turbo da GPU', board_power_w: 'Consumo da placa', form_factor: 'Formato', max_memory_gb: 'Memória máxima', memory_slots: 'Slots de memória', memory_type: 'Tipo de memória', memory_slot_type: 'Tipo de slot', memory_channels: 'Canais de memória', memory_speed_mt_s: 'Velocidade da RAM', capacity_gb: 'Capacidade do kit', module_count: 'Módulos', module_capacity_gb: 'Capacidade por módulo', cas_latency: 'Latência CAS', memory_speed_mhz: 'Velocidade da VRAM', memory_bus_bits: 'Barramento da VRAM', shader_units: 'Unidades de processamento', l2_cache_mb: 'Cache L2', l3_cache_mb: 'Cache L3', max_memory_standard_mhz: 'RAM até (sem OC)', max_memory_oc_mhz: 'RAM até (com OC)', length_mm: 'Comprimento', resolution_class: 'Resolução', color: 'Cor' };
+    const units = { max_memory_gb: 'GB', capacity_gb: 'GB', module_capacity_gb: 'GB', vram_gb: 'GB', base_clock_ghz: 'GHz', boost_clock_ghz: 'GHz', tdp_w: 'W', core_clock_mhz: 'MHz', boost_clock_mhz: 'MHz', board_power_w: 'W', length_mm: 'mm', max_memory_standard_mhz: 'MHz', max_memory_oc_mhz: 'MHz', memory_speed_mt_s: 'MT/s', memory_speed_mhz: 'MHz', memory_bus_bits: 'bits', l2_cache_mb: 'MB', l3_cache_mb: 'MB' };
     function line(parent, tag, value, className) {
       const node = document.createElement(tag);
       node.textContent = value;

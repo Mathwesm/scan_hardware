@@ -32,6 +32,14 @@ class CpuScanner(OcrScanner):
         return ["i3-7350K"]
 
 
+class RamScanner(OcrScanner):
+    """Return a RAM part number for the HTTP scan contract test."""
+
+    def read_text(self, _content: bytes) -> list[str]:
+        """Read the part number from the deterministic fixture."""
+        return ["CMZ16GX3M2A1600C10"]
+
+
 def _png() -> bytes:
     """Create a valid small image for upload validation."""
     image = Image.new("RGB", (128, 64), "white")
@@ -132,6 +140,49 @@ def test_scan_returns_matching_item_and_local_image(tmp_path: Path) -> None:
     assert scan_response.json()["status"] == "matched"
     assert scan_response.json()["matches"][0]["id"] == "board-1"
     assert client.get("/items/board-1/image").content == picture
+
+
+def test_ram_lookup_and_scan_return_flat_kit_specs(tmp_path: Path) -> None:
+    config = Settings(catalog_path=tmp_path / "catalog.sqlite3", image_dir=tmp_path / "images")
+    client = TestClient(create_app(config=config, scanner=RamScanner()))
+    item_id = "ram-corsair-16"
+    response = client.put(
+        f"/items/{item_id}",
+        json={
+            "category": "ram",
+            "brand": "Corsair",
+            "model": "Corsair Vengeance 16 GB (2 x 8 GB) DDR3-1600 CL9 Memory",
+            "identifiers": ["CMZ16GX3M2A1600C10"],
+            "image_url": "https://example.com/ram.jpg",
+        },
+    )
+    assert response.status_code == 200
+    Catalog(config.resolved_catalog_path).put_source_record(
+        "rohitmit98/pc-parts-by-type",
+        "Memory.csv",
+        1,
+        {
+            "name": "Corsair Vengeance 16 GB (2 x 8 GB) DDR3-1600 CL9 Memory",
+            "type": "DDR3",
+            "size": "16",
+        },
+        item_id,
+    )
+
+    lookup = client.post("/lookup", json={"text": "CMZ16GX3M2A1600C10"})
+    scan = client.post("/scan", files={"image": ("ram.png", _png(), "image/png")})
+
+    assert lookup.status_code == 200
+    assert scan.status_code == 200
+    for result in (lookup.json(), scan.json()):
+        assert result["status"] == "matched"
+        assert len(result["matches"]) == 1
+        assert result["matches"][0]["category"] == "ram"
+        assert result["matches"][0]["capacity_gb"] == 16
+        assert result["matches"][0]["module_count"] == 2
+        assert result["matches"][0]["memory_speed_mt_s"] == 1600
+        assert result["matches"][0]["image_url"] == "https://example.com/ram.jpg"
+        assert "specs" not in result["matches"][0]
 
 
 def test_gallery_keeps_front_primary_and_side_as_secondary(tmp_path: Path) -> None:

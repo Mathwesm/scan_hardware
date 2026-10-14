@@ -11,6 +11,7 @@ from scan_hardware.catalog_import import import_archives
 from scan_hardware.catalog_migrate import migrate_catalog
 from scan_hardware.config import Settings, settings
 from scan_hardware.image_seed import seed_images
+from scan_hardware.models.item import Category
 from scan_hardware.price_import import import_prices
 from scan_hardware.services.catalog import Catalog
 
@@ -43,7 +44,21 @@ def prepare_catalog(config: Settings) -> Path:
             config.catalog_latest_pointer,
         )
     path = config.resolved_catalog_path
-    count = Catalog(path).count_items()
+    catalog = Catalog(path)
+    if config.catalog_path is None and catalog.count_category(Category.RAM) == 0:
+        rohit = config.import_rohit_path
+        warcoder = config.import_warcoder_path
+        if rohit is not None and warcoder is not None:
+            logger.info("Published catalog lacks RAM; rebuilding from configured archives")
+            import_archives(
+                rohit,
+                warcoder,
+                config.catalog_latest_pointer.parent / "processed",
+                config.catalog_latest_pointer,
+            )
+            path = config.resolved_catalog_path
+            catalog = Catalog(path)
+    count = catalog.count_items()
     if count == 0:
         raise RuntimeError(f"Published catalog is empty: {path}")
     logger.info("Catalog ready path={} items={}", path, count)

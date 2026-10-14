@@ -15,6 +15,7 @@ class Category(StrEnum):
     MOTHERBOARD = "motherboard"
     GPU = "gpu"
     CPU = "cpu"
+    RAM = "ram"
 
 
 class ItemInput(BaseModel):
@@ -158,6 +159,10 @@ class HardwareSummary(BaseModel):
     max_memory_standard_mhz: int | None = None
     max_memory_oc_mhz: int | None = None
     memory_speed_mt_s: int | None = None
+    capacity_gb: int | None = None
+    module_count: int | None = None
+    module_capacity_gb: int | None = None
+    cas_latency: int | None = None
     l2_cache_mb: float | None = None
     l3_cache_mb: float | None = None
     color: str | None = None

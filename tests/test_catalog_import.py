@@ -14,7 +14,7 @@ from scan_hardware.catalog_import import (
     _import_groups,
     _publish,
 )
-from scan_hardware.core.matching import match_items
+from scan_hardware.core.matching import match_items, search_items
 from scan_hardware.models.item import Category
 from scan_hardware.services.catalog import Catalog
 
@@ -296,3 +296,65 @@ def test_gpu_image_joins_only_matching_chipset(tmp_path: Path) -> None:
 
     assert images["Asus TUF GAMING GeForce RTX 4070 Ti"] is None
     assert images["Asus TUF GAMING GeForce RTX 4080"] == "https://example.com/4080.jpg"
+
+
+def test_ram_part_number_finds_exact_kit_without_confusing_other_capacity(
+    tmp_path: Path,
+) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    rohit = [
+        (
+            Category.RAM,
+            SourceRow(
+                "rohitmit98/pc-parts-by-type",
+                "Memory.csv",
+                1,
+                {
+                    "name": (
+                        "Corsair Vengeance 16 GB (2 x 8 GB) DDR3-1600 CL9 Memory "
+                        "(CMZ16GX3M2A1600C10)"
+                    ),
+                    "image": "https://example.com/ram-16.jpg",
+                    "type": "DDR3",
+                    "size": "16",
+                },
+            ),
+        ),
+        (
+            Category.RAM,
+            SourceRow(
+                "rohitmit98/pc-parts-by-type",
+                "Memory.csv",
+                2,
+                {
+                    "name": (
+                        "Corsair Vengeance 8 GB (2 x 4 GB) DDR3-1600 CL9 Memory "
+                        "(CMZ8GX3M2A1600C9)"
+                    ),
+                    "image": "https://example.com/ram-8.jpg",
+                    "type": "DDR3",
+                    "size": "8",
+                },
+            ),
+        ),
+    ]
+
+    counts = _import_groups(catalog, _build_groups([], rohit))
+    items = catalog.list_items()
+    result = search_items("CMZ16GX3M2A1600C10", items)
+
+    assert counts["ram"] == 2
+    assert counts["items_with_image_url"] == 2
+    assert result.status == "matched"
+    assert len(result.matches) == 1
+    assert result.matches[0].item.image_url is not None
+    stored = catalog.get_item(result.matches[0].item.id)
+    assert stored is not None
+    assert stored.specifications["capacity_gb"].value == 16
+    assert stored.specifications["module_count"].value == 2
+    assert stored.specifications["module_capacity_gb"].value == 8
+    assert stored.specifications["memory_type"].value == "DDR3"
+    assert stored.specifications["memory_speed_mt_s"].value == 1600
+    assert stored.specifications["cas_latency"].value == 9
+    assert match_items(["CMZ16GX3M2A1600C10"], items).matches[0].item.id == stored.id
+    assert match_items(["DDR3 1600"], items).status != "matched"

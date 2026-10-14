@@ -142,7 +142,7 @@ PowerShell. Com a autenticação ligada, acrescente `-H "X-API-Key: <sua-chave>"
 ```
 
 O exemplo acima ilustra o **formato**; ID e imagem dependem da
-versão do catálogo. `category` é `motherboard`, `gpu` ou `cpu`.
+versão do catálogo. `category` é `motherboard`, `gpu`, `cpu` ou `ram`.
 
 | `status` | Significado | Ação no aplicativo |
 | --- | --- | --- |
@@ -186,6 +186,11 @@ tecnologia da VRAM, `memory_speed_mhz` sua velocidade anunciada,
 `memory_bus_bits` a largura do barramento e `shader_units` as unidades de
 processamento quando o fabricante as informa. Esses campos só aparecem para
 modelos com fonte identificada; não são deduzidos a partir de outro SKU.
+Para RAM, `capacity_gb` é a capacidade total do kit, `module_count` é a quantidade
+de módulos e `module_capacity_gb` a capacidade de cada um. `memory_type` informa
+a geração DDR, `memory_speed_mt_s` a taxa anunciada e `cas_latency` a latência CAS.
+O código de peça impresso permite correspondência exata; nomes de famílias sem
+part number não devem ser tratados como confirmação de um kit específico.
 
 O JSON compacto é exclusivo de `/scan` e `/lookup`. Para detalhes, estado de cada
 especificação, licença da imagem e todas as colunas das fontes, consulte
