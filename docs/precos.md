@@ -1,6 +1,6 @@
 # Preços de peças novas no Brasil
 
-O scanner pode devolver uma estimativa em reais para CPU, GPU e placa-mãe. Um preço
+O scanner pode devolver uma estimativa em reais para qualquer categoria do catálogo. Um preço
 somente aparece quando existe pelo menos uma oferta revisada do **mesmo identificador**
 no catálogo, observada nos últimos 14 dias. A ausência do campo significa que não há
 base recente suficiente; não significa que o produto custa zero.

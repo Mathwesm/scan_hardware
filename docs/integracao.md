@@ -142,7 +142,13 @@ PowerShell. Com a autenticação ligada, acrescente `-H "X-API-Key: <sua-chave>"
 ```
 
 O exemplo acima ilustra o **formato**; ID e imagem dependem da
-versão do catálogo. `category` é `motherboard`, `gpu`, `cpu` ou `ram`.
+versão do catálogo. `category` pode ser `motherboard`, `gpu`, `cpu`, `ram`,
+`psu` (fonte), `case` (gabinete), `cooler` ou `storage` (SSD/HDD).
+Para as novas categorias, os campos planos incluem `wattage_w`,
+`efficiency_rating`, `modularity`, `cooling_type`, `storage_type` e
+`storage_capacity_gb` quando esses valores constam das fontes. Não inferimos
+um código exato apenas pela aparência: a foto precisa mostrar o modelo ou
+part number impresso.
 
 | `status` | Significado | Ação no aplicativo |
 | --- | --- | --- |

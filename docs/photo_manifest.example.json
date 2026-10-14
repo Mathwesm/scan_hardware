@@ -70,6 +70,24 @@
       "expected_status": "not_found",
       "source_url": "https://commons.wikimedia.org/wiki/File:MSI_GTX_1050_TI_4GT_LP.jpg",
       "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "Cooler Master MPE-6501-AFAAG label",
+      "image": "photos/psu_cooler_master_label.jpg",
+      "category": "psu",
+      "expected_status": "matched",
+      "expected_item_id": "psu-fbb922946103cbae772d2c0b",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Cooler_Master_MPE-6501-AFAAG_650W_power_supply_-_top_view.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "name": "Samsung M378A2K43CB1-CTD label",
+      "image": "photos/ram_samsung_label_3840px.png",
+      "category": "ram",
+      "expected_status": "matched",
+      "expected_item_id": "ram-e46569a8d624cefd21cbb825",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Samsung_DDR4-RAM_20210612_001.png",
+      "license": "CC BY 4.0"
     }
   ]
 }

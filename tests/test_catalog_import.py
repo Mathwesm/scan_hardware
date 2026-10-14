@@ -358,3 +358,72 @@ def test_ram_part_number_finds_exact_kit_without_confusing_other_capacity(
     assert stored.specifications["cas_latency"].value == 9
     assert match_items(["CMZ16GX3M2A1600C10"], items).matches[0].item.id == stored.id
     assert match_items(["DDR3 1600"], items).status != "matched"
+
+
+def test_psu_part_number_keeps_wattage_and_image_with_exact_match(tmp_path: Path) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    rows = [
+        (
+            Category.PSU,
+            SourceRow(
+                "rohitmit98/pc-parts-by-type",
+                "PSU.csv",
+                index,
+                {
+                    "name": f"Silverstone SFX {watts} W 80+ Gold Certified Fully Modular "
+                    f"SFX Power Supply ({code})",
+                    "image": f"https://example.com/{code}.jpg",
+                    "power": str(watts),
+                    "size": "SFX",
+                },
+            ),
+        )
+        for index, (watts, code) in enumerate(
+            [(500, "SST-SX500-LG"), (600, "SST-SX600-LG")], start=1
+        )
+    ]
+
+    counts = _import_groups(catalog, _build_groups([], rows))
+    result = search_items("SST-SX500-LG", catalog.list_items())
+
+    assert counts["psu"] == 2
+    assert result.status == "matched"
+    assert len(result.matches) == 1
+    item = catalog.get_item(result.matches[0].item.id)
+    assert item is not None
+    assert item.image_url is not None
+    assert item.specifications["wattage_w"].value == 500
+    assert item.specifications["form_factor"].value == "SFX"
+    assert item.specifications["efficiency_rating"].value == "80+ Gold"
+    assert item.specifications["modularity"].value == "Fully Modular"
+
+
+@pytest.mark.parametrize(
+    ("category", "file_name", "name", "field", "value"),
+    [
+        (Category.CASE, "Case.csv", "Case ATX (CASE-123)", "form_factor", "ATX"),
+        (Category.COOLER, "Cooler.csv", "Cooler CPU (COOL-123)", "cooling_type", "air"),
+        (
+            Category.STORAGE,
+            "Storage.csv",
+            "Example 2 TB Solid State Drive (SSD-123)",
+            "storage_capacity_gb",
+            2000,
+        ),
+    ],
+)
+def test_new_build_categories_match_printed_part_number(
+    tmp_path: Path, category: Category, file_name: str, name: str, field: str, value: object
+) -> None:
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    payload = {"name": name, "image": "https://example.com/photo.jpg", "size": "ATX", "type": "air"}
+    _import_groups(
+        catalog, _build_groups([], [(category, SourceRow("test", file_name, 1, payload))])
+    )
+    code = name.rsplit("(", maxsplit=1)[-1].rstrip(")")
+    result = search_items(code, catalog.list_items())
+
+    assert result.status == "matched"
+    item = catalog.get_item(result.matches[0].item.id)
+    assert item is not None
+    assert item.specifications[field].value == value

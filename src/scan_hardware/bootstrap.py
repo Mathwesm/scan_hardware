@@ -45,11 +45,22 @@ def prepare_catalog(config: Settings) -> Path:
         )
     path = config.resolved_catalog_path
     catalog = Catalog(path)
-    if config.catalog_path is None and catalog.count_category(Category.RAM) == 0:
+    missing_categories = [
+        category
+        for category in (
+            Category.RAM,
+            Category.PSU,
+            Category.CASE,
+            Category.COOLER,
+            Category.STORAGE,
+        )
+        if catalog.count_category(category) == 0
+    ]
+    if config.catalog_path is None and missing_categories:
         rohit = config.import_rohit_path
         warcoder = config.import_warcoder_path
         if rohit is not None and warcoder is not None:
-            logger.info("Published catalog lacks RAM; rebuilding from configured archives")
+            logger.info("Published catalog lacks categories={}; rebuilding", missing_categories)
             import_archives(
                 rohit,
                 warcoder,

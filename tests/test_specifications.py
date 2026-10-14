@@ -143,3 +143,34 @@ def test_ram_name_with_missing_layout_does_not_invent_module_count() -> None:
     assert "module_count" not in specs
     assert "module_capacity_gb" not in specs
     assert "cas_latency" not in specs
+
+
+def test_psu_missing_name_details_does_not_invent_certification_or_modularity() -> None:
+    specs = build_specifications(
+        Category.PSU,
+        [{"dataset": "test", "data": {"name": "Example PSU", "power": "750", "size": "ATX"}}],
+    )
+
+    assert specs["wattage_w"].value == 750
+    assert specs["form_factor"].value == "ATX"
+    assert "efficiency_rating" not in specs
+    assert "modularity" not in specs
+
+
+def test_storage_capacity_uses_product_name_instead_of_truncated_space_column() -> None:
+    specs = build_specifications(
+        Category.STORAGE,
+        [
+            {
+                "dataset": "test",
+                "data": {
+                    "name": "Seagate Exos X22 20 TB Internal Hard Drive (ST20000NM005E)",
+                    "type": "HDD",
+                    "space": "2000",
+                },
+            }
+        ],
+    )
+
+    assert specs["storage_capacity_gb"].value == 20_000
+    assert specs["storage_type"].value == "HDD"

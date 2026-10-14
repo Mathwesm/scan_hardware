@@ -64,6 +64,24 @@ def _inverted_bands(content: bytes) -> Iterator[bytes]:
         yield output.getvalue()
 
 
+def retry_image_variants(content: bytes) -> Iterator[bytes]:
+    """Yield contrast and rotation variants only after an inconclusive first scan."""
+    with Image.open(BytesIO(content)) as source:
+        upright = ImageOps.exif_transpose(source).convert("RGB")
+
+    def encoded(variant: Image.Image) -> bytes:
+        """Keep retry images lossless without another JPEG compression pass."""
+        output = BytesIO()
+        variant.save(output, format="PNG")
+        return output.getvalue()
+
+    yield encoded(ImageOps.autocontrast(ImageOps.grayscale(upright)))
+    yield encoded(upright.rotate(180, expand=True))
+    yield encoded(ImageOps.autocontrast(upright))
+    yield encoded(upright.rotate(90, expand=True))
+    yield encoded(upright.rotate(270, expand=True))
+
+
 def _revision_crops(
     content: bytes, result: RapidOCROutput, confidence: float
 ) -> Iterator[tuple[VerifiedBoardRevision, bytes]]:
