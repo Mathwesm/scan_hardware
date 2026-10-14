@@ -37,8 +37,28 @@ SOURCE_PATH = Path("data/raw/huggingface/pcpartpicker_parts.jsonl")
 PACKAGE_MANIFEST = Path(__file__).parent / "curation" / "external_images.json"
 MAX_SOURCE_BYTES = 60_000_000
 MIN_NEW_IMAGES = {Category.CPU: 300, Category.GPU: 3500, Category.MOTHERBOARD: 1500}
-SourceCategory = Literal["cpu", "motherboard", "video-card"]
+SourceCategory = Literal[
+    "cpu",
+    "motherboard",
+    "video-card",
+    "memory",
+    "power-supply",
+    "case",
+    "cpu-cooler",
+    "internal-hard-drive",
+]
 ProductKey = tuple[Category, str, str]
+TagKey = tuple[Category, str]
+SOURCE_CATEGORIES = {
+    "cpu": Category.CPU,
+    "motherboard": Category.MOTHERBOARD,
+    "video-card": Category.GPU,
+    "memory": Category.RAM,
+    "power-supply": Category.PSU,
+    "case": Category.CASE,
+    "cpu-cooler": Category.COOLER,
+    "internal-hard-drive": Category.STORAGE,
+}
 
 
 class ImageSourceError(Exception):
@@ -144,7 +164,7 @@ def _sha256(path: Path) -> str:
 
 def _product_key(product: FeedProduct) -> ProductKey:
     """Join GPU variants on chipset as well as the printed product name."""
-    category = Category.GPU if product.category == "video-card" else Category(product.category)
+    category = SOURCE_CATEGORIES[product.category]
     chipset = product.specs.get("Chipset") if category is Category.GPU else None
     return (
         category,
@@ -153,9 +173,18 @@ def _product_key(product: FeedProduct) -> ProductKey:
     )
 
 
-def _load_feed(path: Path) -> tuple[dict[ProductKey, list[FeedProduct]], Counter[str]]:
+def _product_tag(url: str) -> str | None:
+    """Extract an exact listing identifier from a product URL."""
+    match = re.search(r"/product/([A-Za-z0-9]+)/", urlsplit(url).path + "/")
+    return match.group(1) if match else None
+
+
+def _load_feed(
+    path: Path,
+) -> tuple[dict[ProductKey, list[FeedProduct]], dict[TagKey, list[FeedProduct]], Counter[str]]:
     """Parse the cached export and quarantine malformed or placeholder records."""
     index: dict[ProductKey, list[FeedProduct]] = defaultdict(list)
+    by_tag: dict[TagKey, list[FeedProduct]] = defaultdict(list)
     rejected: Counter[str] = Counter()
     with path.open(encoding="utf-8") as source:
         for line_number, line in enumerate(source, start=1):
@@ -164,11 +193,7 @@ def _load_feed(path: Path) -> tuple[dict[ProductKey, list[FeedProduct]], Counter
             except json.JSONDecodeError:
                 rejected["invalid_json"] += 1
                 continue
-            if not isinstance(payload, dict) or payload.get("category") not in {
-                "cpu",
-                "video-card",
-                "motherboard",
-            }:
+            if not isinstance(payload, dict) or payload.get("category") not in SOURCE_CATEGORIES:
                 continue
             try:
                 product = FeedProduct.model_validate(payload)
@@ -178,18 +203,19 @@ def _load_feed(path: Path) -> tuple[dict[ProductKey, list[FeedProduct]], Counter
             if not _usable_image_url(str(product.image_url)):
                 rejected["placeholder"] += 1
                 continue
-            if product.category == "video-card" and not isinstance(
-                product.specs.get("Chipset"), str
-            ):
-                rejected["missing_chipset"] += 1
-                continue
             if not normalize_identifier(product.brand) or not normalize_identifier(product.name):
                 rejected["empty_identifier"] += 1
                 continue
-            index[_product_key(product)].append(product)
+            tag = _product_tag(str(product.url))
+            if tag:
+                by_tag[(SOURCE_CATEGORIES[product.category], tag)].append(product)
+            if product.category != "video-card" or isinstance(product.specs.get("Chipset"), str):
+                index[_product_key(product)].append(product)
+            else:
+                rejected["missing_chipset"] += 1
             if line_number % 10_000 == 0:
                 logger.debug("Image feed parsed line={} valid_keys={}", line_number, len(index))
-    return index, rejected
+    return index, by_tag, rejected
 
 
 def _catalog_records(path: Path) -> tuple[list[sqlite3.Row], dict[str, list[dict[str, Any]]]]:
@@ -232,7 +258,7 @@ def build_manifest(
     Raises:
         ImageSourceError: Coverage is below the minimum for a safe publication.
     """
-    index, rejected = _load_feed(feed_path)
+    index, by_tag, rejected = _load_feed(feed_path)
     items, sources = _catalog_records(catalog_path)
     counts: Counter[str] = Counter()
     selected: list[CatalogImage] = []
@@ -245,20 +271,13 @@ def build_manifest(
             continue
         candidates: dict[str, FeedProduct] = {}
         for raw in sources[item["id"]]:
-            name = raw.get("name")
-            if not isinstance(name, str):
-                continue
-            chipset = raw.get("chipset") if category is Category.GPU else None
-            if category is Category.GPU and not isinstance(chipset, str):
-                continue
-            key = (
-                category,
-                normalize_identifier(name),
-                normalize_identifier(chipset) if isinstance(chipset, str) else "",
-            )
-            for product in index.get(key, []):
-                if normalize_identifier(product.brand) == normalize_identifier(item["brand"]):
-                    candidates[str(product.image_url)] = product
+            tag = _product_tag(raw.get("url", "")) if isinstance(raw.get("url"), str) else None
+            if tag:
+                for product in by_tag.get((category, tag), []):
+                    if normalize_identifier(product.brand) == normalize_identifier(item["brand"]):
+                        candidates[str(product.image_url)] = product
+        if not candidates and category in {Category.CPU, Category.GPU, Category.MOTHERBOARD}:
+            candidates = _name_candidates(category, item, sources[item["id"]], index)
         if len(candidates) == 1:
             product = next(iter(candidates.values()))
             selected.append(
@@ -291,6 +310,32 @@ def build_manifest(
         "new_images": len(selected),
     }
     return manifest, report
+
+
+def _name_candidates(
+    category: Category,
+    item: sqlite3.Row,
+    rows: list[dict[str, Any]],
+    index: dict[ProductKey, list[FeedProduct]],
+) -> dict[str, FeedProduct]:
+    """Find legacy CPU, GPU, and board images by exact names and GPU chipset."""
+    candidates: dict[str, FeedProduct] = {}
+    for raw in rows:
+        name = raw.get("name")
+        if not isinstance(name, str):
+            continue
+        chipset = raw.get("chipset") if category is Category.GPU else None
+        if category is Category.GPU and not isinstance(chipset, str):
+            continue
+        key = (
+            category,
+            normalize_identifier(name),
+            normalize_identifier(chipset) if isinstance(chipset, str) else "",
+        )
+        for product in index.get(key, []):
+            if normalize_identifier(product.brand) == normalize_identifier(item["brand"]):
+                candidates[str(product.image_url)] = product
+    return candidates
 
 
 def save_manifest(manifest: ImageManifest, report: dict[str, Any], output_root: Path) -> Path:
