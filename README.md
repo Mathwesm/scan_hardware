@@ -90,11 +90,12 @@ conferido em documentação identificada; `conflict` indica valores divergentes 
 retorna `value: null`. Um campo ausente significa dado indisponível. As linhas e
 colunas originais podem ser consultadas em `GET /items/{id}/sources`.
 
-O pacote inclui **6.007 associações novas de imagem** obtidas por cruzamento exato
+O pacote inclui **6.147 associações de imagem** obtidas por cruzamento exato
 entre o catálogo e um [dataset público de peças](https://huggingface.co/datasets/Doshiba/pcpartpicker-parts-dataset).
-O cruzamento exige nome original, marca e, para GPU, chipset idênticos; imagens
-genéricas e casos ambíguos são descartados. Na importação atual, 12.673 itens têm
-URL de imagem diretamente dos CSVs; parte dos demais recebe referência pelo cruzamento.
+O cruzamento exige a mesma categoria, marca e identificador de anúncio; na falta
+dele, CPU, GPU e placa-mãe usam nome original e, para GPU, chipset idênticos.
+Imagens genéricas e casos ambíguos são descartados. Atualmente, **18.826 dos
+21.509 itens** têm URL de imagem; **2.683** ainda não têm referência exata.
 O arquivo bruto não vai para o
 Git; o manifesto resultante vai em `src/scan_hardware/curation/external_images.json`.
 Para refazer a coleta com a versão fixa da fonte:

@@ -33,9 +33,11 @@ arquivo, pois as associações são carregadas e mantidas em memória.
 
 ## Regra para escolher uma foto
 
-O cruzamento usa o **nome original** da linha importada e a **marca**. Para placas
-de vídeo, também exige igualdade do **chipset**, pois o mesmo nome comercial pode
-aparecer em GPUs distintas. As categorias precisam coincidir. Só é publicado o
+O cruzamento usa primeiro o **identificador do anúncio** presente nas duas fontes,
+além da categoria e da marca. Isso inclui RAM, fontes, gabinetes, coolers e
+armazenamento, mesmo quando os nomes descritivos são diferentes. Na falta desse
+identificador, CPU, GPU e placa-mãe usam o **nome original** da linha importada e a
+**marca**; para GPU, também exigem igualdade do **chipset**. Só é publicado o
 produto com uma única URL de imagem possível. URLs `no-image`, placeholders,
 registros inválidos e casos com URLs diferentes para a mesma chave são rejeitados.
 O manifesto guarda ID, categoria e modelo do nosso catálogo; se alguém substituir
@@ -44,6 +46,30 @@ o item mantendo o ID, a URL externa deixa de ser aplicada.
 A prioridade da API é: imagem revisada manualmente, imagem cadastrada no catálogo,
 imagem do export exato. Uma imagem local enviada por `PUT /items/{id}/image`
 continua prevalecendo no campo `image_url` de `/scan` e `/lookup`.
+
+## Auditoria de 14/10/2026
+
+O novo cruzamento encontrou **140 URLs adicionais** sem retirar ou trocar nenhuma
+das 6.007 associações existentes. A cobertura atual inclui todas as oito categorias:
+
+| Categoria | Com imagem | Sem imagem |
+| --- | ---: | ---: |
+| CPU | 641 | 258 |
+| GPU | 6.273 | 1.276 |
+| Placa-mãe | 3.814 | 612 |
+| RAM | 1.689 | 18 |
+| Fonte | 2.085 | 228 |
+| Gabinete | 1.494 | 77 |
+| Cooler | 864 | 8 |
+| Armazenamento | 1.966 | 206 |
+| **Total** | **18.826 (87,5%)** | **2.683 (12,5%)** |
+
+Uma URL de cada categoria nova respondeu HTTP 200 com `image/jpeg`. Isso verifica
+somente a disponibilidade da amostra: não garante que todas as URLs ainda funcionem
+nem que cada foto tenha boa resolução, ângulo ou enquadramento. Os 2.683 itens sem
+foto permanecem vazios até surgir fonte identificável para o modelo exato.
+Na inspeção visual de três amostras, a GPU, a placa-mãe e a fonte mostraram as
+peças esperadas; as duas primeiras vieram em miniaturas de 256 × 256 pixels.
 
 ## Resultado da coleta de 12/10/2026
 

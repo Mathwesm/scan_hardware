@@ -112,6 +112,55 @@ def test_image_feed_coverage_gate_rejects_incomplete_catalog(tmp_path: Path) -> 
         build_manifest(source, catalog.path)
 
 
+@pytest.mark.parametrize(
+    ("category", "source_category"),
+    [
+        (Category.RAM, "memory"),
+        (Category.PSU, "power-supply"),
+        (Category.CASE, "case"),
+        (Category.COOLER, "cpu-cooler"),
+        (Category.STORAGE, "internal-hard-drive"),
+    ],
+)
+def test_exact_product_tag_recovers_images_for_other_categories(
+    tmp_path: Path, category: Category, source_category: str
+) -> None:
+    """A matching listing ID selects its image even if display names differ."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        "part-1234",
+        ItemInput(
+            category=category,
+            brand="Acme",
+            model="Acme Long Display Name (AX-1234)",
+            identifiers=["AX-1234"],
+        ),
+    )
+    catalog.put_source_record(
+        "fixture",
+        "parts.json",
+        1,
+        {"name": "Acme Long Display Name", "url": "https://shop.test/product/EXACT1/acme"},
+        "part-1234",
+    )
+    matching = _feed_row(
+        source_category, "Acme Short Name", "Acme", "https://img.test/exact.jpg", "EXACT1"
+    )
+    wrong_brand = _feed_row(
+        source_category, "Other Brand", "Other", "https://img.test/wrong.jpg", "EXACT1"
+    )
+    source = tmp_path / "source.jsonl"
+    source.write_text(
+        "\n".join(json.dumps(row) for row in [matching, wrong_brand]), encoding="utf-8"
+    )
+
+    manifest, _ = build_manifest(source, catalog.path, minimums={})
+
+    assert [(image.item_id, str(image.image_url)) for image in manifest.images] == [
+        ("part-1234", "https://img.test/exact.jpg")
+    ]
+
+
 def test_packaged_image_disappears_if_catalog_model_is_replaced(tmp_path: Path) -> None:
     """A reused item ID must not retain a photograph of a different model."""
     image = next(iter(catalog_images().values()))
