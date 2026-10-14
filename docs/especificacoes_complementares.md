@@ -3,9 +3,11 @@
 O catálogo original combina dois arquivos Kaggle e tem **12.874 peças**:
 899 CPUs, 7.549 GPUs e 4.426 placas-mães. A importação adicional do
 [BuildCores OpenDB](https://github.com/buildcores/buildcores-open-db), na revisão
-`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **7.025 valores**
-por fabricante e part number exatos. Casos sem correspondência única foram
-descartados. Dados existentes e fatos verificados têm precedência.
+`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **7.798 valores**.
+O cruzamento prefere fabricante e part number exatos. Para CPUs sem esse código,
+aceita nome e fabricante idênticos apenas quando o modelo é único nas duas bases
+e a contagem de núcleos confere. Casos ambíguos ou divergentes são descartados.
+Dados existentes e fatos verificados têm precedência.
 O OpenDB usa licença CC BY-NC-SA; verifique a compatibilidade antes de uso
 comercial.
 
@@ -18,8 +20,9 @@ poetry run python -m scan_hardware.reported_spec_import \
 
 O comando escreve um relatório versionado em `data/processed/specs/buildcores/`.
 `src/scan_hardware/curation/reported_specs.json` é o manifesto empacotado.
-Cada valor mantém o ID da fonte em `GET /specs/{id}`. O serviço nunca usa um
-campo de outra peça para completar lacunas.
+Cada valor mantém o ID da fonte no manifesto; `GET /specs/{id}` devolve o valor,
+a unidade e o status `reported`, sem expor evidências internas. O serviço nunca
+usa um campo de outra peça para completar lacunas.
 
 ## Auditoria em 13/10/2026
 
@@ -65,10 +68,10 @@ continua disponível e conta campos presentes, inclusive conflitos.
 
 | Campo principal | Utilizáveis | Ausentes | Conflitos |
 | --- | ---: | ---: | ---: |
-| CPU: socket | 325/899 | 574 | 0 |
-| CPU: threads | 324/899 | 575 | 0 |
+| CPU: socket | 485/899 | 414 | 0 |
+| CPU: threads | 484/899 | 415 | 0 |
 | CPU: TDP | 673/899 | 0 | 226 |
-| CPU: clock turbo | 458/899 | 441 | 0 |
+| CPU: clock turbo | 460/899 | 439 | 0 |
 | GPU: VRAM | 7.188/7.549 | 258 | 103 |
 | GPU: clock turbo | 4.448/7.549 | 3.022 | 79 |
 | GPU: potência | 2.515/7.549 | 5.034 | 0 |

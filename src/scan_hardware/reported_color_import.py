@@ -61,6 +61,7 @@ class SourceMetadata(BaseModel):
     """Identity fields needed for safe catalog joining."""
 
     manufacturer: str
+    name: str = ""
     part_numbers: list[str] = Field(default_factory=list)
 
 

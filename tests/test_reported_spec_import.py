@@ -27,6 +27,24 @@ def _write_board(source_root: Path, source_id: str, socket: str = "AM5") -> None
     (folder / f"{source_id}.json").write_text(json.dumps(payload), encoding="utf-8")
 
 
+def _write_cpu(source_root: Path, source_id: str, cores: int = 6) -> None:
+    folder = source_root / "open-db" / "CPU"
+    folder.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "opendb_id": source_id,
+        "metadata": {
+            "name": "AMD Ryzen 5 3600X",
+            "manufacturer": "AMD",
+            "part_numbers": ["100-100000022BOX"],
+        },
+        "socket": "AM4",
+        "cores": {"total": cores, "threads": 12},
+        "cache": {"l2": 3, "l3": 32},
+        "specifications": {"memory": {"types": ["DDR4"]}},
+    }
+    (folder / f"{source_id}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
 def _catalog(path: Path, with_socket: bool = False) -> Catalog:
     catalog = Catalog(path)
     catalog.put_item(
@@ -72,6 +90,39 @@ def test_ambiguous_manufacturer_part_number_is_rejected(tmp_path: Path) -> None:
 
     assert manifest.specs == []
     assert report["ambiguous"] == 1
+
+
+@pytest.mark.parametrize("source_cores", [6, 8, 0])
+def test_unique_cpu_name_requires_matching_core_count(tmp_path: Path, source_cores: int) -> None:
+    """A name alone may enrich a CPU only when independent core counts agree."""
+    source_root = tmp_path / "source"
+    _write_cpu(source_root, "00000000-0000-4000-8000-000000000003", source_cores)
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        "cpu-ryzen-3600x",
+        ItemInput(
+            category=Category.CPU,
+            brand="AMD",
+            model="AMD Ryzen 5 3600X",
+            identifiers=["AMD Ryzen 5 3600X"],
+        ),
+    )
+    catalog.put_source_record("catalog", "cpu.csv", 1, {"core_count": 6}, "cpu-ryzen-3600x")
+
+    manifest, report = build_reported_specs(source_root, catalog.path)
+
+    if source_cores == 6:
+        assert {entry.field for entry in manifest.specs} == {
+            "socket",
+            "threads",
+            "memory_type",
+            "l2_cache_mb",
+            "l3_cache_mb",
+        }
+        assert report["matched_cpu_name_and_cores"] == 1
+    else:
+        assert manifest.specs == []
+        assert report["cpu_name_core_mismatch"] == 1
 
 
 def test_cpu_cache_keeps_fractional_megabytes_and_skips_zero() -> None:
