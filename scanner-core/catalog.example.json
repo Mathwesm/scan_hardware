@@ -1,0 +1,42 @@
+[
+  {
+    "id": "motherboard-ecs-a785gm-m3-v1",
+    "category": "motherboard",
+    "brand": "ECS",
+    "model": "ECS A785GM-M3 V1.0",
+    "identifiers": ["A785GM-M3"],
+    "specs": {"revision": "1.0"}
+  },
+  {
+    "id": "motherboard-ecs-g41t-mr23-v1",
+    "category": "motherboard",
+    "brand": "ECS",
+    "model": "ECS G41T-MR23 V1.0",
+    "identifiers": ["G41T-MR23"],
+    "specs": {"revision": "1.0"}
+  },
+  {
+    "id": "motherboard-ecs-a890gxm-a-v1",
+    "category": "motherboard",
+    "brand": "ECS",
+    "model": "ECS A890GXM-A V1.0",
+    "identifiers": ["A890GXM-A"],
+    "specs": {"revision": "1.0"}
+  },
+  {
+    "id": "cpu-273a4c80abb650dfa7af78f2",
+    "category": "cpu",
+    "brand": "AMD",
+    "model": "AMD Ryzen 5 3600",
+    "identifiers": ["Ryzen 5 3600"],
+    "specs": {"cores": 6, "threads": 12, "base_clock_ghz": 3.6, "boost_clock_ghz": 4.2, "socket": "AM4"}
+  },
+  {
+    "id": "gpu-029732a077d00ea852d32d92",
+    "category": "gpu",
+    "brand": "MSI",
+    "model": "MSI GeForce GTX 1060 6G OCV1",
+    "identifiers": ["GeForce GTX 1060 6G OCV1"],
+    "specs": {"memory_gb": 6}
+  }
+]

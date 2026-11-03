@@ -1,0 +1,39 @@
+[project]
+name = "hardware-scan-core"
+version = "0.1.0"
+description = "Small offline scanner for printed hardware model codes"
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+  "pydantic>=2.9,<3",
+  "pillow>=12,<13",
+  "rapidocr>=3.9,<4",
+  "onnxruntime>=1.30,<2",
+]
+
+[project.scripts]
+hardware-scan = "hardware_scan.cli:main"
+
+[tool.poetry]
+packages = [{include = "hardware_scan", from = "src"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+ruff = "^0.8"
+mypy = "^1.13"
+detect-secrets = "^1.5"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
