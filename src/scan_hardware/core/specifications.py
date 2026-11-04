@@ -84,6 +84,7 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
         "shader_units": SpecDefinition((), "integer"),
     },
     Category.MOTHERBOARD: {
+        "chipset": SpecDefinition(("chipset",), "text"),
         "socket": SpecDefinition(("socket",), "text"),
         "form_factor": SpecDefinition(("form_factor", "name"), "text"),
         "max_memory_gb": SpecDefinition(("max_memory",), "integer", "GB"),

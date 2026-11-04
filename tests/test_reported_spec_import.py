@@ -21,23 +21,32 @@ def _write_board(source_root: Path, source_id: str, socket: str = "AM5") -> None
         "opendb_id": source_id,
         "metadata": {"manufacturer": "ASUS", "part_numbers": ["TEST-BOARD-123"]},
         "socket": socket,
+        "chipset": "AMD B650",
         "form_factor": "Micro ATX",
         "memory": {"ram_type": "DDR5", "max": 128, "slots": 4},
     }
     (folder / f"{source_id}.json").write_text(json.dumps(payload), encoding="utf-8")
 
 
-def _write_cpu(source_root: Path, source_id: str, cores: int = 6) -> None:
+def _write_cpu(
+    source_root: Path,
+    source_id: str,
+    cores: int = 6,
+    *,
+    name: str = "AMD Ryzen 5 3600X",
+    manufacturer: str = "AMD",
+    socket: str = "AM4",
+) -> None:
     folder = source_root / "open-db" / "CPU"
     folder.mkdir(parents=True, exist_ok=True)
     payload = {
         "opendb_id": source_id,
         "metadata": {
-            "name": "AMD Ryzen 5 3600X",
-            "manufacturer": "AMD",
+            "name": name,
+            "manufacturer": manufacturer,
             "part_numbers": ["100-100000022BOX"],
         },
-        "socket": "AM4",
+        "socket": socket,
         "cores": {"total": cores, "threads": 12},
         "cache": {"l2": 3, "l3": 32},
         "specifications": {"memory": {"types": ["DDR4"]}},
@@ -72,12 +81,21 @@ def test_exact_part_number_fills_missing_fields_without_overriding_source(tmp_pa
 
     values = {entry.field: entry.value for entry in manifest.specs}
     assert values == {
+        "chipset": "AMD B650",
         "form_factor": "Micro ATX",
         "max_memory_gb": 128,
         "memory_slots": 4,
         "memory_type": "DDR5",
     }
     assert report["existing_catalog_spec"] == 1
+
+
+def test_board_chipset_disagrees_with_socket_vendor() -> None:
+    """Do not publish an Intel chipset on a board reported with an AMD socket."""
+    values = _values(Category.MOTHERBOARD, {"socket": "AM5", "chipset": "Intel B760"})
+
+    assert values["socket"] == "AM5"
+    assert "chipset" not in values
 
 
 def test_ambiguous_manufacturer_part_number_is_rejected(tmp_path: Path) -> None:
@@ -90,6 +108,32 @@ def test_ambiguous_manufacturer_part_number_is_rejected(tmp_path: Path) -> None:
 
     assert manifest.specs == []
     assert report["ambiguous"] == 1
+
+
+def test_brand_prefixed_legacy_identifier_matches_exact_part_number(tmp_path: Path) -> None:
+    """Kaggle's brand prefix must not hide a unique OpenDB product code."""
+    source_root = tmp_path / "source"
+    _write_board(source_root, "00000000-0000-4000-8000-000000000007")
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    for suffix in ("", "-CSM"):
+        item_id = f"motherboard-test{suffix.lower()}"
+        catalog.put_item(
+            item_id,
+            ItemInput(
+                category=Category.MOTHERBOARD,
+                brand="Asus",
+                model=f"Asus TEST-BOARD-123{suffix}",
+                identifiers=[f"Asus TEST-BOARD-123{suffix}"],
+            ),
+        )
+
+    manifest, _ = build_reported_specs(source_root, catalog.path)
+
+    assert {(entry.item_id, entry.field, entry.value) for entry in manifest.specs} >= {
+        ("motherboard-test", "chipset", "AMD B650"),
+        ("motherboard-test", "socket", "AM5"),
+    }
+    assert not any(entry.item_id == "motherboard-test-csm" for entry in manifest.specs)
 
 
 @pytest.mark.parametrize("source_cores", [6, 8, 0])
@@ -123,6 +167,72 @@ def test_unique_cpu_name_requires_matching_core_count(tmp_path: Path, source_cor
     else:
         assert manifest.specs == []
         assert report["cpu_name_core_mismatch"] == 1
+
+
+def test_cpu_oem_tray_name_matches_only_the_complete_model(tmp_path: Path) -> None:
+    """Packaging suffix must not hide a CPU, or merge 3570 with 3570S."""
+    source_root = tmp_path / "source"
+    _write_cpu(
+        source_root,
+        "00000000-0000-4000-8000-000000000004",
+        cores=4,
+        name="Intel Core i5 3570S OEM/Tray",
+        manufacturer="Intel",
+        socket="LGA 1155",
+    )
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    for model, suffix in (("Intel Core i5-3570S", "3570s"), ("Intel Core i5-3570", "3570")):
+        item_id = f"cpu-{suffix}"
+        catalog.put_item(
+            item_id,
+            ItemInput(category=Category.CPU, brand="Intel", model=model, identifiers=[model]),
+        )
+        catalog.put_source_record("catalog", "cpu.csv", len(suffix), {"core_count": 4}, item_id)
+
+    manifest, report = build_reported_specs(source_root, catalog.path)
+
+    sockets = [entry for entry in manifest.specs if entry.field == "socket"]
+    assert [(entry.item_id, entry.value) for entry in sockets] == [("cpu-3570s", "LGA 1155")]
+    assert report["matched_cpu_name_and_cores"] == 1
+
+
+def test_exact_cpu_name_wins_over_packaging_variant(tmp_path: Path) -> None:
+    """A second tray listing must not invalidate an existing exact CPU match."""
+    source_root = tmp_path / "source"
+    _write_cpu(
+        source_root,
+        "00000000-0000-4000-8000-000000000005",
+        cores=4,
+        name="Intel Core i5-3570S",
+        manufacturer="Intel",
+        socket="LGA 1155",
+    )
+    _write_cpu(
+        source_root,
+        "00000000-0000-4000-8000-000000000006",
+        cores=4,
+        name="Intel Core i5-3570S OEM/Tray",
+        manufacturer="Intel",
+        socket="LGA 1150",
+    )
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    catalog.put_item(
+        "cpu-3570s",
+        ItemInput(
+            category=Category.CPU,
+            brand="Intel",
+            model="Intel Core i5-3570S",
+            identifiers=["Intel Core i5-3570S"],
+        ),
+    )
+    catalog.put_source_record("catalog", "cpu.csv", 1, {"core_count": 4}, "cpu-3570s")
+
+    manifest, report = build_reported_specs(source_root, catalog.path)
+
+    assert [(row.field, row.value) for row in manifest.specs if row.field == "socket"] == [
+        ("socket", "LGA 1155")
+    ]
+    assert report["matched_cpu_name_and_cores"] == 1
 
 
 def test_cpu_cache_keeps_fractional_megabytes_and_skips_zero() -> None:

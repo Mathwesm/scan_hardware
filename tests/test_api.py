@@ -351,6 +351,26 @@ def test_lookup_without_catalog_returns_not_found(tmp_path: Path) -> None:
     assert response.json()["status"] == "not_found"
     assert response.json()["matches"] == []
     assert client.get("/ready").status_code == 503
+    assert client.get("/").status_code == 503
+
+    created = client.put(
+        "/items/board-ready",
+        json={
+            "category": "motherboard",
+            "brand": "Demo",
+            "model": "Demo B550",
+            "identifiers": ["B550-READY"],
+        },
+    )
+    assert created.status_code in {200, 201}
+    assert (
+        client.get("/").json()
+        == client.get("/ready").json()
+        == {
+            "status": "ready",
+            "items": 1,
+        }
+    )
 
 
 def test_lookup_pages_ranked_partial_code_suggestions(tmp_path: Path) -> None:
@@ -639,6 +659,7 @@ def test_api_key_protects_scans_and_catalog_writes(tmp_path: Path) -> None:
     client = TestClient(create_app(config=config, scanner=FakeScanner()))
 
     assert client.get("/health").status_code == 200
+    assert client.get("/").status_code == 503
     assert client.post("/lookup", json={"text": "E8400"}).status_code == 401
     assert client.put("/items/cpu-1", json={}).status_code == 401
     assert client.get("/demo").status_code == 401

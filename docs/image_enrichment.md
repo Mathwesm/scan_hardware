@@ -1,5 +1,61 @@
 # Coleta e associação de imagens
 
+## Busca complementar de placas-mãe
+
+`python -m scan_hardware.image_discovery --limit 20 --offset 0` consulta a
+[API pública do Openverse](https://api.openverse.org/v1/) apenas para placas-mãe
+sem foto. Há intervalo de 1,5 segundo entre consultas e até três tentativas
+com espera para falhas de rede. O comando grava um manifesto e um relatório
+versionados em `data/processed/image-discovery/`. Aceita candidatos apenas quando
+marca e modelo coincidem, variantes conhecidas são excluídas, a imagem tem
+dimensões adequadas e há licença e autoria. Resultados ambíguos não são usados.
+
+A pesquisa de texto e os metadados **não verificam o conteúdo visual**. Antes de
+publicar, abra os links do relatório, confira se a foto mostra a peça correta
+em vista útil e escreva os IDs aceitos, um por linha, em um arquivo local:
+
+```bash
+python -m scan_hardware.image_discovery \
+  --review-run data/processed/image-discovery/ID_DA_EXECUCAO \
+  --approved-ids data/approved-images.txt --publish-package
+```
+
+O arquivo de aprovação precisa se referir a candidatos da execução salva.
+A publicação acrescenta registros a `curation/verified_images.json` sem substituir
+fotos existentes. A API mantém exatamente os mesmos campos de imagem.
+Nas 100 placas pesquisadas em 04/11/2026 (lotes de 20 e 80), nenhuma foto passou na
+correspondência exata; os relatórios locais registram `no_match` para todas. Nenhuma
+imagem desses lotes foi adicionada ao catálogo. Este provedor
+não garante cobertura para modelos antigos. O [Google proíbe a coleta
+automatizada de `/search` no robots.txt](https://www.google.com/robots.txt),
+e a [API oficial de busca por imagens está fechada a novos
+clientes](https://developers.google.com/custom-search/v1/overview).
+
+### Open Icecat: busca por produto exato
+
+A [API JSON oficial](https://iceclog.com/manual-for-icecat-json-product-requests/)
+aceita marca e código de produto e devolve a foto principal e o ID do produto.
+Ela encontrou a `ASUS P8Z77-V` exata em uma consulta de verificação; a foto
+principal foi inspecionada visualmente, mas **não foi publicada**. A
+[licença de conteúdo](https://iceclog.com/open-content-license/) exige que o
+usuário registre uma [conta gratuita de Channel Partner](https://icecat.biz/en/registration).
+O nome de usuário vai
+em `ICECAT_SHOPNAME` no `.env`, sem entrar no Git. A conta pública de demonstração
+é aceita para testar a API, mas o coletor a rejeita para importar conteúdo.
+
+```bash
+python -m scan_hardware.image_discovery --provider icecat --limit 20 --offset 0
+```
+
+O coletor exige marca, código exato, categoria `Motherboards` e imagem principal
+de pelo menos 500 × 500 pixels. Dados com código divergente, acesso negado ou
+foto ausente ficam sem associação. A publicação usa a revisão visual descrita
+acima e guarda o link de licença e a origem no cadastro existente.
+A [política de uso](https://iceclog.com/open-icecat-fair-use-policy/) pede o
+crédito **Specs Icecat** e aviso de ausência de garantias na página que mostra
+o produto. A demo exibe ambos para fotos Icecat; o aplicativo consumidor deve
+fazer o mesmo sem alterar o contrato JSON.
+
 O serviço usa URLs externas como imagens de referência. A coleta é separada do OCR:
 uma foto enviada a `/scan` identifica o produto; o catálogo devolve `image_url` da
 peça correspondente. O microserviço não tenta reconhecer o modelo pela aparência

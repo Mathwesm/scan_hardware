@@ -53,7 +53,7 @@ def create_app(
     async def authenticate(request: Request, call_next: Any) -> Any:
         """Protect catalog and scanning routes when deployment auth is enabled."""
         if (
-            request.url.path not in {"/health", "/ready"}
+            request.url.path not in {"/", "/health", "/ready"}
             and active_config.require_api_key
             and not validate_api_key(request.headers.get("x-api-key"), active_config.api_key)
         ):
@@ -65,6 +65,7 @@ def create_app(
         """Report service process availability."""
         return {"status": "ok"}
 
+    @app.get("/", include_in_schema=False)
     @app.get("/ready")
     def ready() -> dict[str, int | str]:
         """Report whether the scanner has a searchable catalog."""

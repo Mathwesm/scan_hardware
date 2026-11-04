@@ -3,13 +3,19 @@
 O catálogo original combina dois arquivos Kaggle e tem **12.874 peças**:
 899 CPUs, 7.549 GPUs e 4.426 placas-mães. A importação adicional do
 [BuildCores OpenDB](https://github.com/buildcores/buildcores-open-db), na revisão
-`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **7.798 valores**.
+`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **10.771 valores**.
 O cruzamento prefere fabricante e part number exatos. Para CPUs sem esse código,
 aceita nome e fabricante idênticos apenas quando o modelo é único nas duas bases
 e a contagem de núcleos confere. Casos ambíguos ou divergentes são descartados.
 Dados existentes e fatos verificados têm precedência.
 O OpenDB usa licença CC BY-NC-SA; verifique a compatibilidade antes de uso
 comercial.
+
+Entre os valores importados há 2.098 chipsets de placas-mãe. O campo só é
+associado quando o part number e o fabricante identificam uma única peça.
+Identificadores legados com a marca no início também são comparados sem esse
+prefixo, mas nunca por código parcial; variantes ambíguas são rejeitadas.
+Chipsets Intel em sockets AMD e vice-versa são rejeitados.
 
 Para reproduzir a importação após obter essa revisão da fonte:
 
@@ -88,3 +94,33 @@ os conflitos de formato de 1.232 para 1, sem inferir pelo código do modelo.
 Exemplos conferidos nas fichas da [ASUS PRIME B450M-A](https://www.asus.com/uk/motherboards-components/motherboards/all-series/prime-b450m-a/techspec/),
 [MSI MAG B760M MORTAR MAX WIFI DDR4](https://www.msi.com/Motherboard/MAG-B760M-MORTAR-MAX-WIFI-DDR4/Specification)
 e [ASRock Fatal1ty Z370 Gaming-ITX/ac](https://www.asrock.com/mb/intel/Fatal1ty%20Z370%20Gaming-ITXac/index.asp).
+
+## Auditoria atual em 04/11/2026
+
+| Campo | Utilizáveis | Total |
+| --- | ---: | ---: |
+| Placa-mãe: chipset | 2.099 | 4.426 |
+| Placa-mãe: socket | 4.266 | 4.426 |
+| Placa-mãe: tipo de RAM | 2.099 | 4.426 |
+| Placa-mãe: frequência RAM sem OC | 3 | 4.426 |
+| Placa-mãe: frequência RAM com OC | 2 | 4.426 |
+| CPU: socket | 543 | 899 |
+| CPU: threads | 535 | 899 |
+
+Os chipsets cresceram de 1 para 2.099 sem remover nenhum valor anterior do
+manifesto. Ainda faltam 2.327 chipsets e quase todas as frequências de RAM;
+esses dados não são preenchidos por semelhança do nome da placa.
+
+Em 04/11/2026, 36 CPUs que a fonte rotulava como LGA1151 foram corrigidas com
+[tabelas oficiais da Intel para i5](https://www.intel.com/content/www/us/en/support/articles/000006047/processors.html),
+[i7](https://www.intel.com/content/www/us/en/support/articles/000006778.html) e
+[Core X](https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html).
+Os valores anteriores permanecem nas linhas de origem para auditoria, e a API
+prioriza o socket verificado. Mais sete CPUs LGA1155 sem socket na fonte receberam
+um valor verificado nas respectivas fichas da Intel. O total utilizável de sockets
+de CPU passou de 536 para 543; 356 CPUs continuam sem socket confirmado.
+
+A rota `/specs/{id}/socket-related` agora exclui pares impossíveis de LGA1151
+conforme a [matriz de chipsets da Intel](https://www.intel.com/content/www/us/en/support/articles/000025694/processors/intel-core-processors.html).
+Ela ainda não equivale à lista de suporte de CPU do fabricante da placa: a versão
+da BIOS e exceções por modelo precisam ser verificadas antes da instalação.

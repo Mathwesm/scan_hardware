@@ -32,14 +32,16 @@ O servidor local escuta em `http://127.0.0.1:8000`. Abra `/demo` para um teste m
 e `/docs` para o OpenAPI interativo. Antes de integrar, confira:
 
 ```bash
-curl http://127.0.0.1:8000/health
 curl http://127.0.0.1:8000/ready
+curl http://127.0.0.1:8000/health
 ```
 
+Para o app, use `GET /ready` como teste de conexão antes de abrir o scanner.
 `/health` responde `{"status":"ok"}` quando o processo está no ar. `/ready` responde
 `{"status":"ready","items":N}` com HTTP 200 quando existe um catálogo pesquisável;
-responde HTTP 503 se estiver vazio. O primeiro carregamento dos dois arquivos Kaggle
-está explicado no [README](../README.md#import-the-kaggle-catalog). Sem importação,
+responde HTTP 503 se estiver vazio. `GET /` é um atalho para `/ready`, útil para
+verificar o endereço no navegador. O primeiro carregamento dos dois arquivos Kaggle
+está explicado no [README](../README.md#importar-a-base). Sem importação,
 o serviço pode subir, mas não encontra produtos.
 
 O `compose.yaml` aceita os ZIPs em `data/raw/kaggle/`, cria PostgreSQL e persiste
@@ -208,6 +210,11 @@ o celular. Se não houver imagem, o campo é omitido. Na coleta de 12/10/2026,
 mostrar um substituto quando `image_url` estiver ausente ou o host externo falhar.
 
 ### Modelo simples em Kotlin
+
+`model` já pode incluir o fabricante (por exemplo, `Gigabyte GA-78LMT-USB3`).
+No título da tela, exiba `model` diretamente; não concatene `brand + model`.
+Use `brand` somente no campo "Fabricante". Isso evita `Gigabyte Gigabyte ...`
+sem alterar o contrato JSON.
 
 ```kotlin
 import kotlinx.serialization.Serializable

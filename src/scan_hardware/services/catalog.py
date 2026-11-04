@@ -24,6 +24,60 @@ from scan_hardware.models.price import PriceOffer
 from scan_hardware.reference_prices import reference_price_for
 
 MAX_PRICE_AGE = timedelta(days=14)
+INTEL_LGA1151_NEW_SERIES = 3
+INTEL_CORE_MODEL_DIGITS = 4
+
+
+def has_consistent_socket_vendor(
+    category: Category, brand: str, socket: str, chipset: str | None = None
+) -> bool:
+    """Reject a CPU or vendor-branded board with a contradictory socket family."""
+    normalized = re.sub(r"[^A-Z0-9]", "", socket.upper())
+    vendor = (
+        "intel"
+        if normalized.startswith(("LGA", "FCLGA"))
+        else "amd"
+        if re.fullmatch(r"(?:AM|FM)\d+|TR4|STRX4|SP3|STR5", normalized)
+        else None
+    )
+    known_brand = brand.casefold()
+    if category not in {Category.CPU, Category.MOTHERBOARD}:
+        return True
+    if vendor is not None and known_brand in {"amd", "intel"} and known_brand != vendor:
+        return False
+    if category is Category.MOTHERBOARD and chipset and vendor is not None:
+        chipset_vendor = chipset.split(maxsplit=1)[0].casefold()
+        if chipset_vendor in {"amd", "intel"} and chipset_vendor != vendor:
+            return False
+    return True
+
+
+def has_supported_intel_lga1151_generation(chipset: str | None, cpu_model: str) -> bool:
+    """Exclude impossible Core models and known LGA1151 chipset mismatches."""
+    model = cpu_model.upper()
+    chipset_match = (
+        re.search(r"\b[HBQZ]([123])\d{2}\b", chipset.upper())
+        if chipset and chipset.upper().startswith("INTEL ")
+        else None
+    )
+    if chipset_match is not None:
+        series = int(chipset_match.group(1))
+        if re.search(r"\bXEON\s+(?:E-2[12]\d{2}(?!\d)|E3-\d{4}[A-Z]?\s+V[56]\b)", model):
+            return False
+        if re.search(r"\bPENTIUM\s+GOLD\s+G5\d{3}\b", model):
+            return series == INTEL_LGA1151_NEW_SERIES
+    core_match = re.search(r"\bCORE\s+I[3579]-(\d{3,5})([A-Z]{0,3})\b", model)
+    if core_match is None:
+        return True
+    digits, suffix = core_match.groups()
+    if len(digits) != INTEL_CORE_MODEL_DIGITS or digits[0] not in "6789" or suffix.startswith("X"):
+        return False
+    if chipset_match is None:
+        return True
+    series, generation = int(chipset_match.group(1)), int(digits[0])
+    return (series in {1, 2} and generation in {6, 7}) or (
+        series == INTEL_LGA1151_NEW_SERIES and generation in {8, 9}
+    )
 
 
 class IdentifierConflictError(Exception):
@@ -353,13 +407,20 @@ class Catalog:
         ]
 
     def list_socket_related(
-        self, socket: str, category: Category, *, limit: int = 20, offset: int = 0
+        self,
+        socket: str,
+        category: Category,
+        *,
+        source_item: Item,
+        limit: int = 20,
+        offset: int = 0,
     ) -> tuple[int, list[Item]]:
         """Find catalog records with the same unambiguous reported socket.
 
         Args:
             socket: Normalized socket of the source hardware.
             category: Opposite hardware category to search.
+            source_item: Item whose socket relationship is being requested.
             limit: Maximum number of records returned.
             offset: Position in the stable, alphabetic result order.
 
@@ -385,15 +446,38 @@ class Catalog:
                 {"dataset": row["dataset"], "data": json.loads(row["payload_json"])}
             )
         matching_ids: list[str] = []
+        source_chipset = source_item.specifications.get("chipset")
+        source_board_chipset = (
+            source_chipset.value
+            if source_item.category is Category.MOTHERBOARD
+            and source_chipset is not None
+            and isinstance(source_chipset.value, str)
+            else None
+        )
         for row in rows:
-            specification = build_specifications(
-                category, sources.get(row["id"], []), row["id"]
-            ).get("socket")
+            specifications = build_specifications(category, sources.get(row["id"], []), row["id"])
+            specification = specifications.get("socket")
+            chipset_specification = specifications.get("chipset")
+            board_chipset = (
+                chipset_specification.value
+                if category is Category.MOTHERBOARD
+                and chipset_specification is not None
+                and isinstance(chipset_specification.value, str)
+                else source_board_chipset
+            )
             if (
                 specification is not None
                 and isinstance(specification.value, str)
                 and re.sub(r"\s+", "", specification.value).upper()
                 == re.sub(r"\s+", "", socket).upper()
+                and has_consistent_socket_vendor(category, row["brand"], socket, board_chipset)
+                and (
+                    re.sub(r"\s+", "", socket).upper() != "LGA1151"
+                    or has_supported_intel_lga1151_generation(
+                        board_chipset,
+                        row["model"] if category is Category.CPU else source_item.model,
+                    )
+                )
             ):
                 matching_ids.append(row["id"])
         page: list[Item] = []
