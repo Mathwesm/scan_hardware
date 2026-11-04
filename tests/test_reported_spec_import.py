@@ -98,6 +98,88 @@ def test_board_chipset_disagrees_with_socket_vendor() -> None:
     assert "chipset" not in values
 
 
+def test_board_ports_return_flat_counts_without_unreliable_pcie_generation() -> None:
+    """Count connectors and slots without publishing a misleading PCIe generation."""
+    values = _values(
+        Category.MOTHERBOARD,
+        {
+            "socket": "LGA 1155",
+            "storage_devices": {"sata_6_gb_s": 5, "sata_3_gb_s": 4},
+            "pcie_slots": [
+                {"gen": "4.0", "quantity": 3, "lanes": 16},
+                {"gen": "4.0", "quantity": 3, "lanes": 1},
+            ],
+        },
+    )
+
+    assert {key: value for key, value in values.items() if "sata" in key or "pcie" in key} == {
+        "sata_slots": 9,
+        "pcie_slots": 6,
+    }
+    assert not any("generation" in key or "gen" in key for key in values)
+
+
+@pytest.mark.parametrize(
+    ("storage", "slots"),
+    [
+        ({"sata_6_gb_s": 0, "sata_3_gb_s": 0}, []),
+        ({"sata_6_gb_s": -1, "sata_3_gb_s": 4}, [{"quantity": 0, "lanes": 16}]),
+        ({"sata_6_gb_s": "six", "sata_3_gb_s": 0}, [{"quantity": 1, "lanes": 32}]),
+        ({"sata_6_gb_s": True, "sata_3_gb_s": 4}, [{"quantity": "1", "lanes": 16}]),
+    ],
+)
+def test_board_ports_reject_placeholders_and_invalid_counts(
+    storage: dict[str, object], slots: list[dict[str, object]]
+) -> None:
+    values = _values(Category.MOTHERBOARD, {"storage_devices": storage, "pcie_slots": slots})
+
+    assert not any("sata" in key or "pcie" in key for key in values)
+
+
+def test_exact_board_imports_connector_counts_with_source_id(tmp_path: Path) -> None:
+    source_root = tmp_path / "source"
+    source_id = "00000000-0000-4000-8000-000000000008"
+    _write_board(source_root, source_id)
+    path = source_root / "open-db" / "Motherboard" / f"{source_id}.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["storage_devices"] = {"sata_6_gb_s": 4, "sata_3_gb_s": 2}
+    payload["pcie_slots"] = [
+        {"quantity": 1, "lanes": 16},
+        {"quantity": 2, "lanes": 1},
+    ]
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    catalog = _catalog(tmp_path / "catalog.sqlite3")
+
+    manifest, report = build_reported_specs(source_root, catalog.path)
+
+    connectors = {
+        entry.field: (entry.value, entry.source_id)
+        for entry in manifest.specs
+        if entry.field in {"sata_slots", "pcie_slots"}
+    }
+    assert connectors == {"sata_slots": (6, source_id), "pcie_slots": (3, source_id)}
+    assert report["selected_motherboard_sata_slots"] == 1
+    assert report["selected_motherboard_pcie_slots"] == 1
+
+
+def test_board_ports_are_rejected_when_catalog_socket_disagrees(tmp_path: Path) -> None:
+    """A reused part number with a conflicting socket must not gain connector counts."""
+    source_root = tmp_path / "source"
+    source_id = "00000000-0000-4000-8000-000000000009"
+    _write_board(source_root, source_id, socket="AM5")
+    path = source_root / "open-db" / "Motherboard" / f"{source_id}.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["storage_devices"] = {"sata_6_gb_s": 4, "sata_3_gb_s": 0}
+    payload["pcie_slots"] = [{"quantity": 1, "lanes": 16}]
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    catalog = _catalog(tmp_path / "catalog.sqlite3", with_socket=True)
+
+    manifest, report = build_reported_specs(source_root, catalog.path)
+
+    assert not any(entry.field in {"sata_slots", "pcie_slots"} for entry in manifest.specs)
+    assert report["board_socket_mismatch"] == 1
+
+
 def test_ambiguous_manufacturer_part_number_is_rejected(tmp_path: Path) -> None:
     source_root = tmp_path / "source"
     _write_board(source_root, "00000000-0000-4000-8000-000000000001")

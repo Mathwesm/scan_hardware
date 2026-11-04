@@ -33,6 +33,8 @@ SOURCE_FOLDERS = {
 }
 PACKAGE_MANIFEST = Path(__file__).parent / "curation" / "reported_specs.json"
 MIN_EXPECTED_SPECS = 5_000
+MAX_BOARD_SATA_PORTS = 32
+MAX_BOARD_PCIE_SLOTS = 16
 
 
 def write_package_manifest(manifest: ReportedSpecManifest, path: Path) -> None:
@@ -123,6 +125,50 @@ class BoardProduct(BaseModel):
     chipset: str | None = None
     form_factor: str | None = None
     memory: BoardMemory = Field(default_factory=BoardMemory)
+    storage_devices: dict[str, Any] | None = None
+    pcie_slots: list[dict[str, Any]] | None = None
+
+
+class BoardPcieSlot(BaseModel):
+    """Physical slot width and quantity reported by one OpenDB record."""
+
+    quantity: int = Field(gt=0, le=MAX_BOARD_PCIE_SLOTS, strict=True)
+    lanes: int = Field(gt=0, strict=True)
+
+
+def _board_sata_ports(board: BoardProduct) -> dict[str, int]:
+    """Ignore all-zero placeholders and malformed SATA connector counts."""
+    if board.storage_devices is None:
+        return {}
+    sata_6 = board.storage_devices.get("sata_6_gb_s")
+    sata_3 = board.storage_devices.get("sata_3_gb_s")
+    if (
+        type(sata_6) is not int
+        or type(sata_3) is not int
+        or not 0 <= sata_6 <= MAX_BOARD_SATA_PORTS
+        or not 0 <= sata_3 <= MAX_BOARD_SATA_PORTS
+    ):
+        return {}
+    total = sata_6 + sata_3
+    if total == 0 or total > MAX_BOARD_SATA_PORTS:
+        return {}
+    return {"sata_slots": total}
+
+
+def _board_pcie_slots(board: BoardProduct) -> dict[str, int]:
+    """Count reported slot widths, excluding unreliable PCIe generation labels."""
+    if not board.pcie_slots:
+        return {}
+    try:
+        slots = [BoardPcieSlot.model_validate(entry) for entry in board.pcie_slots]
+    except ValidationError:
+        return {}
+    if any(slot.lanes not in {1, 4, 8, 16} for slot in slots):
+        return {}
+    total = sum(slot.quantity for slot in slots)
+    if total == 0 or total > MAX_BOARD_PCIE_SLOTS:
+        return {}
+    return {"pcie_slots": total}
 
 
 def _positive(value: int | float | None) -> int | float | None:
@@ -191,6 +237,8 @@ def _values(category: Category, payload: dict[str, Any]) -> dict[str, str | int 
             "max_memory_gb": _positive(board.memory.max),
             "memory_slots": _positive(board.memory.slots),
             "memory_type": _nonempty(board.memory.ram_type),
+            **_board_sata_ports(board),
+            **_board_pcie_slots(board),
         }
     return {key: value for key, value in values.items() if value is not None}
 
@@ -260,6 +308,34 @@ def _cpu_cores_agree(payload: dict[str, Any], detail: Item) -> bool:
     )
 
 
+def _board_socket_conflicts(values: dict[str, str | int | float], detail: Item) -> bool:
+    """Detect a source board whose socket contradicts the catalog's socket."""
+    source_socket = values.get("socket")
+    catalog_socket = detail.specifications.get("socket")
+    if (
+        not isinstance(source_socket, str)
+        or catalog_socket is None
+        or catalog_socket.status == "conflict"
+        or not isinstance(catalog_socket.value, str)
+    ):
+        return False
+    return normalize_identifier(source_socket) != normalize_identifier(catalog_socket.value)
+
+
+def _exclude_conflicting_board_ports(
+    category: Category,
+    values: dict[str, str | int | float],
+    detail: Item,
+    counts: Counter[str],
+) -> None:
+    """Remove connector totals when independent socket evidence disagrees."""
+    if category is not Category.MOTHERBOARD or not _board_socket_conflicts(values, detail):
+        return
+    values.pop("sata_slots", None)
+    values.pop("pcie_slots", None)
+    counts["board_socket_mismatch"] += 1
+
+
 def build_reported_specs(
     source_root: Path, catalog_path: Path
 ) -> tuple[ReportedSpecManifest, dict[str, int]]:
@@ -301,6 +377,7 @@ def build_reported_specs(
         detail = catalog.get_item(item.id)
         if detail is None:
             raise RuntimeError(f"Catalog item disappeared during import: {item.id}")
+        _exclude_conflicting_board_ports(item.category, values, detail, counts)
         if matched_by_name:
             if not _cpu_cores_agree(payload, detail):
                 counts["cpu_name_core_mismatch"] += 1

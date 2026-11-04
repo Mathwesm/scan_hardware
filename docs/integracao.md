@@ -204,9 +204,20 @@ O [processamento local de fotos](color_enrichment.md) explica como ampliar a cob
 Para memória de placas-mães, `max_memory_gb` é capacidade em GB;
 `max_memory_standard_mhz` e `max_memory_oc_mhz` diferenciam o limite sem e com
 overclock. `memory_slot_type` indica o encaixe físico (por exemplo, DIMM), e
-`memory_channels` indica os canais suportados. Para CPU, `memory_speed_mt_s` é a
-taxa máxima oficial de transferências por segundo, distinta do clock em MHz;
-`l2_cache_mb` e `l3_cache_mb` indicam o cache. Para GPU, `memory_type` indica a
+`memory_channels` indica os canais suportados.
+
+Para placas-mãe, `sata_slots` é a quantidade de conectores SATA internos
+(somando SATA 3 Gb/s e 6 Gb/s), e `pcie_slots` é a quantidade de slots PCI Express
+de expansão. Os nomes são planos para facilitar o cliente Kotlin. Não incluem
+conectores eSATA externos, M.2 nem slots PCI legados. A velocidade SATA, a
+geração PCIe e a largura elétrica não são representadas por esses totais.
+Os campos são omitidos quando a fonte não informa uma contagem positiva e
+consistente; ausência não significa zero. A associação exige código de peça
+exato e rejeita divergência conhecida de socket.
+
+Para CPU, `memory_speed_mt_s` é a taxa máxima oficial de transferências por segundo,
+distinta do clock em MHz; `l2_cache_mb` e `l3_cache_mb` indicam o cache.
+Para GPU, `memory_type` indica a
 tecnologia da VRAM, `memory_speed_mhz` sua velocidade anunciada,
 `memory_bus_bits` a largura do barramento e `shader_units` as unidades de
 processamento quando o fabricante as informa. Esses campos só aparecem para
@@ -255,6 +266,8 @@ data class Hardware(
     val form_factor: String? = null,
     val max_memory_gb: Int? = null,
     val memory_slots: Int? = null,
+    val sata_slots: Int? = null,
+    val pcie_slots: Int? = null,
     val memory_type: String? = null,
     val memory_slot_type: String? = null,
     val memory_channels: Int? = null,
