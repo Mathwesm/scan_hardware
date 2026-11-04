@@ -85,6 +85,12 @@ curl -X POST http://127.0.0.1:8000/scan -F 'image=@placa.jpg'
 
 `POST /lookup` pesquisa texto; `POST /scan` lê uma foto. `GET /specs/{id}` traz os detalhes. `GET /specs/{id}/socket-related` lista peças com **o mesmo socket**, com paginação por `limit` e `offset`. A lista exclui divergências conhecidas entre fabricante, chipset e gerações Intel LGA1151 (séries 100/200 versus 300). Ainda é uma lista de candidatos: BIOS e suporte de cada modelo precisam ser conferidos na lista de CPUs do fabricante da placa. O formato JSON da rota permanece o mesmo. O [contrato completo da API](docs/integracao.md) descreve respostas e códigos de erro.
 
+Para abas de catálogo no aplicativo, use `GET /catalog/motherboard`,
+`GET /catalog/ram`, `GET /catalog/cpu` e `GET /catalog/gpu`. Cada rota devolve
+`total`, `limit`, `offset` e uma lista `items` com os campos da peça em formato
+plano. Use `?limit=20&offset=20` para carregar a próxima página. A busca por
+código continua em `POST /lookup`, e a câmera continua em `POST /scan`.
+
 ## Fotos e especificações adicionais
 
 O pacote já traz associações de fotos do catálogo público PCPartPicker. Para procurar placas-mãe ainda sem foto em mídias com licença aberta, use a API do Openverse:

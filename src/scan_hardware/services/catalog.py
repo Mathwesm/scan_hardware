@@ -270,6 +270,31 @@ class Catalog:
             ).fetchone()
         return int(row["total"])
 
+    def page_category(
+        self, category: Category, *, limit: int = 20, offset: int = 0
+    ) -> tuple[int, list[Item]]:
+        """Read a stable page of one category with complete catalog details.
+
+        Args:
+            category: Hardware category to browse.
+            limit: Maximum number of items in the page.
+            offset: Number of sorted items to skip.
+
+        Returns:
+            Total category count and the requested item page.
+        """
+        with self._connect() as connection:
+            total = connection.execute(
+                "SELECT COUNT(*) AS total FROM items WHERE category = ?", (category.value,)
+            ).fetchone()["total"]
+            rows = connection.execute(
+                """SELECT id FROM items WHERE category = ?
+                ORDER BY brand, model, id LIMIT ? OFFSET ?""",
+                (category.value, limit, offset),
+            ).fetchall()
+        items = [item for row in rows if (item := self.get_item(row["id"])) is not None]
+        return int(total), items
+
     def put_item(self, item_id: str, item: ItemInput) -> Item:
         """Create or replace one item atomically.
 
