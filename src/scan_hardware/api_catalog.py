@@ -11,7 +11,11 @@ from pydantic import BaseModel
 
 from scan_hardware.config import Settings
 from scan_hardware.models.item import Category, GalleryImage, Item, ItemInput
-from scan_hardware.services.catalog import Catalog, IdentifierConflictError
+from scan_hardware.services.catalog import (
+    Catalog,
+    IdentifierConflictError,
+    has_consistent_socket_vendor,
+)
 from scan_hardware.services.image_store import ImageView, store_image
 from scan_hardware.services.ocr import InvalidImageError
 
@@ -89,8 +93,18 @@ def register_socket_routes(app: FastAPI, catalog: Catalog) -> None:
         socket = specification.value if specification is not None else None
         if not isinstance(socket, str):
             return SocketRelatedResponse(socket=None, total=0, matches=[])
+        chipset_specification = item.specifications.get("chipset")
+        chipset = (
+            chipset_specification.value
+            if chipset_specification is not None and isinstance(chipset_specification.value, str)
+            else None
+        )
+        if not has_consistent_socket_vendor(item.category, item.brand, socket, chipset):
+            return SocketRelatedResponse(socket=None, total=0, matches=[])
         target = Category.CPU if item.category is Category.MOTHERBOARD else Category.MOTHERBOARD
-        total, matches = catalog.list_socket_related(socket, target, limit=limit, offset=offset)
+        total, matches = catalog.list_socket_related(
+            socket, target, source_item=item, limit=limit, offset=offset
+        )
         return SocketRelatedResponse(
             socket=socket,
             total=total,

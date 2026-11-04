@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from fastapi.testclient import TestClient
+
+from scan_hardware.api import create_app
 from scan_hardware.catalog_audit import audit_catalog
 from scan_hardware.catalog_import import _import_supplemental_items
 from scan_hardware.core.matching import match_items
@@ -161,3 +164,35 @@ def test_asrock_memory_facts_include_cpu_dependent_standard_limit(tmp_path: Path
     assert item.specifications["memory_channels"].value == 2
     assert item.specifications["max_memory_standard_mhz"].value == 3200
     assert item.specifications["max_memory_standard_mhz"].status == "verified"
+
+
+def test_gigabyte_ga_78lmt_usb3_has_manufacturer_socket_and_chipset(tmp_path: Path) -> None:
+    """Keep the board's printed family from losing its essential identity fields."""
+    catalog = Catalog(tmp_path / "catalog.sqlite3")
+    item_id = "motherboard-f8ee706c6cde9c1d6a6db7d4"
+    catalog.put_item(
+        item_id,
+        ItemInput(
+            category=Category.MOTHERBOARD,
+            brand="Gigabyte",
+            model="Gigabyte GA-78LMT-USB3",
+            identifiers=["GA-78LMT-USB3"],
+        ),
+    )
+
+    item = catalog.get_item(item_id)
+
+    assert item is not None
+    assert item.specifications["socket"].value == "AM3+"
+    assert item.specifications["chipset"].value == "AMD 760G + SB710"
+    assert item.specifications["memory_channels"].value == 2
+    assert item.specifications["max_memory_standard_mhz"].value == 1333
+    assert item.specifications["max_memory_oc_mhz"].value == 1600
+
+    response = TestClient(create_app(catalog=catalog)).post(
+        "/lookup", json={"text": "GA-78LMT-USB3"}
+    )
+    assert response.status_code == 200
+    match = response.json()["matches"][0]
+    assert match["socket"] == "AM3+"
+    assert match["chipset"] == "AMD 760G + SB710"

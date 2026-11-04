@@ -135,6 +135,16 @@
       }
       selectImage(primary);
       if (primary.source === 'external') line(card, 'p', 'Imagem externa de referência; enquadramento não revisado.', 'muted');
+      if (primary.url.startsWith('https://images.icecat.biz/')) {
+        const credit = line(card, 'p', 'Foto: ', 'muted');
+        const link = document.createElement('a');
+        link.href = 'https://icecat.biz/';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Specs Icecat';
+        credit.appendChild(link);
+        line(card, 'p', 'Conteúdo fornecido como está, sem garantias.', 'muted');
+      }
     }
     function renderSocketRelated(card, match, showAutomatically) {
       if (!['cpu', 'motherboard'].includes(match.category) || !match.socket) return;

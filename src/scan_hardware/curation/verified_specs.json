@@ -215,6 +215,344 @@
       "value": 8,
       "unit": "GB",
       "source_url": "https://www.manualslib.com/manual/453017/Ecs-G41t-Mr23.html"
+    },
+    {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "socket",
+      "value": "AM3+",
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "chipset",
+      "value": "AMD 760G + SB710",
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "memory_channels",
+      "value": 2,
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "max_memory_standard_mhz",
+      "value": 1333,
+      "unit": "MHz",
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "max_memory_oc_mhz",
+      "value": 1600,
+      "unit": "MHz",
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
+      "item_id": "cpu-04394d651b7cd021a6bdcc16",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/sku/65702/intel-core-i53570-processor-6m-cache-up-to-3-80-ghz/specifications.html"
+    },
+    {
+      "item_id": "cpu-067ae851a667ef987f185106",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/sku/61275/intel-core-i72700k-processor-8m-cache-up-to-3-90-ghz/specifications.html"
+    },
+    {
+      "item_id": "cpu-087d484b8fb43f5fa38a43da",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/sku/65516/intel-core-i53550-processor-6m-cache-up-to-3-70-ghz/specifications.html"
+    },
+    {
+      "item_id": "cpu-0d520347817eb7608d9b7c7c",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/sku/65523/intel-core-i73770k-processor-8m-cache-up-to-3-90-ghz/specifications.html"
+    },
+    {
+      "item_id": "cpu-11e8b2a45c6727325d7426d1",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/sku/68316/intel-core-i53470-processor-6m-cache-up-to-3-60-ghz/specifications.html"
+    },
+    {
+      "item_id": "cpu-2d675853c37bfbbdad477e17",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/compare.html?productIds=65520"
+    },
+    {
+      "item_id": "cpu-bc6c5022d07530787f42dd31",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1155",
+      "source_url": "https://www.intel.com/content/www/us/en/products/compare.html?productIds=68315"
+    },
+    {
+      "item_id": "cpu-046f566d1d9153812380414b",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-0ab61920f338943776015924",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006047/processors.html"
+    },
+    {
+      "item_id": "cpu-0ec71aaf0e1ecd6b0151cad5",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-239fef3239bf246433c84eb6",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-2514598a98716758c94dda34",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-28315710c59c3209ab67c23b",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-288fd078077ff44ad4ad44a9",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-2cfe5e253b2d7880dc482c31",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-305476313e6703e9c21e73f7",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-364ad56794689b7ae20d032c",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-42182eec8316518f60785bb9",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-47327aca0fe4ae83733fd2ac",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-502dbdb04179a5c1b0c3e979",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-61abe42733c91f08cd6e9bf9",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-64142bb314bda21b2af31e9c",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-66c56b5fb628be4a4160c0c6",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-6e4b13a5afffba3af63112fa",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-73f9fcb8c14759957e42bfec",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-7baab843036a901cccdbac9d",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-8a33ebfcbcc23ef6d6e8a027",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-9864d4b4e53b2173d6564524",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-98d786cf5e307a136b27d2b7",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-994ddfa780a2609ffdb1c83c",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-a4c1a427a44e8ef0eda2c554",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-a6228fa15e6aa5e2797cb841",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006047/processors.html"
+    },
+    {
+      "item_id": "cpu-a86ec7ac853a0633ac0fa5fd",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-ad9b2d64b088962f391d9ff3",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-b2440099bd01b85c8a23a17a",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-b61c8ccdbb0cb7266460753a",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-b6530b3555dfd003ab08c1c5",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-b811ae9ed5e2e588f680d8b4",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-c2d605d933c2413df80cd152",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
+    },
+    {
+      "item_id": "cpu-e46e2c01394e65dd739d60ca",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-f91dc6546e68b5c9c112293f",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1156",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006047/processors.html"
+    },
+    {
+      "item_id": "cpu-fe52b0f58e70d72b6268ef33",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA1366",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000006778.html"
+    },
+    {
+      "item_id": "cpu-ffddc9f2e3b1db5d2df46415",
+      "category": "cpu",
+      "field": "socket",
+      "value": "LGA2066",
+      "source_url": "https://www.intel.com/content/www/us/en/support/articles/000005592/processors/intel-core-processors.html"
     }
   ]
 }

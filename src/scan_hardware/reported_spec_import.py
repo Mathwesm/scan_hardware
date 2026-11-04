@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
@@ -14,7 +15,7 @@ from loguru import logger
 from pydantic import BaseModel, Field, ValidationError
 
 from scan_hardware.config import settings
-from scan_hardware.core.matching import normalize_identifier
+from scan_hardware.core.matching import MIN_IDENTIFIER_LENGTH, normalize_identifier
 from scan_hardware.core.specifications import SPEC_DEFINITIONS
 from scan_hardware.curation import BUILDCORES_REVISION, ReportedSpec, ReportedSpecManifest
 from scan_hardware.models.item import Category, Item
@@ -119,6 +120,7 @@ class BoardProduct(BaseModel):
     """Validated OpenDB motherboard fields used by the service."""
 
     socket: str | None = None
+    chipset: str | None = None
     form_factor: str | None = None
     memory: BoardMemory = Field(default_factory=BoardMemory)
 
@@ -133,6 +135,26 @@ def _nonempty(value: str | None) -> str | None:
     if value is None or not value.strip() or value.strip().casefold() in {"none", "unknown"}:
         return None
     return value.strip()
+
+
+def _canonical_cpu_name(value: str) -> str:
+    """Remove only an explicit retail packaging suffix from a complete CPU name."""
+    unboxed = re.sub(r"\s+OEM\s*/\s*Tray\s*$", "", value, flags=re.IGNORECASE)
+    return normalize_identifier(unboxed)
+
+
+def _board_chipset(board: BoardProduct) -> str | None:
+    """Reject an explicit chipset vendor contradicting the board's socket."""
+    chipset = _nonempty(board.chipset)
+    socket = _nonempty(board.socket)
+    if chipset is None or socket is None:
+        return chipset
+    normalized_socket = re.sub(r"\s+", "", socket.upper())
+    if normalized_socket.startswith(("LGA", "FCLGA")) and chipset.upper().startswith("AMD "):
+        return None
+    if normalized_socket.startswith(("AM", "FM")) and chipset.upper().startswith("INTEL "):
+        return None
+    return chipset
 
 
 def _values(category: Category, payload: dict[str, Any]) -> dict[str, str | int | float]:
@@ -163,6 +185,7 @@ def _values(category: Category, payload: dict[str, Any]) -> dict[str, str | int 
     else:
         board = BoardProduct.model_validate(payload)
         values = {
+            "chipset": _board_chipset(board),
             "socket": _nonempty(board.socket),
             "form_factor": _nonempty(board.form_factor),
             "max_memory_gb": _positive(board.memory.max),
@@ -174,30 +197,44 @@ def _values(category: Category, payload: dict[str, Any]) -> dict[str, str | int 
 
 def _cpu_name_index(
     source_root: Path, products: dict[str, SourceProduct]
-) -> dict[tuple[str, str], set[str]]:
-    """Index unique CPU model names separately from manufacturer part numbers."""
+) -> tuple[dict[tuple[str, str], set[str]], dict[tuple[str, str], set[str]]]:
+    """Index exact names first and packaging-normalized names for fallback."""
     source_ids = {path.stem for path in (source_root / "open-db" / "CPU").glob("*.json")}
-    names: dict[tuple[str, str], set[str]] = defaultdict(set)
+    exact: dict[tuple[str, str], set[str]] = defaultdict(set)
+    packaged: dict[tuple[str, str], set[str]] = defaultdict(set)
     for source_id in source_ids & products.keys():
         metadata = products[source_id].metadata
-        key = (normalize_identifier(metadata.manufacturer), normalize_identifier(metadata.name))
-        if key[1]:
-            names[key].add(source_id)
-    return names
+        brand = normalize_identifier(metadata.manufacturer)
+        exact_name = normalize_identifier(metadata.name)
+        canonical_name = _canonical_cpu_name(metadata.name)
+        if exact_name:
+            exact[(brand, exact_name)].add(source_id)
+        if canonical_name and canonical_name != exact_name:
+            packaged[(brand, canonical_name)].add(source_id)
+    return exact, packaged
 
 
 def _source_candidates(
     item: Item,
     index: dict[tuple[Category, str], set[str]],
     products: dict[str, SourceProduct],
-    cpu_names: dict[tuple[str, str], set[str]],
+    cpu_names: tuple[dict[tuple[str, str], set[str]], dict[tuple[str, str], set[str]]],
     catalog_cpu_names: Counter[tuple[str, str]],
 ) -> tuple[set[str], bool]:
     """Prefer exact part numbers; allow an independently checked unique CPU name."""
+    identifiers = {normalize_identifier(value) for value in item.identifiers}
+    if item.category is Category.MOTHERBOARD:
+        brand = normalize_identifier(item.brand)
+        identifiers.update(
+            identifier[len(brand) :]
+            for identifier in tuple(identifiers)
+            if identifier.startswith(brand)
+            and len(identifier) - len(brand) >= MIN_IDENTIFIER_LENGTH
+        )
     candidates = {
         source_id
-        for identifier in item.identifiers
-        for source_id in index.get((item.category, normalize_identifier(identifier)), set())
+        for identifier in identifiers
+        for source_id in index.get((item.category, identifier), set())
         if normalize_identifier(products[source_id].metadata.manufacturer)
         == normalize_identifier(item.brand)
     }
@@ -206,7 +243,8 @@ def _source_candidates(
     name_key = (normalize_identifier(item.brand), normalize_identifier(item.model))
     if catalog_cpu_names[name_key] != 1:
         return set(), False
-    matches = cpu_names.get(name_key, set())
+    exact, packaged = cpu_names
+    matches = exact.get(name_key) or packaged.get(name_key, set())
     return matches, bool(matches)
 
 
@@ -230,7 +268,7 @@ def build_reported_specs(
     catalog = Catalog(catalog_path)
     items = catalog.list_items()
     catalog_cpu_names = Counter(
-        (normalize_identifier(item.brand), normalize_identifier(item.model))
+        (normalize_identifier(item.brand), _canonical_cpu_name(item.model))
         for item in items
         if item.category is Category.CPU
     )
