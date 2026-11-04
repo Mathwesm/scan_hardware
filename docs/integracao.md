@@ -74,6 +74,7 @@ segredos da implantação.
 | --- | --- | --- |
 | `POST /scan` | `multipart/form-data`, campo `image` | OCR da foto e busca no catálogo. |
 | `POST /lookup` | JSON `{"text":"A890GXM-A"}` | Busca de código já digitado ou lido pelo app. |
+| `GET /catalog/{category}` | `category`: `motherboard`, `ram`, `cpu` ou `gpu`; `limit` e `offset` opcionais | Lista paginada para as abas do aplicativo. Também aceita as demais categorias do catálogo. |
 | `GET /specs/{id}` | ID recebido na resposta | Detalhes e especificações do produto. |
 | `GET /items/{id}/sources` | ID recebido na resposta | Linhas originais das fontes, com todas as colunas importadas. |
 | `GET /items/{id}/image` | ID com imagem local | Arquivo da imagem de referência. |
@@ -82,6 +83,22 @@ segredos da implantação.
 | `PUT /items/{id}` | JSON do produto | Cria ou substitui um item do catálogo. |
 | `PUT /items/{id}/image` | `multipart/form-data`, campo `image` | Associa uma imagem local a um item existente. |
 | `PUT /items/{id}/images/{view}` | `multipart/form-data`, campo `image` | Adiciona uma foto local; `view` aceita `front`, `side`, `back`, `detail`, `other`. |
+
+Nas quatro abas, carregue a primeira página ao abrir a categoria e incremente
+`offset` pelo número de itens já recebidos. Pare quando chegar a `total`:
+
+```bash
+curl 'http://127.0.0.1:8000/catalog/motherboard?limit=20&offset=0'
+curl 'http://127.0.0.1:8000/catalog/ram?limit=20&offset=0'
+curl 'http://127.0.0.1:8000/catalog/cpu?limit=20&offset=0'
+curl 'http://127.0.0.1:8000/catalog/gpu?limit=20&offset=0'
+```
+
+A resposta traz `category`, `total`, `limit`, `offset` e `items`. Cada objeto em
+`items` usa os mesmos campos **planos** de um candidato de `/scan`, sem
+`match_score`; dados desconhecidos são omitidos. `limit` aceita de 1 a 100.
+Para abrir os detalhes, use o `id` do item em `GET /specs/{id}`. Uma imagem
+ausente não impede a peça de aparecer na aba.
 
 `/scan` e `/lookup` devolvem o mesmo formato. Em produção, as rotas `PUT` devem ser
 usadas apenas por processos administrativos autorizados. Os IDs em `/{id}` aceitam

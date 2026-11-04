@@ -10,7 +10,14 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from scan_hardware.config import Settings
-from scan_hardware.models.item import Category, GalleryImage, Item, ItemInput
+from scan_hardware.models.item import (
+    Category,
+    GalleryImage,
+    HardwareSummary,
+    Item,
+    ItemInput,
+    Match,
+)
 from scan_hardware.services.catalog import (
     Catalog,
     IdentifierConflictError,
@@ -44,8 +51,45 @@ class SocketRelatedResponse(BaseModel):
     note: str = "Same socket does not confirm chipset, BIOS, or generation support."
 
 
+class CategoryCatalogPage(BaseModel):
+    """Flat, paginated hardware records for a mobile category tab."""
+
+    category: Category
+    total: int
+    limit: int
+    offset: int
+    items: list[HardwareSummary]
+
+
 def register_catalog_routes(app: FastAPI, catalog: Catalog, config: Settings) -> None:
     """Attach catalog endpoints to the service application."""
+
+    @app.get(
+        "/catalog/{category}",
+        response_model=CategoryCatalogPage,
+        response_model_exclude_none=True,
+    )
+    def get_category_catalog(
+        category: Category,
+        limit: Annotated[int, Query(ge=1, le=100)] = 20,
+        offset: Annotated[int, Query(ge=0)] = 0,
+    ) -> CategoryCatalogPage:
+        """List one category without changing the scanner response contract."""
+        total, items = catalog.page_category(category, limit=limit, offset=offset)
+        summaries = [
+            HardwareSummary.from_match(
+                Match(
+                    item=item,
+                    matched_identifier=item.identifiers[0] if item.identifiers else item.model,
+                    score=1.0,
+                    is_exact=True,
+                )
+            )
+            for item in items
+        ]
+        return CategoryCatalogPage(
+            category=category, total=total, limit=limit, offset=offset, items=summaries
+        )
 
     @app.put("/items/{item_id}", response_model=Item)
     def put_item(item_id: ItemId, item: ItemInput) -> Item:
