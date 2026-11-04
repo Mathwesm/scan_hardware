@@ -3,7 +3,8 @@
 O catálogo original combina dois arquivos Kaggle e tem **12.874 peças**:
 899 CPUs, 7.549 GPUs e 4.426 placas-mães. A importação adicional do
 [BuildCores OpenDB](https://github.com/buildcores/buildcores-open-db), na revisão
-`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **10.771 valores**.
+`0d3c3eaf220173aa4246916e3d7a226079e87a65`, associou **14.376 valores**
+na atualização de 04/11/2026.
 O cruzamento prefere fabricante e part number exatos. Para CPUs sem esse código,
 aceita nome e fabricante idênticos apenas quando o modelo é único nas duas bases
 e a contagem de núcleos confere. Casos ambíguos ou divergentes são descartados.
@@ -16,6 +17,14 @@ associado quando o part number e o fabricante identificam uma única peça.
 Identificadores legados com a marca no início também são comparados sem esse
 prefixo, mas nunca por código parcial; variantes ambíguas são rejeitadas.
 Chipsets Intel em sockets AMD e vice-versa são rejeitados.
+
+A atualização também acrescentou `sata_slots` para 1.541 placas-mãe e
+`pcie_slots` para 2.064. O primeiro campo soma conectores SATA internos de
+3 e 6 Gb/s; o segundo soma os slots PCI Express declarados. Contagens zeradas
+ou inválidas são descartadas, assim como a associação quando o socket da fonte
+diverge do catálogo. A geração PCIe do OpenDB não é publicada porque foi
+encontrada incorreta em placas antigas. A GA-78LMT-USB3 recebeu ainda uma
+contagem SATA diretamente da ficha da Gigabyte.
 
 Para reproduzir a importação após obter essa revisão da fonte:
 

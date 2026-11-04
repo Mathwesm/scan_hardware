@@ -26,7 +26,17 @@ def test_category_catalog_pages_only_selected_hardware(tmp_path: Path) -> None:
             item_id,
             ItemInput(category=category, brand=brand, model=model, identifiers=[item_id]),
         )
-    catalog.put_source_record("fixture", "board.csv", 1, {"socket": "AM4"}, "board-1")
+    catalog.put_source_record(
+        "fixture",
+        "board.csv",
+        1,
+        {
+            "socket": "AM4",
+            "sata_slots": 6,
+            "pcie_slots": 2,
+        },
+        "board-1",
+    )
     client = TestClient(create_app(config=Settings(image_dir=tmp_path / "images"), catalog=catalog))
 
     first = client.get("/catalog/motherboard?limit=1&offset=0")
@@ -40,6 +50,12 @@ def test_category_catalog_pages_only_selected_hardware(tmp_path: Path) -> None:
         "board-2",
     ]
     assert first.json()["items"][0]["socket"] == "AM4"
+    assert first.json()["items"][0]["sata_slots"] == 6
+    assert first.json()["items"][0]["pcie_slots"] == 2
+    assert client.get("/specs/board-1").json()["specs"]["sata_slots"]["value"] == 6
+    lookup = client.post("/lookup", json={"text": "board-1"})
+    assert lookup.status_code == 200
+    assert lookup.json()["matches"][0]["pcie_slots"] == 2
     assert "specs" not in first.json()["items"][0]
     assert "match_score" not in first.json()["items"][0]
     assert client.get("/catalog/cpu").json()["items"][0]["id"] == "cpu-1"

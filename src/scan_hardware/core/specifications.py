@@ -94,6 +94,8 @@ SPEC_DEFINITIONS: dict[Category, dict[str, SpecDefinition]] = {
         "max_memory_oc_mhz": SpecDefinition((), "integer", "MHz"),
         "memory_slot_type": SpecDefinition((), "text"),
         "memory_channels": SpecDefinition((), "integer"),
+        "sata_slots": SpecDefinition(("sata_slots",), "integer"),
+        "pcie_slots": SpecDefinition(("pcie_slots",), "integer"),
         "color": SpecDefinition(("color",), "text"),
     },
 }

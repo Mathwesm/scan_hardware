@@ -2,7 +2,8 @@
 
 Atualizado em 04/11/2026. Este documento resume as entregas dos PRs
 [#21](https://github.com/Mathwesm/scan_hardware/pull/21) a
-[#26](https://github.com/Mathwesm/scan_hardware/pull/26), já incorporados à `main`.
+[#26](https://github.com/Mathwesm/scan_hardware/pull/26) e a inclusão posterior
+das contagens SATA e PCIe nas placas-mãe.
 O [guia de integração](integracao.md) contém o contrato completo da API.
 
 ## O que mudou
@@ -14,6 +15,7 @@ O [guia de integração](integracao.md) contém o contrato completo da API.
 | Relação por socket | `GET /specs/{id}/socket-related` lista CPUs de uma placa-mãe ou placas-mãe de uma CPU com o mesmo socket, usando `limit` e `offset`. | Apresentar peças relacionadas na tela de detalhes. |
 | Filtro de compatibilidade | A busca por socket passou a excluir divergências conhecidas de fabricante, chipset e gerações Intel LGA1151. | Evitar, por exemplo, indicar Ryzen numa placa Intel. |
 | Especificações | Houve complementação de modelos exatos a partir de fontes identificadas; valores ausentes ou conflitantes não são inventados. | Exibir somente campos presentes na resposta. |
+| Portas e expansão | `sata_slots` e `pcie_slots` são contagens planas de conectores SATA internos e slots PCI Express da placa-mãe, quando há fonte associada ao modelo exato. | Mostrar armazenamento e expansão sem listas aninhadas no JSON. |
 | Imagens | Foram acrescentadas referências verificadas de CPUs e um fluxo de descoberta e revisão de imagens para placas-mãe sem foto. | Mostrar `image_url` quando vier; manter uma imagem substituta quando faltar. |
 | Demonstração | `/demo` passou a apresentar detalhes e peças relacionadas em uma interface, em vez de exigir que o usuário leia o JSON bruto. | Testar visualmente o catálogo antes de integrar o app. |
 
@@ -66,6 +68,13 @@ O aplicativo deve mostrar `model` diretamente no título: esse valor já pode
 conter o fabricante. Concatenar `brand` com `model` produz títulos duplicados,
 como `Gigabyte Gigabyte GA-78LMT-USB3`.
 
+Em placas-mãe com dados disponíveis, `sata_slots` soma os conectores SATA internos
+de 3 e 6 Gb/s; `pcie_slots` soma os slots PCI Express de expansão. Por exemplo,
+o modelo GA-Z77X-UD5H apresenta `"sata_slots": 9` e `"pcie_slots": 6`,
+conferidos na [ficha da Gigabyte](https://www.gigabyte.com/Motherboard/GA-Z77X-UD5H-rev-10/sp).
+Os totais não incluem eSATA externo, M.2 ou PCI legado e não informam geração,
+velocidade ou largura elétrica de cada slot. Um campo ausente não significa zero.
+
 ## Validação realizada
 
 - O PR #26 passou no CI do GitHub, incluindo o controle de qualidade no Linux e
@@ -83,6 +92,11 @@ como `Gigabyte Gigabyte GA-78LMT-USB3`.
   afirmar que uma CPU funciona naquela placa.
 - Parte do catálogo ainda não tem foto ou todas as especificações. Campo ausente
   indica dado indisponível ou conflitante; não equivale a zero.
+- Na revisão do OpenDB de 04/11/2026, foi possível associar `sata_slots` a
+  1.541 das 4.426 placas-mãe e `pcie_slots` a 2.064. Registros com código ambíguo,
+  contagem inválida ou socket divergente não receberam esses valores. A
+  GA-78LMT-USB3 recebeu `sata_slots` diretamente da ficha da Gigabyte, além
+  desses 1.541 registros do OpenDB.
 - As fotos de teste documentadas em [validação de campo](field_validation.md)
   cobrem poucos produtos e variantes de imagens. Elas não demonstram taxa geral
   de acerto de OCR de 95% em fotos de celulares diferentes.

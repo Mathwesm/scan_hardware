@@ -254,6 +254,13 @@
       "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
     },
     {
+      "item_id": "motherboard-f8ee706c6cde9c1d6a6db7d4",
+      "category": "motherboard",
+      "field": "sata_slots",
+      "value": 6,
+      "source_url": "https://www.gigabyte.com/Motherboard/GA-78LMT-USB3-rev-50/sp"
+    },
+    {
       "item_id": "cpu-04394d651b7cd021a6bdcc16",
       "category": "cpu",
       "field": "socket",

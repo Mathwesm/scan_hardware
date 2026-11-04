@@ -160,6 +160,8 @@ class HardwareSummary(BaseModel):
     memory_type: str | None = None
     memory_slot_type: str | None = None
     memory_channels: int | None = None
+    sata_slots: int | None = None
+    pcie_slots: int | None = None
     max_memory_standard_mhz: int | None = None
     max_memory_oc_mhz: int | None = None
     memory_speed_mt_s: int | None = None
